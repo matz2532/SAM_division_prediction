@@ -1,0 +1,3389 @@
+// Parameters for MorphoGraphX
+[Main]
+MGXVersion: 2.0
+MGXRevision: 1-84-ga217032
+ClearColor: 0
+SurfOffset: 0.01
+Slices: 500
+ScreenSampling: 1
+TileCount: 20
+MaxTexSize: 1024 1024 1024
+
+DrawNormals: 0
+DrawOffset: 1
+DrawZeroLabels: 0
+DrawNhbds: 0
+DeleteBadVertex: false
+CudaHoldMem: 0
+
+MeshPointSize: 3
+MeshLineWidth: 1
+SeedStack: false
+VoxelEditRadius: 25
+VoxelEditMaxPix: 1024000
+
+[Labels]
+Color: 1 0 0 1
+Color: 0 1 0 1
+Color: 0 0 1 1
+Color: 1 1 0 1
+Color: 1 0 1 1
+Color: 0 1 1 1
+Color: 0.5 0 0 1
+Color: 0 0.5 0 1
+Color: 0 0 0.5 1
+Color: 0.5 0 0.5 1
+Color: 0.5 0.5 0 1
+Color: 1 0 0.5 1
+Color: 0.5 0.5 1 1
+Color: 0 0.5 1 1
+Color: 0.5 0 1 1
+Color: 1 0.5 0 1
+
+
+[Colors]
+GeneralBackground: 0 0 0 1
+GeneralClippingPlane1: 0.913725 0.913725 0.913725 1
+GeneralClippingPlane2: 0.913725 0.913725 0.913725 1
+GeneralClippingPlane3: 0.913725 0.913725 0.913725 1
+GeneralCuttingSurface: 0.913725 0.913725 0.913725 1
+GeneralLegend: 1 1 1 1
+GeneralScaleBar: 1 1 1 1
+GeneralEditedpixels: 1 1 1 1
+Stack1Mesh: 1 1 0 1
+Stack1Border: 0 1 1 1
+Stack1Selection: 1 0 0 1
+Stack1Celllabels: 1 1 1 1
+Stack1StackBoundingBox: 0.501961 0.501961 0.501961 1
+Stack2Mesh: 1 1 0 1
+Stack2Border: 1 0 0 1
+Stack2Selection: 1 0 0 1
+Stack2Celllabels: 1 1 1 1
+Stack2StackBoundingBox: 0.501961 0.501961 0.501961 1
+
+[Main]
+DrawCellMap: false
+DrawClipBox: false
+Spinning: 10000
+FlySpeed: 0.005
+Brightness: 0
+Contrast: 1
+Shininess: 32
+Specular: 0.2
+UnsharpStrength: 1
+MaxNbPeels: 10
+CameraFrame: 0.995485 0.0797399 0.0514906 0 -0.0853178 0.989436 0.117208 0 -0.0416005 -0.121072 0.991772 0 95.3681 108.297 -999.999 1
+SceneRadius: 95.6854
+CameraZoom: -1.016
+
+
+[Clip1]
+Enable: false
+Grid: false
+Width: 0.503545
+GridSize: 1
+GridSquares: 3
+GridColor: 11
+Normal: 1 0 0
+Frame: 0.965914 -0.0343396 0.256574 0 -0.0203085 0.978055 0.207356 0 -0.258064 -0.205499 0.94402 0 0 0 0 1
+
+
+[Clip2]
+Enable: false
+Grid: false
+Width: 0.503545
+GridSize: 1
+GridSquares: 3
+GridColor: 12
+Normal: 0 1 0
+Frame: 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+
+
+[Clip3]
+Enable: false
+Grid: false
+Width: 0.503545
+GridSize: 1
+GridSquares: 3
+GridColor: 13
+Normal: 0 0 1
+Frame: 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+
+
+[Stack1]
+StackFile: 
+WorkStackFile: 
+MeshFile: 20190418 myr-yfp T2 P6 final SAM region.mgxm
+MainShow: false
+MainBright:1
+MainOpacity:0.8
+Main16Bit:false
+MainLabels:false
+WorkShow: false
+WorkBright:1
+WorkOpacity:0.8
+Work16Bit:false
+WorkLabels:false
+SurfShow:true
+SurfBright:1
+SurfOpacity:1
+SurfBlend:false
+SurfCull:true
+SurfView:1
+SurfVertexView:Signal
+SurfTriangleView:Triangle Value
+SurfLabelView:Label
+SurfParents:true
+MeshShow:true
+MeshViewMode:Cells
+AxisShow:true
+AxisViewMode:Cell Axis
+MeshPoints:true
+MeshLines:true
+CellMap:false
+ShowTrans:false
+ShowBBox:false
+ShowScale:false
+TieScales:true
+ScaleX:1
+ScaleY:1
+ScaleZ:1
+Scale:1.73205
+LoadMeshScaleUm: true
+LoadMeshTransform: false
+MeshShift: 0
+MainColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0,0\nColoredPos:\s1-0,1,0,1\n
+WorkColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0,0\nColoredPos:\s1-0,1,1,1\n
+SurfColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0,0\nColoredPos:\s1-1,1,1,1\n
+HeatColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0.5,1\nColoredPos:\s0.125-0,0,1,1\nColoredPos:\s0.375-0,1,1,1\nColoredPos:\s0.625-1,1,0,1\nColoredPos:\s0.875-1,0,0,1\nColoredPos:\s1-0.5,0,0,1\n
+Frame: 0.876122 -0.473273 0.0917725 0 0.477408 0.878213 -0.0286906 0 -0.0670174 0.0689494 0.995367 0 -96.4836 -78.9901 -7.1536 1
+Trans: 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+
+
+[Stack2]
+StackFile: 
+WorkStackFile: 
+MeshFile: 20190417 myr-yfp T2 P6 mesh2 final SAM region_Lineage.mgxm
+MainShow: false
+MainBright:1
+MainOpacity:0.8
+Main16Bit:false
+MainLabels:false
+WorkShow: false
+WorkBright:1
+WorkOpacity:0.8
+Work16Bit:false
+WorkLabels:false
+SurfShow:false
+SurfBright:1
+SurfOpacity:1
+SurfBlend:false
+SurfCull:true
+SurfView:1
+SurfVertexView:Signal
+SurfTriangleView:Triangle Value
+SurfLabelView:Label
+SurfParents:false
+MeshShow:true
+MeshViewMode:Cells
+AxisShow:true
+AxisViewMode:Cell Axis
+MeshPoints:true
+MeshLines:true
+CellMap:false
+ShowTrans:false
+ShowBBox:false
+ShowScale:false
+TieScales:true
+ScaleX:1
+ScaleY:1
+ScaleZ:1
+Scale:1.73205
+LoadMeshScaleUm: true
+LoadMeshTransform: false
+MeshShift: 0
+MainColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0,0\nColoredPos:\s1-1,0,0,1\n
+WorkColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0,0\nColoredPos:\s1-1,1,0,1\n
+SurfColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0,0\nColoredPos:\s1-1,1,1,1\n
+HeatColorMap: Interpolation:\srgb\nClamp:\strue\nExteriorColor:\s0,0,0,0\nColoredPos:\s0-0,0,0.5,1\nColoredPos:\s0.125-0,0,1,1\nColoredPos:\s0.375-0,1,1,1\nColoredPos:\s0.625-1,1,0,1\nColoredPos:\s0.875-1,0,0,1\nColoredPos:\s1-0.5,0,0,1\n
+Frame: 0.998269 -0.0452614 -0.0375481 0 0.0433557 0.997803 -0.050103 0 0.0397333 0.0483884 0.998038 0 -99.9091 -81.2406 10.9775 1
+Trans: 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+
+
+[Plane]
+DrawCutSurf: false
+Mode: 0
+CutSurfGrid: false
+Material: 0
+Size: 0.00234491 0.00234491 0.00234491
+SurfSize: 15 15
+LineWidth: 1
+BezPoints: 5 5
+Frame: 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+BezPointList: -7.5 -7.5 0
+BezPointList: -3.75 -7.5 0
+BezPointList: 0 -7.5 0
+BezPointList: 3.75 -7.5 0
+BezPointList: 7.5 -7.5 0
+BezPointList: -7.5 -3.75 0
+BezPointList: -3.75 -3.75 0
+BezPointList: 0 -3.75 0
+BezPointList: 3.75 -3.75 0
+BezPointList: 7.5 -3.75 0
+BezPointList: -7.5 0 0
+BezPointList: -3.75 0 0
+BezPointList: 0 0 0
+BezPointList: 3.75 0 0
+BezPointList: 7.5 0 0
+BezPointList: -7.5 3.75 0
+BezPointList: -3.75 3.75 0
+BezPointList: 0 3.75 0
+BezPointList: 3.75 3.75 0
+BezPointList: 7.5 3.75 0
+BezPointList: -7.5 7.5 0
+BezPointList: -3.75 7.5 0
+BezPointList: 0 7.5 0
+BezPointList: 3.75 7.5 0
+BezPointList: 7.5 7.5 0
+
+[ScaleBar]
+AutoScale: true
+Unit:m
+MinSize: 50
+MaxSize: 200
+AutoUnit: true
+Position: BottomRight
+Direction: Horizontal
+TextPosition: Out
+Thickness: 5
+ShiftBorder: 20 20
+FontSize: 12
+
+[ColorBar]
+ScaleLength: 0.3
+Width: 20
+DistanceToBorder: 5
+TextToBar: 5
+TickSize: 2
+ExpSize: 0.7
+Epsilon: 1e-09
+LineWidth: 2
+Position: TopLeft
+FontSize: 10
+Orientation: Vertical
+
+[Process]
+ProcessName: 
+NumParms: 0
+ProcessName: Mesh/Attributes/Advanced/Save to CSV Extended
+NumParms: 6
+ParmName: Filename
+ParmString: 
+ParmName: Missing Data Handling
+ParmString: Empty
+ParmName: Genotype
+ParmString: 
+ParmName: Sample Name
+ParmString: 
+ParmName: Time Point
+ParmString: 
+ParmName: Stage
+ParmString: 
+ProcessName: Mesh/Attributes/Clear Attr Map
+NumParms: 2
+ParmName: Type
+ParmString: Double
+ParmName: Name
+ParmString: EmptyAttrMap
+ProcessName: Mesh/Attributes/Manage Attributes
+NumParms: 1
+ParmName: Mesh number
+ParmString: -1
+ProcessName: Mesh/Attributes/Save to CSV
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Cell Atlas 3D/General Analysis/Detect Cell Layers
+NumParms: 5
+ParmName: Use Surface
+ParmString: Yes
+ParmName: Cone Angle
+ParmString: 0.9
+ParmName: Number of Layers
+ParmString: 3
+ParmName: Min Shared Cell Wall
+ParmString: 0.0
+ParmName: Min Cell Volume
+ParmString: 0
+ProcessName: Mesh/Cell Atlas 3D/Meristem/Advanced/Analyze Meristem
+NumParms: 1
+ParmName: Min Volume
+ParmString: 0
+ProcessName: Mesh/Cell Atlas 3D/Meristem/Advanced/Detect Cell Layers L1 to L3
+NumParms: 2
+ParmName: Cone Angle
+ParmString: 0.9
+ParmName: Detect L2/3 by neighborhood
+ParmString: No
+ProcessName: Mesh/Cell Atlas 3D/Meristem/Advanced/Mark Meristem
+NumParms: 2
+ParmName: Depth Org Center
+ParmString: 1.25
+ParmName: Radius
+ParmString: 1.0
+ProcessName: Mesh/Cell Atlas 3D/Meristem/Label Meristem
+NumParms: 4
+ParmName: Min Volume
+ParmString: 0
+ParmName: Depth Org Center
+ParmString: 1.25
+ParmName: Radius
+ParmString: 1.0
+ParmName: Cone Angle
+ParmString: 0.9
+ProcessName: Mesh/Cell Atlas 3D/Meristem/Mark Primordium
+NumParms: 5
+ParmName: Ratio Parameter
+ParmString: 0.8
+ParmName: Abs Dis Parameter
+ParmString: 1.3
+ParmName: Primordia Label Same
+ParmString: No
+ParmName: Label Saddle Cell
+ParmString: 0
+ParmName: Label Prim Center
+ParmString: 0
+ProcessName: Mesh/Cell Atlas 3D/Ovule/Detect Cell Layers
+NumParms: 5
+ParmName: Use Surface
+ParmString: Yes
+ParmName: Cone Angle
+ParmString: 0.9
+ParmName: Number of Layers
+ParmString: 3
+ParmName: Min Shared Cell Wall
+ParmString: 0.0
+ParmName: Min Cell Volume
+ParmString: 0
+ProcessName: Mesh/Cell Atlas 3D/Root/A Analyze Cells 3D
+NumParms: 2
+ParmName: Volume Threshold
+ParmString: 0
+ParmName: Mode
+ParmString: Root
+ProcessName: Mesh/Cell Atlas 3D/Root/B Assign Cell Types
+NumParms: 1
+ParmName: Has multiple segments
+ParmString: Yes
+ProcessName: Mesh/Cell Atlas 3D/Root/C Assign Columella
+NumParms: 4
+ParmName: Root Cap Label
+ParmString: 7
+ParmName: Columella Label
+ParmString: 10
+ParmName: Ratio Threshold
+ParmString: 0.4
+ParmName: Radial Threshold
+ParmString: 0.48
+ProcessName: Mesh/Cell Atlas 3D/Root/D Assign Cortical Cells
+NumParms: 1
+ParmName: Cortical Cell Label
+ParmString: 2
+ProcessName: Mesh/Cell Atlas 3D/Root/E Topological Check
+NumParms: 7
+ParmName: Work on Selection
+ParmString: No
+ParmName: Threshold Volume
+ParmString: 10
+ParmName: Threshold Wall Area
+ParmString: 1
+ParmName: Root Cap Label
+ParmString: 7
+ParmName: Air Bubble Label
+ParmString: 6
+ParmName: Vasculature Label
+ParmString: 5
+ParmName: Error Limit
+ParmString: 2
+ProcessName: Mesh/Cell Atlas 3D/Root/F Examine Vasculature
+NumParms: 5
+ParmName: Vasculature Label
+ParmString: 5
+ParmName: Air Bubble Label
+ParmString: 6
+ParmName: Endo Label
+ParmString: 4
+ParmName: Average Separation
+ParmString: 1
+ParmName: Sigma
+ParmString: 4.5
+ProcessName: Mesh/Cell Atlas 3D/Root/Statistics/Reporter abundance analysis 3D
+NumParms: 10
+ParmName: Input folder
+ParmString: 
+ParmName: Reporter file string
+ParmString: _reporter
+ParmName: Merge With File
+ParmString: Yes
+ParmName: Output File
+ParmString: 
+ParmName: Sliding Avg
+ParmString: No
+ParmName: Sliding Avg Window
+ParmString: 3
+ParmName: Upper Filter Type
+ParmString: No Filter
+ParmName: Upper Filter Limit
+ParmString: 100
+ParmName: Lower Filter Type
+ParmString: No Filter
+ParmName: Lower Filter Limit
+ParmString: 0
+ProcessName: Mesh/Cell Atlas 3D/Root/Tools/Heatmap Cell Data
+NumParms: 2
+ParmName: Data
+ParmString: Longitudinal (Arclengths)
+ParmName: Stack
+ParmString: 1
+ProcessName: Mesh/Cell Atlas 3D/Root/Tools/Load Cell Data
+NumParms: 2
+ParmName: Filename
+ParmString: 
+ParmName: File Type
+ParmString: All
+ProcessName: Mesh/Cell Atlas 3D/Root/Tools/Save Cell Data
+NumParms: 3
+ParmName: Filename
+ParmString: 
+ParmName: Filetype
+ParmString: Root
+ParmName: Extended File
+ParmString: No
+ProcessName: Mesh/Cell Atlas 3D/Root/Tools/Select Bad Cells
+NumParms: 0
+ProcessName: Mesh/Cell Atlas 3D/Stack/Analyze Leaf Prim (Surface)
+NumParms: 0
+ProcessName: Mesh/Cell Atlas 3D/Stack/Longitudinal Signal Histogram
+NumParms: 6
+ParmName: Bin Size
+ParmString: 1.0
+ParmName: Rad Min
+ParmString: 0.0
+ParmName: Rad Max
+ParmString: 1.0
+ParmName: Rad Type
+ParmString: absolute
+ParmName: Save to File
+ParmString: 
+ParmName: Voxel Cube Size
+ParmString: 1
+ProcessName: Mesh/Cell Atlas 3D/Stack/Project Leaf Prim Stack
+NumParms: 1
+ParmName: Quality
+ParmString: 500
+ProcessName: Mesh/Cell Atlas 3D/Tools/Collapse Bezier Points
+NumParms: 0
+ProcessName: Mesh/Cell Atlas 3D/Tools/Display Shortest Path
+NumParms: 2
+ParmName: Min Wall Area
+ParmString: 0.001
+ParmName: Distance Measure
+ParmString: Euclidian
+ProcessName: Mesh/Cell Atlas 3D/Tools/Find Cells
+NumParms: 5
+ParmName: Volume Lower
+ParmString: 0
+ParmName: Any Size Lower
+ParmString: 0
+ParmName: Volume Cell Wall Ratio Lower
+ParmString: 0
+ParmName: Outside Cell Wall Percent Higher
+ParmString: 100
+ParmName: Connector
+ParmString: AND
+ProcessName: Mesh/Cell Atlas 3D/Tools/Write Growth Map Data File
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Cell Axis 3D/Cell Axis Save
+NumParms: 2
+ParmName: Output File
+ParmString: 
+ParmName: Data
+ParmString: Original Tensor
+ProcessName: Mesh/Cell Axis 3D/Custom/Clear Custom Directions
+NumParms: 3
+ParmName: Clear Custom X
+ParmString: Yes
+ParmName: Clear Custom Y
+ParmString: Yes
+ParmName: Clear Custom Z
+ParmString: Yes
+ProcessName: Mesh/Cell Axis 3D/Custom/Create Bezier Grid Directions
+NumParms: 3
+ParmName: Custom X
+ParmString: Bezier X
+ParmName: Custom Y
+ParmString: Bezier Y
+ParmName: Custom Z
+ParmString: Bezier Normal
+ProcessName: Mesh/Cell Axis 3D/Custom/Create Orthogonal Direction
+NumParms: 3
+ParmName: Primary Axis
+ParmString: X
+ParmName: Secondary Axis
+ParmString: Y
+ParmName: Change Secondary Axis
+ParmString: Yes
+ProcessName: Mesh/Cell Axis 3D/Custom/Create Surface Directions
+NumParms: 3
+ParmName: Custom X
+ParmString: Surface Direction
+ParmName: Custom Y
+ParmString: None
+ParmName: Custom Z
+ParmString: None
+ProcessName: Mesh/Cell Axis 3D/Custom/Custom Direction Angle 3D
+NumParms: 2
+ParmName: Direction Axis
+ParmString: Max
+ParmName: Direction Custom
+ParmString: X
+ProcessName: Mesh/Cell Axis 3D/Custom/Display Custom Orientations
+NumParms: 5
+ParmName: Directions
+ParmString: XYZ
+ParmName: Line Color
+ParmString: aliceblue
+ParmName: Line Width
+ParmString: 3.0
+ParmName: Line Scale
+ParmString: 3.0
+ParmName: Threshold
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis 3D/Deformation Gradient/Compute
+NumParms: 4
+ParmName: Mode
+ParmString: Cell
+ParmName: Project onto Vertex
+ParmString: Yes
+ParmName: Other Mesh
+ParmString: Yes
+ParmName: Valid Parents Only
+ParmString: Yes
+ProcessName: Mesh/Cell Axis 3D/Deformation Gradient/Display Cell Gradient
+NumParms: 12
+ParmName: Heatmap
+ParmString: Stretch Max
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: All
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 10.0
+ParmName: Line Offset
+ParmString: 0.0
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Project On Surface
+ParmString: Yes
+ProcessName: Mesh/Cell Axis 3D/Deformation Gradient/Display Cell Wall Gradient
+NumParms: 13
+ParmName: Heatmap
+ParmString: StretchMax
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: Both
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 10.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Custom Dir Shear
+ParmString: No
+ParmName: Min Dis Vtx
+ParmString: 1.0
+ProcessName: Mesh/Cell Axis 3D/Deformation Gradient/Display Vertex Gradient
+NumParms: 13
+ParmName: Heatmap
+ParmString: Stretch Max
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: All
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 1.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Min Distance
+ParmString: 1.0
+ParmName: Project On Surface
+ParmString: Yes
+ProcessName: Mesh/Cell Axis 3D/Deformation Gradient/Test/Display on Other Mesh
+NumParms: 13
+ParmName: Heatmap
+ParmString: Stretch Max
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: All
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 1.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Min Distance
+ParmString: -1.0
+ParmName: Project On Surface
+ParmString: Yes
+ProcessName: Mesh/Cell Axis 3D/Polarization/Compute PIN Orientation
+NumParms: 0
+ProcessName: Mesh/Cell Axis 3D/Polarization/Display PIN Orientation
+NumParms: 8
+ParmName: Heatmap
+ParmString: None
+ParmName: Axis
+ParmString: Difference
+ParmName: Line Color Max
+ParmString: red
+ParmName: Line Color Mid
+ParmString: blueviolet
+ParmName: Line Color Min
+ParmString: lightgreen
+ParmName: Line Width
+ParmString: 5.0
+ParmName: Line Scale
+ParmString: 0.01
+ParmName: Threshold
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis 3D/Shape Analysis/Compute Shape Analysis 3D
+NumParms: 2
+ParmName: Input
+ParmString: Stack Voxels
+ParmName: Span Correction
+ParmString: Ellipsoid
+ProcessName: Mesh/Cell Axis 3D/Shape Analysis/Display Shape Axis 3D
+NumParms: 11
+ParmName: Heatmap
+ParmString: Product Max*Mid*Min
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: All
+ParmName: Axis Color
+ParmString: white
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 1.0
+ParmName: Line Offset
+ParmString: 0.0
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Create Attr Maps
+ParmString: No
+ProcessName: Mesh/Cell Axis/Cell Axis Angle
+NumParms: 4
+ParmName: Attr Map 1
+ParmString: Measure Label Tensor AM1
+ParmName: Attr Map 2
+ParmString: Measure Label Tensor AM2
+ParmName: Attr Map Output
+ParmString: Measure Label Double AxisAngle
+ParmName: Isotropy threshold
+ParmString: 1.0
+ProcessName: Mesh/Cell Axis/Cell Axis Clear
+NumParms: 0
+ProcessName: Mesh/Cell Axis/Cell Axis Export To Attr Map
+NumParms: 2
+ParmName: Prefix
+ParmString: Measure Label Tensor
+ParmName: Name
+ParmString: Cell Axis PDG
+ProcessName: Mesh/Cell Axis/Cell Axis Import From Attr Map
+NumParms: 2
+ParmName: Type
+ParmString: PDG
+ParmName: Name
+ParmString: Measure Label Tensor /Cell Axis PDG
+ProcessName: Mesh/Cell Axis/Cell Axis Load
+NumParms: 2
+ParmName: Type
+ParmString: PDG
+ParmName: Input File
+ParmString: 
+ProcessName: Mesh/Cell Axis/Cell Axis Save
+NumParms: 2
+ParmName: Output File
+ParmString: 
+ParmName: Data
+ParmString: Original Tensor
+ProcessName: Mesh/Cell Axis/Compute Angles between Cell Axis
+NumParms: 6
+ParmName: Cell Axis Attr 1
+ParmString: Shape2D
+ParmName: Direction 1
+ParmString: Max
+ParmName: Cell Axis Attr 2
+ParmString: FibrilOrientations
+ParmName: Direction 2
+ParmString: Max
+ParmName: Use Measure Prefix
+ParmString: Yes
+ParmName: Display Axis
+ParmString: Yes
+ProcessName: Mesh/Cell Axis/Curvature/Compute Tissue Curvature
+NumParms: 2
+ParmName: Radius
+ParmString: 10.0
+ParmName: Selected Cell
+ParmString: No
+ProcessName: Mesh/Cell Axis/Curvature/Display Tissue Curvature
+NumParms: 10
+ParmName: Heatmap
+ParmString: SignedAverageAbs
+ParmName: Compare to 0
+ParmString: Yes
+ParmName: Heatmap percentile
+ParmString: 85.0
+ParmName: Show Axis
+ParmString: Both
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 100.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis/Custom/Copy Custom Directions to Other Mesh
+NumParms: 0
+ProcessName: Mesh/Cell Axis/Custom/Create Bezier Grid Directions
+NumParms: 3
+ParmName: Custom X
+ParmString: Bezier X
+ParmName: Custom Y
+ParmString: Bezier Y
+ParmName: Project Directions on Surface
+ParmString: Yes
+ProcessName: Mesh/Cell Axis/Custom/Create Bezier Line Directions
+NumParms: 3
+ParmName: Custom X
+ParmString: Radial
+ParmName: Custom Y
+ParmString: Circumferential
+ParmName: Project Directions on Surface
+ParmString: Yes
+ProcessName: Mesh/Cell Axis/Custom/Create Heatmap Directions
+NumParms: 2
+ParmName: Project Directions on Surface
+ParmString: Yes
+ParmName: Normalize
+ParmString: no
+ProcessName: Mesh/Cell Axis/Custom/Custom Direction Angle
+NumParms: 2
+ParmName: Direction Axis
+ParmString: Max
+ParmName: Direction Custom
+ParmString: X
+ProcessName: Mesh/Cell Axis/Custom/Display Custom Orientations
+NumParms: 6
+ParmName: Directions
+ParmString: X
+ParmName: Line Color
+ParmString: aliceblue
+ParmName: Line Width
+ParmString: 3.0
+ParmName: Line Scale
+ParmString: 3.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis/Custom/Import Tensor from Attr Map
+NumParms: 3
+ParmName: Prefix
+ParmString: Measure Label Tensor
+ParmName: Name
+ParmString: Custom Directions
+ParmName: Mesh
+ParmString: Active Mesh
+ProcessName: Mesh/Cell Axis/Custom/Import Vector from Attr Map
+NumParms: 4
+ParmName: Prefix
+ParmString: Measure Label Vector
+ParmName: Name
+ParmString: Custom Directions
+ParmName: Dimension
+ParmString: X
+ParmName: Mesh
+ParmString: Active Mesh
+ProcessName: Mesh/Cell Axis/Custom/Project Directions
+NumParms: 1
+ParmName: Make Orthogonal
+ParmString: None
+ProcessName: Mesh/Cell Axis/Custom/Smooth Custom Directions
+NumParms: 2
+ParmName: Weight by Cell Area
+ParmString: Yes
+ParmName: Project Directions on Surface
+ParmString: Yes
+ProcessName: Mesh/Cell Axis/Custom/Test/Create Intrinsic Heatmap
+NumParms: 2
+ParmName: Project Directions on Surface
+ParmString: Yes
+ParmName: Normalize
+ParmString: no
+ProcessName: Mesh/Cell Axis/Deformation Gradient/Compute
+NumParms: 6
+ParmName: Mode
+ParmString: Cell
+ParmName: Mode Cell
+ParmString: Average
+ParmName: Mode Vertex
+ParmString: All
+ParmName: Project onto Vertex or Cell Plane
+ParmString: Yes
+ParmName: Other Mesh
+ParmString: Yes
+ParmName: Valid Parents Only
+ParmString: Yes
+ProcessName: Mesh/Cell Axis/Deformation Gradient/Display Cell Gradient
+NumParms: 13
+ParmName: Heatmap
+ParmString: StretchMax
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: Both
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 10.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Custom Dir Shear
+ParmString: No
+ParmName: Min Dis Vtx
+ParmString: 1.0
+ProcessName: Mesh/Cell Axis/Deformation Gradient/Display Vertex Gradient
+NumParms: 13
+ParmName: Heatmap
+ParmString: StretchMax
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: Both
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 2.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Custom Dir Shear
+ParmString: No
+ParmName: Min Dis Vtx
+ParmString: 1.0
+ProcessName: Mesh/Cell Axis/Fibril Orientations/Compute Fibril Angles
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Cell Axis/Fibril Orientations/Compute Fibril Orientations
+NumParms: 4
+ParmName: Border Size
+ParmString: 1.0
+ParmName: Min Area Ratio
+ParmString: 0.25
+ParmName: Blur Radius
+ParmString: 0.5
+ParmName: Background Radius
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis/Fibril Orientations/Display Fibril Orientations
+NumParms: 6
+ParmName: Heatmap
+ParmString: none
+ParmName: Line Color
+ParmString: red
+ParmName: Line Width
+ParmString: 5.0
+ParmName: Line Scale
+ParmString: 10.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis/Fibril Orientations/Vertex Compute Orientations
+NumParms: 4
+ParmName: Border Size
+ParmString: 1.0
+ParmName: Minimum inner area ratio
+ParmString: 0.25
+ParmName: Radius
+ParmString: 2.0
+ParmName: Blur Radius
+ParmString: 1.0
+ProcessName: Mesh/Cell Axis/Fibril Orientations/Vertex Display Orientations
+NumParms: 6
+ParmName: Heatmap
+ParmString: none
+ParmName: Line Color
+ParmString: red
+ParmName: Line Width
+ParmString: 1.0
+ParmName: Line Scale
+ParmString: 1.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis/Fibril Orientations/Vertices Select
+NumParms: 3
+ParmName: Min Point Distance
+ParmString: 2.0
+ParmName: Min Border Distance
+ParmString: 0.0
+ParmName: Only Cells With Parent Label
+ParmString: No
+ProcessName: Mesh/Cell Axis/PDG Angle
+NumParms: 6
+ParmName: T1 mesh
+ParmString: 
+ParmName: T2 mesh
+ParmString: 
+ParmName: T3 mesh
+ParmString: 
+ParmName: T1-T2 parents
+ParmString: 
+ParmName: T1-T3 parents
+ParmString: 
+ParmName: Isotropy threshold
+ParmString: 1.2
+ProcessName: Mesh/Cell Axis/PDG/Average Growth Directions
+NumParms: 2
+ParmName: Project Directions on Surface
+ParmString: Yes
+ParmName: Weighting
+ParmString: none
+ProcessName: Mesh/Cell Axis/PDG/Check Correspondence
+NumParms: 3
+ParmName: Show correspondence
+ParmString: No
+ParmName: Convert to Cell Mesh
+ParmString: No
+ParmName: New
+ParmString: No
+ProcessName: Mesh/Cell Axis/PDG/Compute Growth Directions
+NumParms: 0
+ProcessName: Mesh/Cell Axis/PDG/Display Growth Directions
+NumParms: 13
+ParmName: Heatmap
+ParmString: StretchMax
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: Both
+ParmName: Color +
+ParmString: white
+ParmName: Color -
+ParmString: red
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 10.0
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Custom Dir Shear
+ParmString: No
+ParmName: Min Dis Vtx
+ParmString: 1.0
+ProcessName: Mesh/Cell Axis/Polarization/Compute PIN Orientation
+NumParms: 2
+ParmName: Border Size
+ParmString: 0.5
+ParmName: Minimum inner area ratio
+ParmString: 0.25
+ProcessName: Mesh/Cell Axis/Polarization/Display PIN Orientation
+NumParms: 8
+ParmName: Heatmap
+ParmString: None
+ParmName: Axis
+ParmString: Difference
+ParmName: Line Color Max
+ParmString: red
+ParmName: Line Color Min
+ParmString: green
+ParmName: Line Width
+ParmString: 5.0
+ParmName: Line Scale
+ParmString: 0.01
+ParmName: Line Offset
+ParmString: 0.1
+ParmName: Threshold
+ParmString: 0.0
+ProcessName: Mesh/Cell Axis/Shape Analysis/Compute Shape Analysis 2D
+NumParms: 3
+ParmName: Output
+ParmString: output.csv
+ParmName: Axis Line Scale
+ParmString: 1.0
+ParmName: Axis Line Width
+ParmString: 2.0
+ProcessName: Mesh/Cell Axis/Shape Analysis/Display Shape Axis
+NumParms: 11
+ParmName: Heatmap
+ParmString: Product Max*Min
+ParmName: ScaleHeat
+ParmString: Auto
+ParmName: Heat min
+ParmString: 1
+ParmName: Heat max
+ParmString: 3
+ParmName: Show Axis
+ParmString: Both
+ParmName: Axis Color
+ParmString: white
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Scale
+ParmString: 1.0
+ParmName: Line Offset
+ParmString: 0.0
+ParmName: Threshold
+ParmString: 0.0
+ParmName: Create Attr Maps
+ParmString: No
+ProcessName: Mesh/Cell Mesh/Convert to 2D Cell Tissue
+NumParms: 1
+ParmName: Max Wall Length (µm)
+ParmString: -1
+ProcessName: Mesh/Cell Mesh/Convert to 3D Cell Tissue
+NumParms: 2
+ParmName: Tolerance (µm)
+ParmString: .01
+ParmName: Neighbour Min Area
+ParmString: .01
+ProcessName: Mesh/Cell Mesh/Convert to a cell mesh
+NumParms: 1
+ParmName: Max Wall Length (µm)
+ParmString: -1
+ProcessName: Mesh/Cell Mesh/Convert to a normal mesh
+NumParms: 0
+ProcessName: Mesh/Cell Mesh/Fix Corner Triangles
+NumParms: 0
+ProcessName: Mesh/Cell Mesh/Fix Corners Classic
+NumParms: 3
+ParmName: Auto segmentation?
+ParmString: Yes
+ParmName: Select bad vertices
+ParmString: Yes
+ParmName: Max iterations
+ParmString: 5
+ProcessName: Mesh/Cell Mesh/Tools/Cell Wall Centers
+NumParms: 2
+ParmName: Mode
+ParmString: Average Tri Weighted
+ParmName: Create Vtxs in Mesh2
+ParmString: No
+ProcessName: Mesh/Cell Mesh/Tools/Extend Cells
+NumParms: 0
+ProcessName: Mesh/Cell Mesh/Tools/Flatten Mesh
+NumParms: 0
+ProcessName: Mesh/Cell Mesh/Tools/Label Cell Walls
+NumParms: 2
+ParmName: Extend
+ParmString: 0
+ParmName: Only Attribute Map
+ParmString: Yes
+ProcessName: Mesh/Cell Mesh/Tools/Relabel Fragments
+NumParms: 1
+ParmName: Relabel Threshold
+ParmString: -1
+ProcessName: Mesh/Cell Mesh/Tools/Restore Cell Labels
+NumParms: 0
+ProcessName: Mesh/Cell Mesh/Tools/Surface mesh from MGX3D
+NumParms: 0
+ProcessName: Mesh/Cell Types/Classification/A Select Measures
+NumParms: 2
+ParmName: Mesh Type
+ParmString: 2D
+ParmName: Selected Measures
+ParmString: 
+ProcessName: Mesh/Cell Types/Classification/B Specify Cell Types
+NumParms: 1
+ParmName: Label
+ParmString: 0
+ProcessName: Mesh/Cell Types/Classification/C Write Training Data
+NumParms: 2
+ParmName: Filename
+ParmString: 
+ParmName: File Type
+ParmString: New
+ProcessName: Mesh/Cell Types/Classification/D Training File Augmentation
+NumParms: 6
+ParmName: Filename
+ParmString: 
+ParmName: Entry Repeats
+ParmString: 0
+ParmName: Noise Factor
+ParmString: 0.05
+ParmName: Balance File
+ParmString: Yes
+ParmName: Shuffle File Entries
+ParmString: Yes
+ParmName: Max Entries per Class
+ParmString: 100
+ProcessName: Mesh/Cell Types/Classification/KMeans/E Training
+NumParms: 3
+ParmName: Steps
+ParmString: -1
+ParmName: Convergence Threshold
+ParmString: 0.01
+ParmName: Use Scaled Measures
+ParmString: Yes
+ProcessName: Mesh/Cell Types/Classification/SVM/E Train SVM Model
+NumParms: 12
+ParmName: Filename
+ParmString: 
+ParmName: SVM Type
+ParmString: c_svc
+ParmName: Kernel Type
+ParmString: rbf
+ParmName: Feature Selection
+ParmString: No
+ParmName: Optimize Parms
+ParmString: Yes
+ParmName: Feature Threshold
+ParmString: 0.001
+ParmName: Optimization Grid Size
+ParmString: 6
+ParmName: gamma
+ParmString: 0.1
+ParmName: C
+ParmString: 1
+ParmName: k Fold
+ParmString: 3
+ParmName: Min Features
+ParmString: 1
+ParmName: Max Features
+ParmString: 10
+ProcessName: Mesh/Cell Types/Classification/SVM/F Load Model
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Cell Types/Classification/SVM/G Classification
+NumParms: 2
+ParmName: Classification Threshold
+ParmString: 0.7
+ParmName: Recalculate Measures
+ParmString: No
+ProcessName: Mesh/Cell Types/Classification/Tools/Cell Property Map 2D
+NumParms: 1
+ParmName: Parms String
+ParmString: 
+ProcessName: Mesh/Cell Types/Classification/Tools/Corresponding Vertices
+NumParms: 0
+ProcessName: Mesh/Cell Types/Classification/Tools/Similarity Heat Map
+NumParms: 2
+ParmName: Distance
+ParmString: Euclidean
+ParmName: Mesh
+ParmString: active
+ProcessName: Mesh/Cell Types/Classification/Z Reset Data
+NumParms: 2
+ParmName: Clear Input
+ParmString: Yes
+ParmName: Clear Model
+ParmString: Yes
+ProcessName: Mesh/Cell Types/Load Cell Types
+NumParms: 3
+ParmName: Filename
+ParmString: 
+ParmName: FileType
+ParmString: CSV
+ParmName: Keep
+ParmString: No
+ProcessName: Mesh/Cell Types/Reset Cell Types
+NumParms: 0
+ProcessName: Mesh/Cell Types/Save Cell Types
+NumParms: 2
+ParmName: Filename
+ParmString: 
+ParmName: Existing Labels Only
+ParmString: Yes
+ProcessName: Mesh/Cell Types/Select Cell Type
+NumParms: 0
+ProcessName: Mesh/Cell Types/Set Cell Type
+NumParms: 1
+ParmName: Label
+ParmString: 0
+ProcessName: Mesh/Creation/Marching Cubes 3D
+NumParms: 4
+ParmName: Cube size (µm)
+ParmString: 5.0
+ParmName: Min Voxels
+ParmString: 0
+ParmName: Smooth Passes
+ParmString: 3
+ParmName: Label
+ParmString: 0
+ProcessName: Mesh/Creation/Marching Cubes Surface
+NumParms: 2
+ParmName: Cube size (µm)
+ParmString: 5.0
+ParmName: Threshold
+ParmString: 5000
+ProcessName: Mesh/Creation/Mesh Cutting Surface
+NumParms: 0
+ProcessName: Mesh/Creation/Mesh From Local Maxima
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 3.0
+ProcessName: Mesh/Creation/Voxel Face Mesh
+NumParms: 0
+ProcessName: Mesh/Deformation/Deformation Load From File
+NumParms: 2
+ParmName: Import From
+ParmString: CSV File
+ParmName: Name
+ParmString: Implicit Deformation
+ProcessName: Mesh/Deformation/Deformation Save or Export
+NumParms: 2
+ParmName: Export To
+ParmString: Attribute Map
+ParmName: Name
+ParmString: Implicit Deformation Exported
+ProcessName: Mesh/Deformation/Mesh 2D/Auto Parent Labeling Step 2D
+NumParms: 4
+ParmName: Use Fixed Parents
+ParmString: Yes
+ParmName: Find Cells
+ParmString: Junction Projection
+ParmName: Omit Cells %
+ParmString: 50
+ParmName: Correct Errors
+ParmString: Yes
+ProcessName: Mesh/Deformation/Mesh 2D/Auto Parent Labelling 2D
+NumParms: 3
+ParmName: Max Steps
+ParmString: 10
+ParmName: Auto Fix Parents Depth
+ParmString: -1
+ParmName: Retreat %
+ParmString: 0
+ProcessName: Mesh/Deformation/Mesh 2D/Create Deformation Cell Surface
+NumParms: 5
+ParmName: Direction
+ParmString: active -> other
+ParmName: CG Steps
+ParmString: -1
+ParmName: Projection Input
+ParmString: Centers
+ParmName: Junction Merging Threshold (um)
+ParmString: 1.0
+ParmName: Force Recalculation
+ParmString: No
+ProcessName: Mesh/Deformation/Mesh 2D/Deform Mesh
+NumParms: 0
+ProcessName: Mesh/Deformation/Mesh 2D/Distance Waterfront
+NumParms: 0
+ProcessName: Mesh/Deformation/Mesh 2D/Mesh Projection
+NumParms: 1
+ParmName: Project Vertices
+ParmString: All
+ProcessName: Mesh/Deformation/Mesh 2D/Root junction info
+NumParms: 1
+ParmName: Output File
+ParmString: 
+ProcessName: Mesh/Deformation/Mesh 3D/Auto Parent Labeling Step 3D
+NumParms: 3
+ParmName: CG Step
+ParmString: 1
+ParmName: Correct Errors
+ParmString: Yes
+ParmName: Consider Explosion
+ParmString: Yes
+ProcessName: Mesh/Deformation/Mesh 3D/Check Correspondance 3D
+NumParms: 4
+ParmName: Min Shared Wall
+ParmString: 0.01
+ParmName: Type
+ParmString: Walls
+ParmName: Existing Connection Factor
+ParmString: 1.0
+ParmName: Error Threshold
+ParmString: 1.0
+ProcessName: Mesh/Deformation/Mesh 3D/Create Deformation Cell Volumes
+NumParms: 8
+ParmName: Direction
+ParmString: active -> other
+ParmName: CG Steps
+ParmString: -1
+ParmName: Input Centers
+ParmString: Yes
+ParmName: Input Inside Walls
+ParmString: Yes
+ParmName: Input Outside Walls
+ParmString: Yes
+ParmName: Input Junctions
+ParmString: Yes
+ParmName: Consider Explosion
+ParmString: No
+ParmName: Force Recalculation
+ParmString: Yes
+ProcessName: Mesh/Deformation/Mesh 3D/Deform Mesh
+NumParms: 1
+ParmName: Force Recalculation
+ParmString: No
+ProcessName: Mesh/Deformation/Mesh 3D/Find Isolated Parent Labels
+NumParms: 0
+ProcessName: Mesh/Deformation/Morphing/Create Morphing
+NumParms: 6
+ParmName: Impl Def Attr Map 1
+ParmString: ID 1
+ParmName: Impl Def Attr Map 2
+ParmString: ID 2
+ParmName: Impl Def Attr Map 3
+ParmString: ID 3
+ParmName: Impl Def Attr Map 4
+ParmString: ID 4
+ParmName: Impl Def Attr Map 5
+ParmString: ID 5
+ParmName: Impl Def Attr Map 6
+ParmString: ID 6
+ProcessName: Mesh/Deformation/Morphing/Create Signal Projection
+NumParms: 2
+ParmName: Apply Def Until
+ParmString: 1
+ParmName: Use Parents
+ParmString: Yes
+ProcessName: Mesh/Deformation/Morphing/Load Signal Attribute
+NumParms: 1
+ParmName: Attr Map
+ParmString: 
+ProcessName: Mesh/Deformation/Morphing/Run Morphing
+NumParms: 11
+ParmName: Steps
+ParmString: 10
+ParmName: pause ms per step
+ParmString: 100
+ParmName: Display Heat Map
+ParmString: No
+ParmName: Use Spline
+ParmString: Yes
+ParmName: Heat Min
+ParmString: 1.0
+ParmName: Heat Max
+ParmString: 1.05
+ParmName: Also Morph Other Mesh
+ParmString: No
+ParmName: Signal Blending
+ParmString: No
+ParmName: Rotation X
+ParmString: 0
+ParmName: Rotation Y
+ParmString: 0
+ParmName: Rotation Z
+ParmString: 0
+ProcessName: Mesh/Deformation/Morphing/Set Axis
+NumParms: 0
+ProcessName: Mesh/Deformation/Morphing/Set Axis 2
+NumParms: 0
+ProcessName: Mesh/Deformation/Morphing/Set Origin
+NumParms: 0
+ProcessName: Mesh/Deformation/Reset Mesh
+NumParms: 2
+ParmName: Reset Mesh Vertices
+ParmString: Yes
+ParmName: Reset Transformation
+ParmString: Yes
+ProcessName: Mesh/Deformation/Restore Correct Parents
+NumParms: 0
+ProcessName: Mesh/Deformation/Set Correct Parents
+NumParms: 0
+ProcessName: Mesh/Deformation/Test/Create Deformation
+NumParms: 3
+ParmName: Landmarks
+ParmString: Cell Centers
+ParmName: CG Steps
+ParmString: -1
+ParmName: Merging Threshold
+ParmString: 1.0
+ProcessName: Mesh/Deformation/Test/Find Junctions 3D
+NumParms: 1
+ParmName: Junction Mode
+ParmString: Yes
+ProcessName: Mesh/Deformation/Test/Load Point File
+NumParms: 2
+ParmName: Import From
+ParmString: CSV File
+ParmName: Name
+ParmString: Implicit Deformation
+ProcessName: Mesh/Deformation/Test/Morph Mesh
+NumParms: 2
+ParmName: Steps
+ParmString: 10
+ParmName: ms per step
+ParmString: 100
+ProcessName: Mesh/Deformation/Tools/Compare Parents
+NumParms: 1
+ParmName: Select Errors
+ParmString: Yes
+ProcessName: Mesh/Export/Cell Contour File Save
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Export/Cell Graph Ply File Load
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Export/Cell Graph Ply File Save
+NumParms: 2
+ParmName: Filename
+ParmString: 
+ParmName: Mesh Type
+ParmString: 2D
+ProcessName: Mesh/Export/Correlation Exporter
+NumParms: 1
+ParmName: Parms String
+ParmString: 
+ProcessName: Mesh/Export/Export Internal Angles
+NumParms: 2
+ParmName: Filename
+ParmString: 
+ParmName: Junction Merging Threshold
+ParmString: 0.1
+ProcessName: Mesh/Export/Export Junction Angles
+NumParms: 3
+ParmName: Filename
+ParmString: 
+ParmName: Inclusion Radius
+ParmString: 1.0
+ParmName: Method
+ParmString: Furthest
+ProcessName: Mesh/Export/Export Junction Angles New
+NumParms: 4
+ParmName: Filename
+ParmString: 
+ParmName: Inclusion Radius
+ParmString: 1.0
+ParmName: Method
+ParmString: Furthest
+ParmName: Change Map
+ParmString: No
+ProcessName: Mesh/Export/Export Mesh Chun Biu
+NumParms: 1
+ParmName: Filename
+ParmString: Mesh.txt
+ProcessName: Mesh/Export/Export Mesh Hokkaido
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Export/Histogram Exporter
+NumParms: 1
+ParmName: Separate by Parent
+ParmString: No
+ProcessName: Mesh/Export/Import Mesh Hokkaido
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Export/Save Cell Neighborhood 2D
+NumParms: 3
+ParmName: Filename
+ParmString: /home/mpimp-golm.mpg.de/bauer1458/Desktop/Imaging/AG-Sampathkumar/Timon/cell division/P6/cellularConnectivityNetworkP6T1.csv
+ParmName: Parents
+ParmString: No
+ParmName: Save
+ParmString: Active Mesh
+ProcessName: Mesh/Export/Save Cell Neighborhood 3D
+NumParms: 2
+ParmName: Filename
+ParmString: 
+ParmName: Parents
+ParmString: No
+ProcessName: Mesh/Heat Map/Analysis/Cell Analysis 2D
+NumParms: 1
+ParmName: Exclude Slow Measures
+ParmString: Yes
+ProcessName: Mesh/Heat Map/Analysis/Cell Analysis 3D
+NumParms: 1
+ParmName: Use Surface Mesh
+ParmString: No
+ProcessName: Mesh/Heat Map/Analysis/Growth Analysis 2D
+NumParms: 4
+ParmName: Name Prefix (optional)
+ParmString: 
+ParmName: Name Time Point 1
+ParmString: T1
+ParmName: Name Time Point 2
+ParmString: T2
+ParmName: Create Custom Dirs From Heat
+ParmString: No
+ProcessName: Mesh/Heat Map/Analysis/Growth Analysis 3D
+NumParms: 3
+ParmName: Name Prefix (optional)
+ParmString: 
+ParmName: Name Time Point 1
+ParmString: T1
+ParmName: Name Time Point 2
+ParmString: T2
+ProcessName: Mesh/Heat Map/Analysis/Parent Heats
+NumParms: 2
+ParmName: Prefix
+ParmString: 
+ParmName: Attr map
+ParmString: 
+ProcessName: Mesh/Heat Map/Delete Heat Range Labels
+NumParms: 4
+ParmName: Rescale
+ParmString: Yes
+ParmName: Delete cells
+ParmString: No
+ParmName: Min Heat
+ParmString: 
+ParmName: Max Heat
+ParmString: 
+ProcessName: Mesh/Heat Map/Heat Map
+NumParms: 8
+ParmName: Measure
+ParmString: Aborted
+ParmName: Force Recalc
+ParmString: No
+ParmName: Identical Label Behavior
+ParmString: Sum
+ParmName: Change Map
+ParmString: No
+ParmName: Change Map Dir
+ParmString: Increasing
+ParmName: Change Map Type
+ParmString: Ratio
+ParmName: Use Labels Active Mesh
+ParmString: Yes
+ParmName: Use Labels Inactive Mesh
+ParmString: Yes
+ProcessName: Mesh/Heat Map/Heat Map Classic
+NumParms: 15
+ParmName: Type
+ParmString: Area
+ParmName: Visualize
+ParmString: Geometry
+ParmName: FileName
+ParmString: /home/mpimp-golm.mpg.de/bauer1458/Desktop/Imaging/AG-Sampathkumar/Timon/cell division/P6/areaP6T1.csv
+ParmName: ReportFields
+ParmString: Geometry
+ParmName: Man. Range
+ParmString: No
+ParmName: Range Min
+ParmString: 0
+ParmName: Range Max
+ParmString: 65535
+ParmName: Signal Avg
+ParmString: Yes
+ParmName: Global Coord
+ParmString: No
+ParmName: Polarity Type
+ParmString: None
+ParmName: Change Map
+ParmString: No
+ParmName: Increasing
+ParmString: Decreasing
+ParmName: Diff Type
+ParmString: Ratio
+ParmName: Growth Time
+ParmString: 0.001
+ParmName: Border Size(µm)
+ParmString: 1
+ProcessName: Mesh/Heat Map/Heat Map Load
+NumParms: 3
+ParmName: Filename
+ParmString: 
+ParmName: Column
+ParmString: 2
+ParmName: Border size (µm)
+ParmString: 1.0
+ProcessName: Mesh/Heat Map/Heat Map Save
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Heat Map/Heat Map Select
+NumParms: 3
+ParmName: Lower Threshold
+ParmString: 0.0
+ParmName: Upper Threshold
+ParmString: 1.0
+ParmName: Reset Selection
+ParmString: Yes
+ProcessName: Mesh/Heat Map/Heat Map Set Range
+NumParms: 2
+ParmName: Min
+ParmString: 
+ParmName: Max
+ParmString: 
+ProcessName: Mesh/Heat Map/Heat Map Smooth
+NumParms: 4
+ParmName: Passes
+ParmString: 1
+ParmName: Weights
+ParmString: None
+ParmName: Rescale Heat
+ParmString: Yes
+ParmName: Export Attr Map Name
+ParmString: 
+ProcessName: Mesh/Heat Map/Measures 3D/Cell Atlas/Cell Length Circumferential
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Cell Atlas/Cell Length Longitudinal
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Cell Atlas/Cell Length Radial
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Cell Atlas/Coord Circumferential
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Cell Atlas/Coord Longitudinal
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Cell Atlas/Coord Radial
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Cell Length Custom
+NumParms: 5
+ParmName: Custom Direction
+ParmString: X
+ParmName: Custom Direction Heat
+ParmString: X
+ParmName: Attribute Map X
+ParmString: customx
+ParmName: Attribute Map Y
+ParmString: customy
+ParmName: Attribute Map Z
+ParmString: customz
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Cell Length X
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Cell Length Y
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Cell Length Z
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Cell Wall Area
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Outside Wall Area Ratio
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Volume
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Geometry/Volume Surface Ratio
+NumParms: 2
+ParmName: Root Volume
+ParmString: 3.0
+ParmName: Root Wall Area
+ParmString: 2.0
+ProcessName: Mesh/Heat Map/Measures 3D/Location/Bezier Coord
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Location/Cell Coordinate
+NumParms: 1
+ParmName: Dimension
+ParmString: X
+ProcessName: Mesh/Heat Map/Measures 3D/Location/Cell Distance
+NumParms: 2
+ParmName: Wall Weights
+ParmString: Euclidean
+ParmName: Restrict connectivity to same cell type
+ParmString: No
+ProcessName: Mesh/Heat Map/Measures 3D/Location/Cell Distance Bezier Ring
+NumParms: 7
+ParmName: Wall Weights
+ParmString: 1
+ParmName: Restrict connectivity to same cell type
+ParmString: Yes
+ParmName: Direct Distance Limit (um)
+ParmString: 20.0
+ParmName: Selected as Direct
+ParmString: Yes
+ParmName: Consider Ring Orientation
+ParmString: Yes
+ParmName: Select Direct Cells
+ParmString: No
+ParmName: Keep Selected Cells
+ParmString: Yes
+ProcessName: Mesh/Heat Map/Measures 3D/Location/Distance to Bezier
+NumParms: 2
+ParmName: Consider Orientation
+ParmString: Yes
+ParmName: Reverse Orientation
+ParmString: No
+ProcessName: Mesh/Heat Map/Measures 3D/Location/Distance to Plane from Bezier
+NumParms: 2
+ParmName: Consider Orientation
+ParmString: Yes
+ParmName: Reverse Orientation
+ParmString: No
+ProcessName: Mesh/Heat Map/Measures 3D/Location/Mesh Distance
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures 3D/Network/Neighbors
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Area
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Aspect Ratio
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Average Radius
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Junction Distance
+NumParms: 3
+ParmName: Mode
+ParmString: Min
+ParmName: Direct Junctions Only
+ParmString: No
+ParmName: Ignore Border Cells
+ParmString: Yes
+ProcessName: Mesh/Heat Map/Measures/Geometry/Length Major Axis
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Length Minor Axis
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Maximum Radius
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Minimum Radius
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Geometry/Perimeter
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Lobeyness/Circularity
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Lobeyness/Lobeyness
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Lobeyness/Rectangularity
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Lobeyness/Solidarity
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Lobeyness/Visibility Pavement
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Lobeyness/Visibility Stomata
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Location/Bezier Coord
+NumParms: 1
+ParmName: Coordinate
+ParmString: X
+ProcessName: Mesh/Heat Map/Measures/Location/Cell Coordinate
+NumParms: 1
+ParmName: Dimension
+ParmString: X
+ProcessName: Mesh/Heat Map/Measures/Location/Cell Distance
+NumParms: 2
+ParmName: Wall Weights
+ParmString: 1 / Wall Length
+ParmName: Restrict connectivity to same cell type
+ParmString: No
+ProcessName: Mesh/Heat Map/Measures/Location/Distance to Bezier
+NumParms: 2
+ParmName: Consider Orientation
+ParmString: Yes
+ParmName: Reverse Orientation
+ParmString: No
+ProcessName: Mesh/Heat Map/Measures/Location/Distance to Mesh
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Location/Major Axis Theta
+NumParms: 1
+ParmName: Reference Direction
+ParmString: X-Axis
+ProcessName: Mesh/Heat Map/Measures/Location/Polar Coord
+NumParms: 2
+ParmName: Central Axis
+ParmString: Z
+ParmName: Coordinate
+ParmString: Longitudinal
+ProcessName: Mesh/Heat Map/Measures/Neighborhood/Area
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Neighborhood/Aspect Ratio
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Neighborhood/Neighbors
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Neighborhood/Perimeter
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Neighborhood/Variability Radius
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Network/Neighbors
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Shape/Bending
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Shape/Common Bending
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Shape/Common Neighbors
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Shape/Variability Radius
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Signal/Signal Border
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Signal/Signal Interior
+NumParms: 0
+ProcessName: Mesh/Heat Map/Measures/Signal/Signal Parameters
+NumParms: 3
+ParmName: Type
+ParmString: Cell Total
+ParmName: Average
+ParmString: Yes
+ParmName: Border Size
+ParmString: 1.0
+ProcessName: Mesh/Heat Map/Measures/Signal/Signal Total
+NumParms: 0
+ProcessName: Mesh/Heat Map/Operators/Clean Heat Map
+NumParms: 3
+ParmName: Selection
+ParmString: No
+ParmName: Min valid
+ParmString: NA
+ParmName: Max valid
+ParmString: NA
+ProcessName: Mesh/Heat Map/Operators/Export Heat to Attr Map
+NumParms: 6
+ParmName: Prefix
+ParmString: Measure Label Double
+ParmName: Name
+ParmString: Custom Heat Map
+ParmName: Key
+ParmString: Label
+ParmName: Heat Map Type
+ParmString: Label Heat
+ParmName: Save to
+ParmString: Active Mesh
+ParmName: Clean
+ParmString: No
+ProcessName: Mesh/Heat Map/Operators/Heat Map Binning
+NumParms: 2
+ParmName: Mode
+ParmString: Bins Cells
+ParmName: Nr of Bins
+ParmString: 5
+ProcessName: Mesh/Heat Map/Operators/Heat Map Normalize
+NumParms: 1
+ParmName: Type
+ParmString: Max Min
+ProcessName: Mesh/Heat Map/Operators/Heat Map Scale Values
+NumParms: 2
+ParmName: Type
+ParmString: inverse
+ParmName: Parameter
+ParmString: 0.0
+ProcessName: Mesh/Heat Map/Operators/Heat Map Transform
+NumParms: 11
+ParmName: Attr Map 1
+ParmString: A1
+ParmName: Attr Map 2
+ParmString: A2
+ParmName: Combination
+ParmString: Yes
+ParmName: Combination Type
+ParmString: Addition (A + B)
+ParmName: Transformation
+ParmString: No
+ParmName: Transformation Type
+ParmString: Neighborhood
+ParmName: Transformation Type 2
+ParmString: Average
+ParmName: Ignore Parent
+ParmString: -1
+ParmName: Lower Threshold
+ParmString: 0
+ParmName: Upper Threshold
+ParmString: 100000
+ParmName: New Attr Map
+ParmString: Combined Attr Map
+ProcessName: Mesh/Heat Map/Operators/Switch Heat and Parent
+NumParms: 1
+ParmName: Direction
+ParmString: Heat -> Parent
+ProcessName: Mesh/Lineage Tracking/Copy Labels to Parents
+NumParms: 0
+ProcessName: Mesh/Lineage Tracking/Copy Parents to Labels
+NumParms: 0
+ProcessName: Mesh/Lineage Tracking/Correct Labeling Colors
+NumParms: 4
+ParmName: Number of colors
+ParmString: 7
+ParmName: Colormap size
+ParmString: 16
+ParmName: Balance color distribution
+ParmString: No
+ParmName: 3D Mesh
+ParmString: No
+ProcessName: Mesh/Lineage Tracking/Daughter Area asymmetry
+NumParms: 0
+ProcessName: Mesh/Lineage Tracking/Heat Map Proliferation
+NumParms: 1
+ParmName: Use Parents On Other Mesh
+ParmString: No
+ProcessName: Mesh/Lineage Tracking/Load Parents
+NumParms: 3
+ParmName: Filename
+ParmString: /home/mpimp-golm.mpg.de/bauer1458/Desktop/winhome/CellDivisionProject/celldivisionproject/Data/secondRun/P6/parentLabelingP6T1T2.csv
+ParmName: FileType
+ParmString: CSV
+ParmName: Keep
+ParmString: No
+ProcessName: Mesh/Lineage Tracking/Merge Parent Files
+NumParms: 3
+ParmName: File Open T1T0
+ParmString: 
+ParmName: File Open T2T1
+ParmString: 
+ParmName: File Save T2T0
+ParmString: 
+ProcessName: Mesh/Lineage Tracking/Parent Export to Attr Map
+NumParms: 2
+ParmName: Prefix
+ParmString: Measure Label Int
+ParmName: Attr Name
+ParmString: Parents
+ProcessName: Mesh/Lineage Tracking/Parent Import from Attr Map
+NumParms: 3
+ParmName: Prefix
+ParmString: Measure Label Int
+ParmName: Attr Name
+ParmString: Parents
+ParmName: Import Mesh
+ParmString: Active Mesh
+ProcessName: Mesh/Lineage Tracking/Reset Parents
+NumParms: 0
+ProcessName: Mesh/Lineage Tracking/Save Parents
+NumParms: 2
+ParmName: Filename
+ParmString: /home/mpimp-golm.mpg.de/bauer1458/Desktop/Imaging/AG-Sampathkumar/Timon/cell division/P6/ParentLabelingP6T0T1.csv
+ParmName: Existing Labels Only
+ParmString: Yes
+ProcessName: Mesh/Lineage Tracking/Select Parents
+NumParms: 2
+ParmName: Label
+ParmString: 0
+ParmName: Keep Selection
+ParmString: No
+ProcessName: Mesh/Lineage Tracking/Select Parents in Parent Mesh
+NumParms: 0
+ProcessName: Mesh/Lineage Tracking/Set Parent
+NumParms: 1
+ParmName: Label
+ParmString: 0
+ProcessName: Mesh/Lineage Tracking/Unique Parents from Attrs
+NumParms: 4
+ParmName: Prefix
+ParmString: Measure Label Int
+ParmName: Parent Attr 1
+ParmString: P1
+ParmName: Parent Attr 2
+ParmString: P2
+ParmName: Multiplier 10
+ParmString: No
+ProcessName: Mesh/MultiMesh/Add Other Mesh
+NumParms: 1
+ParmName: Relabel cells
+ParmString: Yes
+ProcessName: Mesh/MultiMesh/Swap or Copy Mesh 1 and 2
+NumParms: 1
+ParmName: Action
+ParmString: 1 -> 2
+ProcessName: Mesh/Nucleus/Distance Nuclei
+NumParms: 0
+ProcessName: Mesh/Nucleus/Label Nuclei
+NumParms: 0
+ProcessName: Mesh/Nucleus/Select Duplicated Nuclei
+NumParms: 1
+ParmName: Distance Threshold
+ParmString: 1.0
+ProcessName: Mesh/Segmentation/3D Grab Labels
+NumParms: 1
+ParmName: Tolerance (µm)
+ParmString: 5.0
+ProcessName: Mesh/Segmentation/Auto Seeding
+NumParms: 2
+ParmName: Radius (µm)
+ParmString: 3.0
+ParmName: Consider existing Labels
+ParmString: Yes
+ProcessName: Mesh/Segmentation/Auto Segmentation
+NumParms: 8
+ParmName: Update
+ParmString: Yes
+ParmName: Normalize
+ParmString: Yes
+ParmName: Blur Cell Radius (µm)
+ParmString: 2.0
+ParmName: Auto-Seed Radius (µm)
+ParmString: 2.0
+ParmName: Blur Borders Radius (µm)
+ParmString: 1
+ParmName: Normalization Radius (µm)
+ParmString: 5.0
+ParmName: Border Distance (µm)
+ParmString: 1.0
+ParmName: Combine Threshold
+ParmString: 1.8
+ProcessName: Mesh/Segmentation/Combine Labels
+NumParms: 2
+ParmName: Border Distance (µm)
+ParmString: 1
+ParmName: Threshold
+ParmString: 1.5
+ProcessName: Mesh/Segmentation/Dilate Labels
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 1.0
+ProcessName: Mesh/Segmentation/Erode Labels
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 1.0
+ProcessName: Mesh/Segmentation/Label Selected Vertices
+NumParms: 1
+ParmName: Label
+ParmString: 0
+ProcessName: Mesh/Segmentation/Project 3D Labels on Mesh
+NumParms: 5
+ParmName: Use absolute
+ParmString: No
+ParmName: Min Dist (µm)
+ParmString: 2.0
+ParmName: Max Dist (µm)
+ParmString: 6.0
+ParmName: Labeling Method
+ParmString: Majority
+ParmName: Ignore Zero
+ParmString: No
+ProcessName: Mesh/Segmentation/Project Nearest 3D Label on Mesh
+NumParms: 2
+ParmName: Split Border
+ParmString: Yes
+ParmName: Search Radius
+ParmString: 0
+ProcessName: Mesh/Segmentation/Relabel
+NumParms: 2
+ParmName: Label Start
+ParmString: 1
+ParmName: Label Step
+ParmString: 1
+ProcessName: Mesh/Segmentation/Relabel 3D Cells
+NumParms: 2
+ParmName: Label start
+ParmString: -1
+ParmName: Label step
+ParmString: 1
+ProcessName: Mesh/Segmentation/Segmentation Clear
+NumParms: 0
+ProcessName: Mesh/Segmentation/Watershed Segmentation
+NumParms: 1
+ParmName: Steps
+ParmString: 50000
+ProcessName: Mesh/Selection/Area of Selected Triangles
+NumParms: 1
+ParmName: Mode
+ParmString: Tris inside Vtxs
+ProcessName: Mesh/Selection/Count Selected Cells
+NumParms: 0
+ProcessName: Mesh/Selection/Extend Selection By Neighbors
+NumParms: 1
+ParmName: Shrink Selection
+ParmString: No
+ProcessName: Mesh/Selection/Extend Selection by Normal
+NumParms: 1
+ParmName: Tolerance
+ParmString: 0.01
+ProcessName: Mesh/Selection/Extend by Connectivity
+NumParms: 0
+ProcessName: Mesh/Selection/Extend to Whole Cells
+NumParms: 0
+ProcessName: Mesh/Selection/Invert Selection
+NumParms: 0
+ProcessName: Mesh/Selection/Select All
+NumParms: 0
+ProcessName: Mesh/Selection/Select Bad Normals
+NumParms: 0
+ProcessName: Mesh/Selection/Select By Valence
+NumParms: 2
+ParmName: Begin Valence
+ParmString: 1
+ParmName: End Valence
+ParmString: 5
+ProcessName: Mesh/Selection/Select Clip Region
+NumParms: 0
+ProcessName: Mesh/Selection/Select Duplicate Cells
+NumParms: 0
+ProcessName: Mesh/Selection/Select Label
+NumParms: 2
+ParmName: Label (0 for current)
+ParmString: 0
+ParmName: Replace selection
+ParmString: No
+ProcessName: Mesh/Selection/Select Labeled
+NumParms: 1
+ParmName: Replace selection
+ParmString: No
+ProcessName: Mesh/Selection/Select Shared Triangles
+NumParms: 0
+ProcessName: Mesh/Selection/Select Short Walls
+NumParms: 2
+ParmName: Junction Merging Threshold
+ParmString: 0.1
+ParmName: Exclusive
+ParmString: Yes
+ProcessName: Mesh/Selection/Select Special
+NumParms: 4
+ParmName: Inner Border
+ParmString: Yes
+ParmName: Outer Border
+ParmString: Yes
+ParmName: Junctions
+ParmString: Yes
+ParmName: Cell Vtxs
+ParmString: Yes
+ProcessName: Mesh/Selection/Select Unlabeled
+NumParms: 1
+ParmName: Replace selection
+ParmString: No
+ProcessName: Mesh/Selection/Unselect
+NumParms: 0
+ProcessName: Mesh/Selection/Unselect Label
+NumParms: 1
+ParmName: Label (0 for current)
+ParmString: 0
+ProcessName: Mesh/Shape Analysis/Lobeyness Plugin
+NumParms: 5
+ParmName: Measure
+ParmString: Convex(Perimeter)
+ParmName: Smoothing its
+ParmString: 0
+ParmName: Fix mesh
+ParmString: No
+ParmName: Save LEC
+ParmString: No
+ParmName: Filename
+ParmString: 
+ProcessName: Mesh/Shape Analysis/Output Largest Empty Space
+NumParms: 0
+ProcessName: Mesh/Shape Analysis/Select Largest Empty Space
+NumParms: 0
+ProcessName: Mesh/Signal/Clear Mesh Signal
+NumParms: 1
+ParmName: Value
+ParmString: 50000
+ProcessName: Mesh/Signal/Close Signal
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 1.0
+ProcessName: Mesh/Signal/Difference of Gaussians
+NumParms: 2
+ParmName: Radius1 (µm)
+ParmString: 1.0
+ParmName: Radius2 (µm)
+ParmString: 5.0
+ProcessName: Mesh/Signal/Dilate Signal
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 1.0
+ProcessName: Mesh/Signal/Erode Signal
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 1.0
+ProcessName: Mesh/Signal/Gaussian Blur
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 2.0
+ProcessName: Mesh/Signal/Mesh Brighness
+NumParms: 1
+ParmName: Amount
+ParmString: 2.0
+ProcessName: Mesh/Signal/Normalize Signal
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 5.0
+ProcessName: Mesh/Signal/Open Signal
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 1.0
+ProcessName: Mesh/Signal/Project Mesh Curvature
+NumParms: 7
+ParmName: Output
+ParmString: 
+ParmName: Type
+ParmString: Gaussian
+ParmName: Neighborhood (µm)
+ParmString: 3.0
+ParmName: AutoScale
+ParmString: Yes
+ParmName: Min Curv
+ParmString: -50.0
+ParmName: Max Curv
+ParmString: 50.0
+ParmName: Autoscale percentile
+ParmString: 85
+ProcessName: Mesh/Signal/Project Signal
+NumParms: 5
+ParmName: Use absolute
+ParmString: No
+ParmName: Min Dist (µm)
+ParmString: 2.0
+ParmName: Max Dist (µm)
+ParmString: 6.0
+ParmName: Min Signal
+ParmString: 0.0
+ParmName: Max Signal
+ParmString: 60000.0
+ProcessName: Mesh/Signal/Rescale Signal
+NumParms: 4
+ParmName: Zero as reference
+ParmString: No
+ParmName: Percentile
+ParmString: 99
+ParmName: Minimum
+ParmString: 0
+ParmName: Maximum
+ParmString: 1
+ProcessName: Mesh/Signal/Set Signal
+NumParms: 4
+ParmName: Value
+ParmString: 1
+ParmName: Rescale
+ParmString: Yes
+ParmName: Percentile
+ParmString: 100
+ParmName: Use zero
+ParmString: No
+ProcessName: Mesh/Signal/Signal Gradient
+NumParms: 1
+ParmName: Radius (µm)
+ParmString: 2.0
+ProcessName: Mesh/Signal/Smooth Mesh Signal
+NumParms: 1
+ParmName: Passes
+ParmString: 3
+ProcessName: Mesh/Structure/Delete Edge
+NumParms: 0
+ProcessName: Mesh/Structure/Delete Mesh Vertices by Valence
+NumParms: 2
+ParmName: Start Valence
+ParmString: 0
+ParmName: End Valence
+ParmString: 2
+ProcessName: Mesh/Structure/Delete Selection
+NumParms: 0
+ProcessName: Mesh/Structure/Keep Vertices
+NumParms: 1
+ParmName: Keep
+ParmString: Yes
+ProcessName: Mesh/Structure/Loop Subdivision
+NumParms: 0
+ProcessName: Mesh/Structure/Merge Vertices
+NumParms: 0
+ProcessName: Mesh/Structure/Reverse Mesh
+NumParms: 0
+ProcessName: Mesh/Structure/Scale Mesh
+NumParms: 3
+ParmName: X Scale
+ParmString: 1.0
+ParmName: Y Scale
+ParmString: 1.0
+ParmName: Z Scale
+ParmString: 1.0
+ProcessName: Mesh/Structure/Shrink Mesh
+NumParms: 1
+ParmName: Distance(µm)
+ParmString: 1.0
+ProcessName: Mesh/Structure/Smooth Mesh
+NumParms: 2
+ParmName: Passes
+ParmString: 1
+ParmName: Walls Only
+ParmString: No
+ProcessName: Mesh/Structure/Split Edges
+NumParms: 1
+ParmName: Max Dist
+ParmString: 1.0
+ProcessName: Mesh/Structure/Subdivide
+NumParms: 0
+ProcessName: Mesh/Structure/Subdivide Adaptive Near Borders
+NumParms: 2
+ParmName: Max Area(µm²)
+ParmString: 0.1
+ParmName: Border Dist(µm)
+ParmString: 1.0
+ProcessName: Mesh/Structure/Subdivide Adaptive by Signal
+NumParms: 2
+ParmName: Low Max Area(µm²)
+ParmString: 1.0
+ParmName: High Max Area(µm²)
+ParmString: 0.1
+ProcessName: Mesh/Structure/Subdivide with Bisection MGX3D
+NumParms: 1
+ParmName: Max Area(µm²)
+ParmString: 1.0
+ProcessName: Mesh/Structure/Transform Mesh
+NumParms: 4
+ParmName: translation (µm)
+ParmString: 0.0 0.0 0.0
+ParmName: rotation axis
+ParmString: 0.0 0.0 1.0
+ParmName: angle (degree)
+ParmString: 0.0
+ParmName: scale
+ParmString: 1.0
+ProcessName: Mesh/System/Export
+NumParms: 5
+ParmName: Filename
+ParmString: 
+ParmName: Kind
+ParmString: Text
+ParmName: Transform
+ParmString: no
+ParmName: Mesh Number
+ParmString: 0
+ParmName: Extended PLY
+ParmString: No
+ProcessName: Mesh/System/Import
+NumParms: 6
+ParmName: Filename
+ParmString: 
+ParmName: Kind
+ParmString: PLY
+ParmName: Scale
+ParmString: yes
+ParmName: Transform
+ParmString: no
+ParmName: Add
+ParmString: no
+ParmName: Stack Number
+ParmString: 0
+ProcessName: Mesh/System/Load
+NumParms: 4
+ParmName: Filename
+ParmString: /home/mpimp-golm.mpg.de/bauer1458/Desktop/Imaging/AG-Sampathkumar/Timon/cell division/20190418 myr-yfp T2 P6 final SAM region.mgxm
+ParmName: Transform
+ParmString: no
+ParmName: Add
+ParmString: no
+ParmName: Stack Number
+ParmString: 1
+ProcessName: Mesh/System/Reset
+NumParms: 1
+ParmName: Mesh
+ParmString: -1
+ProcessName: Mesh/System/Save
+NumParms: 3
+ParmName: Filename
+ParmString: /home/mpimp-golm.mpg.de/sicard1303/Desktop/ImagingData/Timon/cell division/20190418 myr-yfp T2 P6 final SAM region.mgxm
+ParmName: Transform
+ParmString: No
+ParmName: Mesh Number
+ParmString: 0
+ProcessName: Mesh/System/View
+NumParms: 15
+ParmName: Show Surface
+ParmString: 
+ParmName: Surface Type
+ParmString: 
+ParmName: Signal Type
+ParmString: 
+ParmName: Blend
+ParmString: 
+ParmName: Cull
+ParmString: 
+ParmName: Show Mesh
+ParmString: 
+ParmName: Mesh View
+ParmString: 
+ParmName: Show Lines
+ParmString: 
+ParmName: Show Points
+ParmString: 
+ParmName: Show Map
+ParmString: 
+ParmName: Scale
+ParmString: 
+ParmName: Transform
+ParmString: 
+ParmName: BBox
+ParmString: 
+ParmName: Brightness
+ParmString: -1
+ParmName: Opacity
+ParmString: -1
+ProcessName: Mesh/Triangle Data/Average Tri Value
+NumParms: 3
+ParmName: Selection only
+ParmString: Yes
+ParmName: Statistic
+ParmString: Percentile
+ParmName: Percentile
+ParmString: 50
+ProcessName: Mesh/Unpublished/Heat Averaging/Compute Cell Distance Attrs
+NumParms: 0
+ProcessName: Mesh/Unpublished/Heat Averaging/Compute Vertex Distance Attrs
+NumParms: 0
+ProcessName: Mesh/Unpublished/Heat Averaging/Copy Heat to Signal
+NumParms: 1
+ParmName: Cell Border Handling
+ParmString: Ignore
+ProcessName: Mesh/Unpublished/Heat Averaging/Heat Map Average Settings
+NumParms: 0
+ProcessName: Mesh/Unpublished/Heat Averaging/Heat Map Projection
+NumParms: 0
+ProcessName: Mesh/Unpublished/Heat Averaging/Vertex Distance
+NumParms: 2
+ParmName: Wall Weights
+ParmString: Euclidean
+ParmName: Name
+ParmString: VertexDistance
+ProcessName: Mesh/Visualization 3D/Explode Mesh
+NumParms: 6
+ParmName: Factor X
+ParmString: 1
+ParmName: Factor Y
+ParmString: 1
+ParmName: Factor Z
+ParmString: 1
+ParmName: Only Selected
+ParmString: No
+ParmName: Reverse Explosion
+ParmString: Yes
+ParmName: Parents Together
+ParmString: No
+ProcessName: Mesh/Visualization 3D/Restore Original Mesh
+NumParms: 0
+ProcessName: Mesh/Visualization 3D/Rotate Camera
+NumParms: 6
+ParmName: X Axis
+ParmString: 0.0
+ParmName: Y Axis
+ParmString: 0.0
+ParmName: Z Axis
+ParmString: 360.0
+ParmName: Steps
+ParmString: 360
+ParmName: Break (ms)
+ParmString: 100.0
+ParmName: Stack 2
+ParmString: No
+ProcessName: Mesh/Visualization 3D/Set Parent Exploded
+NumParms: 1
+ParmName: Parent Label
+ParmString: 0
+ProcessName: Mesh/Visualization 3D/Translate By Parent
+NumParms: 6
+ParmName: Transl X
+ParmString: 20
+ParmName: Transl Y
+ParmString: 0
+ParmName: Transl Z
+ParmString: 0
+ParmName: Only Selected
+ParmString: No
+ParmName: Reverse Explosion
+ParmString: Yes
+ParmName: Consider Rotation
+ParmString: Yes
+ProcessName: Mesh/Z Old Processes/Cell Atlas 3D/Root/Tools/Create Custom Directions Cell Atlas
+NumParms: 3
+ParmName: CustomX
+ParmString: Long
+ParmName: CustomY
+ParmString: Circ
+ParmName: CustomZ
+ParmString: Rad
+ProcessName: Mesh/Z Old Processes/Cell Atlas 3D/Root/Tools/Display Root Cell Directions
+NumParms: 6
+ParmName: Longitudinal
+ParmString: Yes
+ParmName: Radial
+ParmString: Yes
+ParmName: Circumferential
+ParmString: Yes
+ParmName: Line Width
+ParmString: 2.0
+ParmName: Line Length
+ParmString: 10.0
+ParmName: Line Color
+ParmString: white
+ProcessName: Mesh/Z Old Processes/Cell Atlas/Multi/Cell Coord Similarity Heat Map
+NumParms: 5
+ParmName: Weight Long
+ParmString: 1.0
+ParmName: Weight Rad
+ParmString: 1.0
+ParmName: Weight Circ
+ParmString: 1.0
+ParmName: Use Parents
+ParmString: Yes
+ParmName: Rescale Heat
+ParmString: Yes
+ProcessName: Mesh/Z Old Processes/Cell Atlas/Multi/Fill Parents All
+NumParms: 0
+ProcessName: Mesh/Z Old Processes/Cell Atlas/Multi/Fill Parents of Cell Pairs
+NumParms: 0
+ProcessName: Mesh/Z Old Processes/Cell Atlas/Multi/Junctions
+NumParms: 0
+ProcessName: Mesh/Z Old Processes/Cell Files/Analyze 2D Cell Files
+NumParms: 1
+ParmName: Filename
+ParmString: CellFile.csv
+ProcessName: Mesh/Z Old Processes/Cell Files/Extract Cell Files Data
+NumParms: 7
+ParmName: Filename
+ParmString: HeatMap3DCellsOrigin.csv
+ParmName: Use Cut Plane
+ParmString: Yes
+ParmName: Heat Map
+ParmString: None
+ParmName: Input file
+ParmString: 
+ParmName: Volume
+ParmString: Mesh
+ParmName: Min. Volume (µm³)
+ParmString: 1.0
+ParmName: Select Cell#
+ParmString: 0
+ProcessName: Mesh/Z Old Processes/Cell Files/Heat Map Cell Files
+NumParms: 6
+ParmName: Filename
+ParmString: HeatMapCellFiles.csv
+ParmName: Use Cut Plane
+ParmString: Yes
+ParmName: Heat Map
+ParmString: Avg Volume
+ParmName: Volume
+ParmString: Mesh
+ParmName: Min. Volume (µm³)
+ParmString: 1.0
+ParmName: Select Cell#
+ParmString: 0
+ProcessName: Mesh/Z Old Processes/Cell Files/Label 3D Cell Files
+NumParms: 2
+ParmName: Angle Thresh
+ParmString: 0.7
+ParmName: Volume Thresh
+ParmString: 0.7
+ProcessName: Mesh/Z Old Processes/Cell Files/Load 3D Cell File Heat Map
+NumParms: 4
+ParmName: Input File
+ParmString: 
+ParmName: Heat File
+ParmString: 
+ParmName: Field Name
+ParmString: 
+ParmName: Use Cut Plane
+ParmString: Yes
+ProcessName: Mesh/Z Old Processes/Heatmap Stats
+NumParms: 2
+ParmName: Statistics
+ParmString: Nb Neighbors
+ParmName: Based on
+ParmString: Labels
+ProcessName: Mesh/Z Old Processes/Tracking/Create Decimation Cell Graph
+NumParms: 0
+ProcessName: Mesh/Z Old Processes/Tracking/Iterative Tracking
+NumParms: 1
+ParmName: Cell Size
+ParmString: 50
+ProcessName: Mesh/Z Old Processes/Tracking/Track Lineage
+NumParms: 2
+ParmName: Cell Size
+ParmString: 50
+ParmName: Reset
+ParmString: Yes
+ProcessName: Mesh/Z Old Processes/Tracking/Verify
+NumParms: 0
+ProcessName: Misc/Bezier/Bezier From Cell File
+NumParms: 1
+ParmName: Max Points
+ParmString: 20
+ProcessName: Misc/Bezier/Collapse Bezier Points
+NumParms: 0
+ProcessName: Misc/Bezier/Flip Bezier Line
+NumParms: 0
+ProcessName: Misc/Bezier/Load Bezier
+NumParms: 1
+ParmName: Input File
+ParmString: 
+ProcessName: Misc/Bezier/Measure/Export Measure
+NumParms: 2
+ParmName: Discretization Points
+ParmString: 200
+ParmName: Filename
+ParmString: 
+ProcessName: Misc/Bezier/Measure/Simple Measure
+NumParms: 1
+ParmName: Discretization Points
+ParmString: 200
+ProcessName: Misc/Bezier/New Bezier
+NumParms: 6
+ParmName: Controls X
+ParmString: 5
+ParmName: Controls Y
+ParmString: 5
+ParmName: Size X
+ParmString: 200
+ParmName: Size Y
+ParmString: 200
+ParmName: Lines in X
+ParmString: 15
+ParmName: Lines in Y
+ParmString: 15
+ProcessName: Misc/Bezier/New Bezier Ring
+NumParms: 3
+ParmName: Controls X
+ParmString: 12
+ParmName: Radius X
+ParmString: 100
+ParmName: Radius Y
+ParmString: 100
+ProcessName: Misc/Bezier/New Bezier Ring From Selected Cells
+NumParms: 4
+ParmName: Controls X
+ParmString: 12
+ParmName: Radius X
+ParmString: 100
+ParmName: Radius Y
+ParmString: 100
+ParmName: Mode
+ParmString: 3D
+ProcessName: Misc/Bezier/Save Bezier
+NumParms: 1
+ParmName: Output File
+ParmString: 
+ProcessName: Misc/Python/Python Script
+NumParms: 1
+ParmName: Script
+ParmString: 
+ProcessName: Misc/System/Load View
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Misc/System/Quick Save
+NumParms: 2
+ParmName: Save with File Extensions
+ParmString: No
+ParmName: Extension Counter
+ParmString: 1
+ProcessName: Misc/System/Save View
+NumParms: 1
+ParmName: Filename
+ParmString: /home/mpimp-golm.mpg.de/sicard1303/Desktop/ImagingData/Timon/cell division/P6/parent labeling P6 T1 T2.mgxv
+ProcessName: Misc/System/Snapshot
+NumParms: 6
+ParmName: Filename
+ParmString: 
+ParmName: Expand Frustum
+ParmString: false
+ParmName: Width
+ParmString: 0
+ParmName: Height
+ParmString: 0
+ParmName: Oversampling
+ParmString: 1.0
+ParmName: Quality
+ParmString: 95
+ProcessName: Misc/Transform/Save Global Transform
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Stack/Analyses/Border from Segmented Stack
+NumParms: 4
+ParmName: Width
+ParmString: 1
+ParmName: Ignore X
+ParmString: No
+ParmName: Ignore Y
+ParmString: No
+ParmName: Ignore Z
+ParmString: Yes
+ProcessName: Stack/Analyses/Compute Volumes
+NumParms: 1
+ParmName: Filename
+ParmString: output.csv
+ProcessName: Stack/Analyses/Export Histogram Bezier
+NumParms: 7
+ParmName: Bin Size (um)
+ParmString: 10
+ParmName: Voxel Value Threshold (%)
+ParmString: 1.0
+ParmName: Voxel Distance Min (um)
+ParmString: -1
+ParmName: Voxel Distance Max (um)
+ParmString: -1
+ParmName: Bezier Discretization
+ParmString: 100
+ParmName: Filename
+ParmString: 
+ParmName: Fill Labels in Other Store
+ParmString: No
+ProcessName: Stack/Analyses/Export Histogram Circular
+NumParms: 9
+ParmName: Central Axis
+ParmString: Z
+ParmName: Bin Number
+ParmString: 360
+ParmName: Voxel Value Threshold (%)
+ParmString: 1.0
+ParmName: Voxel Distance Min (um)
+ParmString: -1
+ParmName: Voxel Distance Max (um)
+ParmString: -1
+ParmName: Align at Max
+ParmString: No
+ParmName: Weight by Volume
+ParmString: Yes
+ParmName: Filename
+ParmString: 
+ParmName: Fill Labels in Other Store
+ParmString: No
+ProcessName: Stack/Analyses/Export Voxel Count
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Stack/CImage/Gaussian Blur
+NumParms: 1
+ParmName: Radius
+ParmString: 5
+ProcessName: Stack/CImage/Laplace Transform
+NumParms: 0
+ProcessName: Stack/CImage/Median Blur
+NumParms: 1
+ParmName: Radius (voxels)
+ParmString: 3
+ProcessName: Stack/Canvas/AutoTrim
+NumParms: 1
+ParmName: Threshold
+ParmString: 0
+ProcessName: Stack/Canvas/Change Voxel Size
+NumParms: 3
+ParmName: X (µm)
+ParmString: 1.0
+ParmName: Y (µm)
+ParmString: 1.0
+ParmName: Z (µm)
+ParmString: 1.0
+ProcessName: Stack/Canvas/Clip Stack
+NumParms: 1
+ParmName: Trim canvas?
+ParmString: No
+ProcessName: Stack/Canvas/Resize Canvas
+NumParms: 5
+ParmName: Relative
+ParmString: Yes
+ParmName: Center
+ParmString: Yes
+ParmName: X
+ParmString: 0
+ParmName: Y
+ParmString: 0
+ParmName: Z
+ParmString: 0
+ProcessName: Stack/Canvas/Reverse Axes
+NumParms: 3
+ParmName: X
+ParmString: No
+ParmName: Y
+ParmString: No
+ParmName: Z
+ParmString: Yes
+ProcessName: Stack/Canvas/Scale Stack
+NumParms: 4
+ParmName: Percent
+ParmString: Yes
+ParmName: X
+ParmString: 0.0
+ParmName: Y
+ParmString: 0.0
+ParmName: Z
+ParmString: 0.0
+ProcessName: Stack/Canvas/Shift Stack
+NumParms: 4
+ParmName: Origin
+ParmString: No
+ParmName: X
+ParmString: 0
+ParmName: Y
+ParmString: 0
+ParmName: Z
+ParmString: 0
+ProcessName: Stack/Filters/Apply Transfer Function
+NumParms: 4
+ParmName: Red
+ParmString: 0
+ParmName: Green
+ParmString: 0
+ParmName: Blue
+ParmString: 0
+ParmName: Alpha
+ParmString: 1
+ProcessName: Stack/Filters/Average
+NumParms: 4
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ParmName: Steps
+ParmString: 1
+ProcessName: Stack/Filters/Binarize
+NumParms: 1
+ParmName: Threshold
+ParmString: 5000
+ProcessName: Stack/Filters/Brighten Darken
+NumParms: 1
+ParmName: Amount
+ParmString: 16.0
+ProcessName: Stack/Filters/Color Gradient
+NumParms: 1
+ParmName: Z Divisor
+ParmString: 5.0
+ProcessName: Stack/Filters/Diff Gaussians
+NumParms: 6
+ParmName: X1 Sigma (µm)
+ParmString: 0.3
+ParmName: Y1 Sigma (µm)
+ParmString: 0.3
+ParmName: Z1 Sigma (µm)
+ParmString: 0.3
+ParmName: X2 Sigma (µm)
+ParmString: 10.0
+ParmName: Y2 Sigma (µm)
+ParmString: 10.0
+ParmName: Z2 Sigma (µm)
+ParmString: 10.0
+ProcessName: Stack/Filters/Gaussian Blur Stack
+NumParms: 3
+ParmName: X Sigma (µm)
+ParmString: 0.3
+ParmName: Y Sigma (µm)
+ParmString: 0.3
+ParmName: Z Sigma (µm)
+ParmString: 0.3
+ProcessName: Stack/Filters/Invert
+NumParms: 0
+ProcessName: Stack/Filters/Median
+NumParms: 3
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ProcessName: Stack/Filters/Median of Medians
+NumParms: 3
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ProcessName: Stack/Filters/Normalize Stack
+NumParms: 8
+ParmName: X Radius (µm)
+ParmString: 5.0
+ParmName: Y Radius (µm)
+ParmString: 5.0
+ParmName: Z Radius (µm)
+ParmString: 5.0
+ParmName: X Sigma (µm)
+ParmString: 0.5
+ParmName: Y Sigma (µm)
+ParmString: 0.5
+ParmName: Z Sigma (µm)
+ParmString: 0.5
+ParmName: Threshold
+ParmString: 10000
+ParmName: Blur factor
+ParmString: 0.7
+ProcessName: Stack/Filters/Sharpen Stack
+NumParms: 5
+ParmName: X Sigma (µm)
+ParmString: 0.2
+ParmName: Y Sigma (µm)
+ParmString: 0.2
+ParmName: Z Sigma (µm)
+ParmString: 1.0
+ParmName: Amount
+ParmString: 1.0
+ParmName: Passes
+ParmString: 1
+ProcessName: Stack/Filters/Swap Bytes
+NumParms: 0
+ProcessName: Stack/Filters/Top Hat
+NumParms: 4
+ParmName: X Radius
+ParmString: 10
+ParmName: Y Radius
+ParmString: 10
+ParmName: Z Radius
+ParmString: 10
+ParmName: Round Nhbd
+ParmString: No
+ProcessName: Stack/Filters/Trim High Low Values
+NumParms: 2
+ParmName: Low Threshold
+ParmString: 1000
+ParmName: High Threshold
+ParmString: 0
+ProcessName: Stack/Lyon/Anisotropic Diffusion
+NumParms: 7
+ParmName: K
+ParmString: 0.1
+ParmName: Sigma
+ParmString: 0.5
+ParmName: Sigma Mult
+ParmString: 0.95
+ParmName: Gamma
+ParmString: 1.0
+ParmName: Dt
+ParmString: 0.02
+ParmName: Steps
+ParmString: 5
+ParmName: Diff Steps
+ParmString: 10
+ProcessName: Stack/Lyon/Init Level Set
+NumParms: 2
+ParmName: Up Threshold
+ParmString: 10
+ParmName: Down Threshold
+ParmString: 10
+ProcessName: Stack/Lyon/Level Set Evolve
+NumParms: 8
+ParmName: Alpha
+ParmString: 0.0
+ParmName: Beta
+ParmString: 0.1
+ParmName: Lamda
+ParmString: 10.0
+ParmName: Dt
+ParmString: 100.0
+ParmName: Epsilon
+ParmString: 1.5
+ParmName: Threshold
+ParmString: .002
+ParmName: Max Steps
+ParmString: 2000
+ParmName: View Steps
+ParmString: 10
+ProcessName: Stack/Lyon/Level Set Segment
+NumParms: 0
+ProcessName: Stack/Mesh Interaction/Annihilate
+NumParms: 4
+ParmName: Fill
+ParmString: No
+ParmName: Fill Val
+ParmString: 30000
+ParmName: Min Dist(µm)
+ParmString: 1.0
+ParmName: Max Dist(µm)
+ParmString: 5.0
+ProcessName: Stack/Mesh Interaction/Distance Stack to Mesh
+NumParms: 1
+ParmName: Distance Multiplier
+ParmString: 10.0
+ProcessName: Stack/Mesh Interaction/Fill Stack from 3D Mesh
+NumParms: 0
+ProcessName: Stack/Mesh Interaction/Fill Stack from Mesh
+NumParms: 2
+ParmName: Label
+ParmString: -1
+ParmName: Fill Value
+ParmString: 32000
+ProcessName: Stack/Mesh Interaction/Relabel From Mesh
+NumParms: 1
+ParmName: Delete unknown
+ParmString: Yes
+ProcessName: Stack/Mesh Interaction/Trim Stack
+NumParms: 2
+ParmName: Label
+ParmString: -1
+ParmName: Fill Value
+ParmString: 32000
+ProcessName: Stack/Morphology/Apply Mask to Labels
+NumParms: 2
+ParmName: Invert
+ParmString: No
+ParmName: Threshold
+ParmString: 1
+ProcessName: Stack/Morphology/Apply Mask to Stack
+NumParms: 2
+ParmName: Mode
+ParmString: Normal
+ParmName: Threshold
+ParmString: 0
+ProcessName: Stack/Morphology/Close by label
+NumParms: 4
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ParmName: Round Nhbd
+ParmString: No
+ProcessName: Stack/Morphology/Closing
+NumParms: 4
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ParmName: Round Nhbd
+ParmString: No
+ProcessName: Stack/Morphology/Dilate
+NumParms: 5
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ParmName: Auto-Resize
+ParmString: No
+ParmName: Round Nhbd
+ParmString: No
+ProcessName: Stack/Morphology/Edge Detect
+NumParms: 4
+ParmName: Threshold
+ParmString: 10000.0
+ParmName: Multiplier
+ParmString: 2.0
+ParmName: Adapt Factor
+ParmString: 0.3
+ParmName: Fill Value
+ParmString: 30000
+ProcessName: Stack/Morphology/Erode
+NumParms: 5
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ParmName: Auto-Resize
+ParmString: No
+ParmName: Round Nhbd
+ParmString: No
+ProcessName: Stack/Morphology/Fill Holes
+NumParms: 5
+ParmName: X Radius
+ParmString: 10
+ParmName: Y Radius
+ParmString: 10
+ParmName: Threshold
+ParmString: 10000
+ParmName: Depth
+ParmString: 0
+ParmName: Fill Value
+ParmString: 30000
+ProcessName: Stack/Morphology/Open by label
+NumParms: 4
+ParmName: X Radius
+ParmString: 1
+ParmName: Y Radius
+ParmString: 1
+ParmName: Z Radius
+ParmString: 1
+ParmName: Round Nhbd
+ParmString: No
+ProcessName: Stack/Morphology/Opening
+NumParms: 4
+ParmName: X Radius
+ParmString: 5
+ParmName: Y Radius
+ParmString: 5
+ParmName: Z Radius
+ParmString: 5
+ParmName: Round Nhbd
+ParmString: No
+ProcessName: Stack/MultiStack/Align Canvas
+NumParms: 2
+ParmName: Change both stacks
+ParmString: True
+ParmName: Interpolation
+ParmString: Linear
+ProcessName: Stack/MultiStack/Combine Stacks
+NumParms: 1
+ParmName: Method
+ParmString: Max
+ProcessName: Stack/MultiStack/Copy Main to Work Stack
+NumParms: 0
+ProcessName: Stack/MultiStack/Copy Work to Main Stack
+NumParms: 0
+ProcessName: Stack/MultiStack/Merge Stacks
+NumParms: 2
+ParmName: Method
+ParmString: max
+ParmName: Interpolation
+ParmString: Linear
+ProcessName: Stack/MultiStack/Swap Main and Work Stacks
+NumParms: 0
+ProcessName: Stack/MultiStack/Swap or Copy Stack 1 and 2
+NumParms: 2
+ParmName: Store
+ParmString: Main
+ParmName: Action
+ParmString: 1 -> 2
+ProcessName: Stack/Segmentation/Blob Detect
+NumParms: 2
+ParmName: Use watershed
+ParmString: No
+ParmName: Start Label
+ParmString: 1
+ProcessName: Stack/Segmentation/Compare Labelled Stacks
+NumParms: 2
+ParmName: Filename
+ParmString: 
+ParmName: Overwrite Labels Stack 2
+ParmString: No
+ProcessName: Stack/Segmentation/Consolidate Regions
+NumParms: 2
+ParmName: Threshold
+ParmString: 5000
+ParmName: Min Voxels
+ParmString: 100
+ProcessName: Stack/Segmentation/Consolidate Regions Normalized
+NumParms: 1
+ParmName: Tolerance
+ParmString: 0.3
+ProcessName: Stack/Segmentation/Correct Labeling Colors
+NumParms: 3
+ParmName: Number of colors
+ParmString: 7
+ParmName: Colormap size
+ParmString: 16
+ParmName: Balance color distribution
+ParmString: No
+ProcessName: Stack/Segmentation/Costanza Segmentation
+NumParms: 2
+ParmName: Signal Threshold
+ParmString: 0.0
+ParmName: Pixel Threshold
+ParmString: 10.0
+ProcessName: Stack/Segmentation/Delete Labels by Threshold
+NumParms: 2
+ParmName: Min voxels
+ParmString: 1000
+ParmName: Max voxels
+ParmString: 0
+ProcessName: Stack/Segmentation/Erase at Border
+NumParms: 0
+ProcessName: Stack/Segmentation/Export by Label
+NumParms: 1
+ParmName: File Prefix
+ParmString: Cell
+ProcessName: Stack/Segmentation/Fill Label
+NumParms: 2
+ParmName: Filled label
+ParmString: 1000
+ParmName: New label
+ParmString: 0
+ProcessName: Stack/Segmentation/Join Regions
+NumParms: 1
+ParmName: Cube Size
+ParmString: 0
+ProcessName: Stack/Segmentation/Local Maxima
+NumParms: 6
+ParmName: X Radius
+ParmString: 5.0
+ParmName: Y Radius
+ParmString: 5.0
+ParmName: Z Radius
+ParmString: 5.0
+ParmName: Start Label
+ParmString: 2
+ParmName: Threshold
+ParmString: 10000
+ParmName: Value
+ParmString: 60000
+ProcessName: Stack/Segmentation/Relabel
+NumParms: 2
+ParmName: StartLabel
+ParmString: 1
+ParmName: Step
+ParmString: 1
+ProcessName: Stack/Segmentation/Watershed3D
+NumParms: 0
+ProcessName: Stack/Shape Analysis/PCAnalysis
+NumParms: 5
+ParmName: Output
+ParmString: output.csv
+ParmName: Span Correction
+ParmString: Ellipsoid
+ParmName: Draw Result
+ParmString: No
+ParmName: Threshold
+ParmString: 100
+ParmName: Shape Details
+ParmString: 3
+ProcessName: Stack/System/Batch Open and Save
+NumParms: 3
+ParmName: Folder
+ParmString: 
+ParmName: File Prefix
+ParmString: MGX_
+ParmName: Compression Level
+ParmString: 9
+ProcessName: Stack/System/Clear Main Stack
+NumParms: 1
+ParmName: Fill value
+ParmString: 0
+ProcessName: Stack/System/Clear Work Stack
+NumParms: 1
+ParmName: Fill value
+ParmString: 0
+ProcessName: Stack/System/Export
+NumParms: 6
+ParmName: Filename
+ParmString: 
+ParmName: Store
+ParmString: Main
+ParmName: Format
+ParmString: CImg Auto
+ParmName: Generate Voxel Spacing
+ParmString: No
+ParmName: Stack Number
+ParmString: 0
+ParmName: Num Digits
+ParmString: 0
+ProcessName: Stack/System/Import
+NumParms: 7
+ParmName: Stack
+ParmString: -1
+ParmName: Store
+ParmString: Current
+ParmName: X Step
+ParmString: 1.0
+ParmName: Y Step
+ParmString: 1.0
+ParmName: Z Step
+ParmString: 1.0
+ParmName: Brightness
+ParmString: 1.0
+ParmName: Profile File
+ParmString: 
+ProcessName: Stack/System/Open
+NumParms: 4
+ParmName: Filename
+ParmString: 
+ParmName: Store
+ParmString: Main
+ParmName: Stack Number
+ParmString: 0
+ParmName: HDF5 DataSetName
+ParmString: /label
+ProcessName: Stack/System/Open HDF5
+NumParms: 4
+ParmName: Filename
+ParmString: 
+ParmName: Store
+ParmString: Main
+ParmName: Stack Number
+ParmString: 0
+ParmName: HDF5 DataSetName
+ParmString: /label
+ProcessName: Stack/System/Save
+NumParms: 5
+ParmName: Filename
+ParmString: 
+ParmName: Store
+ParmString: Main
+ParmName: Stack Number
+ParmString: 0
+ParmName: Compression Level
+ParmString: 5
+ParmName: HDF5 DataSetName
+ParmString: /label
+ProcessName: Stack/System/Save HDF5
+NumParms: 5
+ParmName: Filename
+ParmString: 
+ParmName: Store
+ParmString: Main
+ParmName: Stack Number
+ParmString: 0
+ParmName: Compression Level
+ParmString: 5
+ParmName: HDF5 DataSetName
+ParmString: /label
+ProcessName: Stack/System/Set Current Stack
+NumParms: 2
+ParmName: Store
+ParmString: Main
+ParmName: Stack id
+ParmString: 0
+ProcessName: Stack/Transform/Load Transform
+NumParms: 1
+ParmName: Filename
+ParmString: 
+ProcessName: Stack/Transform/Save Transform
+NumParms: 1
+ParmName: Filename
+ParmString: 
+
+[Tasks]
