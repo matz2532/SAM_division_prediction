@@ -1,0 +1,2 @@
+,val F1,val Acc,val TPR,val FPR,val Auc
+testing,64.71,64.0719,65.87,37.72,0.7115

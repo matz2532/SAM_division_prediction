@@ -1,0 +1,4 @@
+propertyName: svm_k2_combinedTable_l3f0n1c0ex1,
+featureFilename: Data/secondRun/Topology Mapping Data/diff/manualCentres/bio/combinedFeatures_bio_notnormalised.csv,
+labelFilename: Data/secondRun/Topology Mapping Data/diff/manualCentres/bio/combinedLabels1.csv,
+nrOfLabels: {0: 673, 1: 589, 2: 564}nrOfFeatures: 10

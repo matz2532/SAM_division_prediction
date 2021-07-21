@@ -1,0 +1,4 @@
+propertyName: svm_k2h_combinedTable_l3f0n1c0ex0,
+featureFilename: Data/secondRun/divEventData/manualCentres/correctData/lowCor0.5/combinedFeatures_lowCor0.5_notnormalised.csv,
+labelFilename: Data/secondRun/divEventData/manualCentres/correctData/lowCor0.5/combinedLabels.csv,
+nrOfLabels: {0: 1033, 1: 329}nrOfFeatures: 40
