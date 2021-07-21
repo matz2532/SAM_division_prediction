@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, "./Code/DivEventPrediction/")
 from TopologyPredictonDataCreator import saveFeatureSets as saveTopoFeatureSets
 from DivEventDataCreator import saveFeatureSets as saveDivisionFeatureSets
-from TopologyPredictonManager import TopologyPredictonManager
+from PredictonManager import PredictonManager
 
 class DividingCellFromFullMappingExtractor (object):
 

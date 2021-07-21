@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
-sys.path.insert(0, "./Code/PredictTopology/")
+sys.path.insert(0, "./Code/Predicting/")
 
 from CentralPositionFinder import CentralPositionFinder
 from FeatureVectorCreator import FeatureVectorCreator

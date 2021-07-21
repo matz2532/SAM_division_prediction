@@ -5,7 +5,7 @@ import shutil, sys
 
 sys.path.insert(0, "./Code/DivEventPrediction/")
 sys.path.insert(0, "./Code/Feature and Label Creation/")
-sys.path.insert(0, "./Code/PredictTopology/")
+sys.path.insert(0, "./Code/Predicting/")
 
 from BiologicalFeatureCreatorForNetworkRecreation import BiologicalFeatureCreatorForNetworkRecreation
 from DivEventDataCreator import DivEventDataCreator
