@@ -4,15 +4,17 @@ sys.path.insert(0, "./Code/Feature and Label Creation/")
 from CreateFeatureSets import CreateFeatureSets
 
 def mainConvertRawDataToFeaturesAndLabels():
-    createDivEventData = False
     WtCentralCellsDict = {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
                         "P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
                         "P5":[[38], [585, 968, 982], [927, 1017], [1136], [1618, 1575, 1445]],
                         "P6":[[861], [1651, 1621], [1763, 1844], [2109, 2176], [2381]],
-                        "P8":[[3241, 2869, 3044], [3421, 3657], [2805, 2814, 2876], [3013], [358, 189]]}
+                        "P8":[[3241, 2869, 3044], [3421, 3657], [2805, 2814, 2876], [3013], [358, 189]],
+                        "P9":[[1047, 721, 1048], [7303, 7533], [6735, 7129], [2160, 2228], [7366, 7236]],
+                        "P10":[[1511, 1524], [7281, 7516, 7534], [], [7634, 7722, 7795, 7794], [1073, 1074, 892]],
+                        "P11":[[1751], [9489], [9759, 9793], [3300, 3211, 3060], [3956, 3979]]}
     wtDivDataArgs = {"dataFolder":"Data/WT/",
                    "folderToSave":"Data/WT/divEventData/",
-                   "plantNames":["P1", "P2", "P5", "P6", "P8"],
+                   "plantNames":["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"],
                    "estimateFeatures":True,
                    "estimateLabels":True,
                    "useManualCentres":True}
@@ -43,7 +45,8 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "timePointsPerPlant": 3,
                    "useTopoCreator": True,
                    "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/"}
-    for usingWT, createDivData in [[True, False], [True, True], [False, False], [False, True]]:
+    tasks = [[True, False], [True, True], [False, False], [False, True]] # full task list
+    for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
             if createDivData:
