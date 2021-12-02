@@ -200,7 +200,7 @@ class TopologyPredictonDataCreator (object):
         mappedCells = self.GetValuesFrom("mappedCells", plantIdx, timeIdx)
         self.parentConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx)# do I really need this?
         self.daughterConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx+1)
-        self.parentDaugherCellLabeling = self.GetValuesFrom("parentDaugherCellLabeling", plantIdx, timeIdx)
+        self.parentDaugherCellLabeling = self.GetValuesFrom("fullParentLabeling", plantIdx, timeIdx)
         if labelType == "center distance":
             centralCells = self.GetValuesFrom("centralCells", plantIdx, timeIdx)
             centralCoordinate = self.calcCentralPosition(centralCells)
@@ -223,7 +223,7 @@ class TopologyPredictonDataCreator (object):
                     else:
                         notConnectedCorrectly += 1
                         if printDetailsToNotConnected:
-                            print("mappedDaughter", mappedDaughter, " has neighbors", daughterNeighbors, "and should be adjacent to divided cells", cellOne, cellTwo, "which divided from", dividingParentCell, "{} divids to {}".format(mappedParent, self.parentDaugherCellLabeling[mappedParent]) if mappedParent in self.parentDaugherCellLabeling else "")
+                            print("mappedDaughter", mappedDaughter, " has neighbors", daughterNeighbors, "and should be adjacent to divided cells", cellOne, cellTwo, "which divided from", dividingParentCell, "; {} divids to {}".format(mappedParent, self.parentDaugherCellLabeling[mappedParent]) if mappedParent in self.parentDaugherCellLabeling else "")
                             print("No connection found for mapped parent {} on daughter {} in plant {} time point {}".format(mappedParent, mappedDaughter, self.plantNames[plantIdx], timeIdx))
                             self.saveBadAdjacency(plantIdx, timeIdx, dividedDaughterCells, mappedDaughter)
         if notConnectedCorrectly > 0:
@@ -556,5 +556,28 @@ def mainTest():
                         skipEmptyCentrals=True, timePointsPerPlant=3,
                         labelsFilename="combinedLabels.csv")
 
+def mainTestWarningMessage():
+    dataFolder = "Data/WT/"
+    folderToSave = "Data/WT/Test/"
+    plantNames = ["P2"]
+    timePointsPerPlant = 5
+    centralCellsDict =  {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
+                        "P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
+                        "P5":[[38], [585, 968, 982], [927, 1017], [1136], [1618, 1575, 1445]],
+                        "P6":[[861], [1651, 1621], [1763, 1844], [2109, 2176], [2381]],
+                        "P8":[[3241, 2869, 3044], [3421, 3657], [2805, 2814, 2876], [3013], [358, 189]]}
+    estimateFeatures = True
+    estimateLabels = True
+    specialGraphProperties = None
+    featureProperty = "topology"
+    skipEmptyCentrals=False
+    myTopologyPredictonDataCreator = TopologyPredictonDataCreator(dataFolder, timePointsPerPlant,
+                                            plantNames,
+                                            specialGraphProperties=specialGraphProperties,
+                                            centralCellsDict=centralCellsDict)
+    myTopologyPredictonDataCreator.MakeTrainingData(estimateFeatures=estimateFeatures, estimateLabels=estimateLabels,
+                                                    skipEmptyCentrals=skipEmptyCentrals)
+
 if __name__ == '__main__':
-    mainTest()
+    mainTestWarningMessage()
+    # mainTest()
