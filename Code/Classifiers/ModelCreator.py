@@ -150,6 +150,7 @@ class ModelCreator (object):
             parameters = {'gamma': self.equallySpacedValueSamplingOverScales([-10, -5], density), 'C':self.equallySpacedValueSamplingOverScales([-3, 4], density)}
             # v2 bio+network
             density = 101
+            density = 5
             parameters = {'gamma': np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)]), 'C':np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])}
         elif self.kernel == "poly":
             parameters = {"degree": np.arange(3, 9), "gamma":gammaParameter, "C":cParameter}
