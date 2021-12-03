@@ -8,8 +8,8 @@ def main():
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    useTemporaryResultsFolder = False
-    runDivEventPred = False
+    useTemporaryResultsFolder = True
+    runDivEventPred = True
     runModelTraining = True
     runModelTesting = True
     onlyTestModelWithoutTrainingData = False
@@ -51,7 +51,7 @@ def main():
                                    testPlants=testPlants,
                                    featureProperty=featureProperty,
                                    dataFolder=dataFolder,
-                                   featureAndLabelFolder=featureAndLabelFolder,
+                                   featureAndLabelFolder=setFeatureAndLabelFolder,
                                    givenFeatureName=givenFeatureName,
                                    resultsFolder=newResultsFolder,
                                    modelType=modelType,
@@ -76,7 +76,7 @@ def main():
                                    printBalancedLabelCount=printBalancedLabelCount)
         sys.exit()
     for excludeDividingNeighbours in [True, False]:
-        for set in "allTopos", "bio", "topoAndBio", "topology", "lowCor0.7", "lowCor0.5"]:
+        for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.7", "lowCor0.5"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
@@ -94,7 +94,7 @@ def main():
                                        testPlants=testPlants,
                                        featureProperty=featureProperty,
                                        dataFolder=dataFolder,
-                                       featureAndLabelFolder=featureAndLabelFolder,
+                                       featureAndLabelFolder=setFeatureAndLabelFolder,
                                        givenFeatureName=givenFeatureName,
                                        resultsFolder=newResultsFolder,
                                        modelType=modelType,

@@ -696,7 +696,7 @@ def main():
                                    testPlants=testPlants,
                                    featureProperty=featureProperty,
                                    dataFolder=dataFolder,
-                                   featureAndLabelFolder=featureAndLabelFolder,
+                                   featureAndLabelFolder=setFeatureAndLabelFolder,
                                    givenFeatureName=givenFeatureName,
                                    resultsFolder=newResultsFolder,
                                    modelType=modelType,
@@ -721,7 +721,7 @@ def main():
                                    printBalancedLabelCount=printBalancedLabelCount)
         sys.exit()
     for excludeDividingNeighbours in [True, False]:
-        for set in "allTopos", "bio", "topoAndBio", "topology", "lowCor0.7", "lowCor0.5"]:
+        for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.7", "lowCor0.5"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
@@ -739,7 +739,7 @@ def main():
                                        testPlants=testPlants,
                                        featureProperty=featureProperty,
                                        dataFolder=dataFolder,
-                                       featureAndLabelFolder=featureAndLabelFolder,
+                                       featureAndLabelFolder=setFeatureAndLabelFolder,
                                        givenFeatureName=givenFeatureName,
                                        resultsFolder=newResultsFolder,
                                        modelType=modelType,
