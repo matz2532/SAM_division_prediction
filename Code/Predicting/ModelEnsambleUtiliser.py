@@ -5,8 +5,9 @@ from MyScorer import MyScorer
 
 class ModelEnsambleUtiliser (object):
 
-    def __init__(self, modelList, performanceModus="accuracy"):
+    def __init__(self, modelList, performanceModus="all performances 1D list", nrOfClasses=2):
         self.performanceModus = performanceModus
+        self.nrOfClasses = nrOfClasses
         self.SetModelList(modelList)
 
     def predict(self, X):
@@ -83,15 +84,21 @@ class ModelEnsambleUtiliser (object):
             allHyperParameters.append(model.GetAllHyperParameters())
         return allHyperParameters
 
-    def TestModel(self, X, y):
-        # predict each model get prediction and evaluate performance
-        predictedValues = self.predict(X)
+    def TestModel(self, X_test, y_test, model=None):
+        print("ensamble")
+        predictedValues = self.predict(X_test)
         if self.performanceModus == "accuracy":
-            accuracy = MyScorer().calcAccuracy(y, predictedValues)
+            accuracy = MyScorer(nrOfClasses=self.nrOfClasses).calcAccuracy(y_test, predictions)
             return accuracy
         else:
-            f1Score, accuracy, TPRate, TNRate = MyScorer(y, predictedValues).GetAllScores()
-            return f1Score, accuracy, TPRate, TNRate
+            return1DList = self.performanceModus == "all performances 1D list"
+            y_scores = model.decision_function(X_test)
+            Scorer = MyScorer(y_test, predictions, y_scores=y_scores,
+                             nrOfClasses=self.nrOfClasses,
+                             setAverage=None if self.nrOfClasses > 2 else "binary")
+            performances = Scorer.GetAllScores(return1DList=return1DList)
+            print("returning performances", performances)
+            return performances
 
     def PrintNrOfTiesBetweenCount(self, additionalPrint="", printAlways=False):
         if np.any([i > 0 for i in self.tiesBetweenCount.values()]) or printAlways:
