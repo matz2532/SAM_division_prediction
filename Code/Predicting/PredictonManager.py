@@ -484,6 +484,14 @@ class PredictonManager (object):
                        "val F1", "val Acc", "val TPR", "val FPR", "val Auc"]
         trainP = np.asarray(trainP)
         valP = np.asarray(valP)
+        try:
+            len(trainP[0])
+        except:
+            trainP = [trainP]
+        try:
+            len(valP[0])
+        except:
+            valP = [valP]
         perfromance = np.concatenate([trainP, valP], axis=1)
         perfromanceMean = np.mean(perfromance, axis=0).reshape(1, perfromance.shape[1])
         perfromanceStd = np.std(perfromance, axis=0).reshape(1, perfromance.shape[1])
