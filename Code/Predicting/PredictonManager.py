@@ -326,7 +326,11 @@ class PredictonManager (object):
             self.saveFeatures(y_train, name="labels_train.csv", columnNames=["label"])
             self.saveFeatures(y_test, name="labels_test.csv", columnNames=["label"])
             isCellTestDf = pd.DataFrame({"isCellTest":modelCreator.GetIsCellTest()})
-            labelOverviewDf = self.labels.loc[:, ["plant", "time point", "dividing parent cell", "parent neighbor", "label"]].copy()
+            if self.useOnlyTwo:
+                columns = ["plant", "time point", "label"]
+            else:
+                columns = ["plant", "time point", "dividing parent cell", "parent neighbor", "label"]
+            labelOverviewDf = self.labels.loc[:, columns].copy()
             labelOverviewDf.index = np.arange(len(labelOverviewDf))
             labelOverviewDf = pd.concat([labelOverviewDf, isCellTestDf], axis=1)
             labelOverviewDf.to_csv(self.resultsFolder + "labelOverviewDf.csv", index=False)
