@@ -13,6 +13,8 @@ from pathlib import Path
 
 class PredictonEvaluator (object):
 
+    verbosity=1
+
     def __init__(self, X_train, y_train, modelType, X_test=None, y_test=None,
                  nSplits=5, seed=42, startRange=8,
                  useTestData=False, saveToFolder=None,
@@ -73,13 +75,12 @@ class PredictonEvaluator (object):
         currentSplit = 0
         xFold = BalancedXFold(n_splits=self.nSplits, random_state=self.seed)
         for trainIdx, validationIdx in xFold.split(self.X_train, self.y_train):
-            if self.printLearningCurveSplit:
+            if self.printLearningCurveSplit or self.verbosity >= 1:
                 print("Split {}/{} of learning curve calculation".format(currentSplit+1, self.nSplits))
             X_train = self.X_train[trainIdx, :]
             y_train = self.y_train[trainIdx]
             X_val = self.X_train[validationIdx, :]
             y_val = self.y_train[validationIdx]
-            print(currentSplit,"startRange", startRange, "train:", len(y_train), "val:", len(y_val))
             allTrainLengths.append(len(X_train))
             if self.hyperparamModels is None:
                 modelWithParamsSet = None
@@ -108,8 +109,16 @@ class PredictonEvaluator (object):
     def calcScoreForRange(self, X_train, y_train, X_val, y_val, minMaxRange, modelWithParamsSet=None):
         allTrainP = []
         allValP = []
-        for trainSampleSize in range(minMaxRange[0], minMaxRange[1]):
-            print("trainSampleSize", trainSampleSize)
+        if :
+            pass
+        elif :
+        trainSampleRange = np.arange(minMaxRange[0], minMaxRange[1])
+        for i, trainSampleSize in enumerate(trainSampleRange):
+            if self.verbosity == 2:
+                if i % 25 == 0:
+                    print("trainSampleSize at {}; {}/{}".format(trainSampleSize, i+1, len(trainSampleRange)))
+            elif self.verbosity >= 2:
+                print("trainSampleSize", trainSampleSize)
             selectedSamples = np.arange(len(X_train))
             numberOfUnqiues = len(np.unique(y_train))
             shuffleRun = 0
@@ -131,27 +140,13 @@ class PredictonEvaluator (object):
                                               nestedModelProp=self.nestedModelProp,
                                               nrOfClasses=self.nrOfClasses)
             else:
-                # employ different samples for each model training same as PredictonModelCreator
-                if self.nestedModelProp:
-                    modelList = []
-                    for i, model in enumerate(modelWithParamsSet):
-                        retrainedModel = NestedModelCreator(performanceModus="accuracy",
-                                                            nestedModelProp=self.nestedModelProp,
-                                                            nrOfClasses=self.nrOfClasses)
-                        myModelCreator.SetModel(modelWithParamsSet)
-                        myModelCreator.TrainModel(selectedX_train,
-                                                  selectedy_train,
-                                                  trainSetModel=True)
-                        modelList.append(retrainedModel)
-                    myModelCreator = ModelEnsambleUtiliser(modelList)
-                else:
-                    myModelCreator = NestedModelCreator(performanceModus="all performances 1D list",
-                                                        nestedModelProp=self.nestedModelProp,
-                                                        nrOfClasses=self.nrOfClasses)
-                    myModelCreator.SetModel(modelWithParamsSet)
-                    myModelCreator.TrainModel(selectedX_train,
-                                              selectedy_train,
-                                              trainSetModel=True)
+                myModelCreator = NestedModelCreator(performanceModus="all performances 1D list",
+                                                    nestedModelProp=self.nestedModelProp,
+                                                    nrOfClasses=self.nrOfClasses)
+                myModelCreator.SetModel(modelWithParamsSet)
+                myModelCreator.TrainModel(selectedX_train,
+                                          selectedy_train,
+                                          trainSetModel=True)
             trainPerformance = myModelCreator.TestModel(selectedX_train,  selectedy_train)
             valPerformance = myModelCreator.TestModel(X_val, y_val)
             allTrainP.append(trainPerformance)

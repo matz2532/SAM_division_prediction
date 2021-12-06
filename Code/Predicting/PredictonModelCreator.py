@@ -156,10 +156,7 @@ class PredictonModelCreator (object):
 
     def trainModel(self, X_train, y_train, nSplits=5, seed=42,
                    usePreviousTrainedModelsIfPossible=True):
-        if self.modelEnsambleNumber == 1 or self.modelEnsambleNumber == False:
-            xFold = BalancedXFold(n_splits=nSplits, random_state=seed)
-        else:
-            xFold = KFold(n_splits=nSplits, shuffle=True, random_state=seed)
+        xFold = BalancedXFold(n_splits=nSplits, random_state=seed)
         self.cvModels = []
         nrOfPreviouslyDOneCVModles = 0
         alreadyRunEncapsulatedModels = []
@@ -198,14 +195,10 @@ class PredictonModelCreator (object):
             if self.usePreviouslyTrainedModels is None:
                 print("fitting model {}".format(currentSplit))
                 notUsedEnsamble = (self.modelEnsambleNumber == 1 or self.modelEnsambleNumber == False) and not (self.nestedModelProp is True)
-                if currentSplit > nrOfPreviouslyDOneCVModles:
-                    model = self.calcModelForEnsamble(currentX_Train, currenty_Train,
+                if currentSplit > nrOfPreviouslyDOneCVModles:# continue here <------------------------------
+                    model = self.calcModel(currentX_Train, currenty_Train,
                                                       validationX, validationy,
                                                       selectedData=self.selectedData)
-                    if self.doHyperParameterisation and not self.folderToSave is None:
-                        allHyperParameters = myModelEnsambleUtiliser.GetAllHyperParameters()
-                        filename = self.folderToSave + "hyperParameters_run{}.pkl".format(currentSplit)
-                        pickle.dump(allHyperParameters, open(filename, "wb"))
                     self.cvModels.append(model.GetModel())
                     if not self.folderToSaveVal is None:
                         alreadyRunEncapsulatedModels.append(model)
@@ -233,44 +226,25 @@ class PredictonModelCreator (object):
         self.allTrainPerfromance = allTrainPerfromance
         self.allValidationPerfromance = allValidationPerfromance
 
-    def calcModelForEnsamble(self, currentX_Train, currenty_Train,
-                             validationX, validationy, selectedData=0.8):
-        modelList = []
+    def calcModel(self, currentX_Train, currenty_Train,
+                  validationX, validationy, selectedData=1):
         nrOfTrainSamples = len(currenty_Train)
         sampleIdx = np.arange(nrOfTrainSamples)
         nrOfSelectedSamples = int(nrOfTrainSamples*selectedData)
-        for modelNr in range(self.modelEnsambleNumber):
-            print("model {}/{}".format(modelNr+1, self.modelEnsambleNumber))
-            np.random.shuffle(sampleIdx)
-            selectedSampleIndices = sampleIdx[:nrOfSelectedSamples]
-            selectedX_train = currentX_Train[selectedSampleIndices]
-            selectedy_train = currenty_Train[selectedSampleIndices]
-            selectedX_train, selectedy_train = self.balanceData(selectedX_train, selectedy_train)
-            if self.nestedModelProp is True:
-                for nestedModelProp in self.allNestedModelProp:
-                    print("current nestedModelProp", nestedModelProp)
-                    model = NestedModelCreator(selectedX_train, selectedy_train,
-                                               validationX, validationy, modelType=self.modelType,
-                                               performanceModus="all performances", # "accuracy",
-                                               doHyperParameterisation=self.doHyperParameterisation,
-                                               hyperParameterRange=self.hyperParameterRange,
-                                               hyperParameters=self.hyperParameters,
-                                               parametersToAddOrOverwrite=self.parametersToAddOrOverwrite,
-                                               nestedModelProp=nestedModelProp,
-                                               nrOfClasses=self.nrOfClasses)
-                    modelList.append(model)
-            else:
-                model = NestedModelCreator(selectedX_train, selectedy_train,
-                                          validationX, validationy, modelType=self.modelType,
-                                          performanceModus="all performances", # "accuracy",
-                                          doHyperParameterisation=self.doHyperParameterisation,
-                                          hyperParameterRange=self.hyperParameterRange,
-                                          hyperParameters=self.hyperParameters,
-                                          parametersToAddOrOverwrite=self.parametersToAddOrOverwrite,
-                                          nestedModelProp=self.nestedModelProp,
-                                          nrOfClasses=self.nrOfClasses)
-                modelList.append(model)
-        model = ModelEnsambleUtiliser(modelList)
+        np.random.shuffle(sampleIdx)
+        selectedSampleIndices = sampleIdx[:nrOfSelectedSamples]
+        selectedX_train = currentX_Train[selectedSampleIndices]
+        selectedy_train = currenty_Train[selectedSampleIndices]
+        selectedX_train, selectedy_train = self.balanceData(selectedX_train, selectedy_train)
+        model = NestedModelCreator(selectedX_train, selectedy_train,
+                                  validationX, validationy, modelType=self.modelType,
+                                  performanceModus="all performances", # "accuracy",
+                                  doHyperParameterisation=self.doHyperParameterisation,
+                                  hyperParameterRange=self.hyperParameterRange,
+                                  hyperParameters=self.hyperParameters,
+                                  parametersToAddOrOverwrite=self.parametersToAddOrOverwrite,
+                                  nestedModelProp=self.nestedModelProp,
+                                  nrOfClasses=self.nrOfClasses)
         return model
 
     def balanceData(self, usedX_train, usedY_train):
