@@ -35,7 +35,7 @@ def main():
     normaliseTrainValTestData = False
     featureProperty = "combinedTable"
     if runDivEventPred:
-        for set in ["allTopos", "area", "topoAndBio", "lowCor0.5", "lowCor0.7", "topology"]:
+        for set in ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/manualCentres/{}/".format(set)
@@ -76,7 +76,7 @@ def main():
                                    printBalancedLabelCount=printBalancedLabelCount)
         sys.exit()
     for excludeDividingNeighbours in [True, False]:
-        for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.7", "lowCor0.5"]:
+        for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
