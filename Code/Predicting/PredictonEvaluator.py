@@ -109,9 +109,6 @@ class PredictonEvaluator (object):
     def calcScoreForRange(self, X_train, y_train, X_val, y_val, minMaxRange, modelWithParamsSet=None):
         allTrainP = []
         allValP = []
-        if :
-            pass
-        elif :
         trainSampleRange = np.arange(minMaxRange[0], minMaxRange[1])
         for i, trainSampleSize in enumerate(trainSampleRange):
             if self.verbosity == 2:
