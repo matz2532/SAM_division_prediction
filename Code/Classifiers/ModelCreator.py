@@ -110,47 +110,12 @@ class ModelCreator (object):
         cSmall = np.linspace(0.001, 1, 30, endpoint=False)
         cBig = np.linspace(1, 1000, 40, endpoint=False)
         cParameter = np.concatenate([cSmall, cBig])
-        # cParameter = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200,300,400,500,600,700,800,900,1000]
         cParameter = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 3, 4, 5]
         cBig = np.linspace(5, 1000, 5, endpoint=False)
         cParameter = np.concatenate([cParameter, cBig])
         cParameter = np.concatenate([np.arange(100, 981, 75)])
         if self.kernel == "rbf":
-            parameters = {"gamma":gammaParameter, "C":cParameter}
-            #_redH1
-            parameters = {'gamma': [1.00000000e-08, 1.00000000e-07, 1.00000000e-06, 1.00000000e-05,
-                   1.00000000e-04, 1.00000000e-03, 1.00000000e-02, 1.00000000e-01,
-                   5.00000000e-01, 1.00000000e+00, 2.00000000e+00, 5.00000000e+00,
-                   1.00000000e+01, 5.00000000e+01, 1.00000000e+02, 2.12765957e-02,
-                   2.13910179e-02], 'C': [1e-05, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]}
-            #_oldHyper
-       #      parameters = {'gamma': [5.00000000e-05, 1.49000000e-04, 2.48000000e-04, 3.47000000e-04,
-       # 4.46000000e-04, 5.45000000e-04, 6.44000000e-04, 7.43000000e-04,
-       # 8.42000000e-04, 9.41000000e-04, 1.04000000e-03, 1.13900000e-03,
-       # 1.23800000e-03, 1.33700000e-03, 1.43600000e-03, 1.53500000e-03,
-       # 1.63400000e-03, 1.73300000e-03, 1.83200000e-03, 1.93100000e-03,
-       # 2.03000000e-03, 2.12900000e-03, 2.22800000e-03, 2.32700000e-03,
-       # 2.42600000e-03, 2.52500000e-03, 2.62400000e-03, 2.72300000e-03,
-       # 2.82200000e-03, 2.92100000e-03, 3.02000000e-03, 3.11900000e-03,
-       # 3.21800000e-03, 3.31700000e-03, 3.41600000e-03, 3.51500000e-03,
-       # 3.61400000e-03, 3.71300000e-03, 3.81200000e-03, 3.91100000e-03,
-       # 4.01000000e-03, 4.10900000e-03, 4.20800000e-03, 4.30700000e-03,
-       # 4.40600000e-03, 4.50500000e-03, 4.60400000e-03, 4.70300000e-03,
-       # 4.80200000e-03, 4.90100000e-03, 5.00000000e-03, 8.00000000e-03,
-       # 1.82222222e-02, 2.84444444e-02, 3.86666667e-02, 4.88888889e-02,
-       # 5.91111111e-02, 6.93333333e-02, 7.95555556e-02, 8.97777778e-02,
-       # 1.00000000e-01, 2.12765957e-02, 2.26984962e-02], 'C': [1.00e-05, 1.00e-04, 1.00e-03, 1.00e-02, 1.00e-01, 5.00e-01,
-       # 1.00e+00, 2.00e+00, 3.00e+00, 4.00e+00, 5.00e+00, 5.00e+00,
-       # 2.04e+02, 4.03e+02, 6.02e+02, 8.01e+02]}
-            # #_smallerGamma
-            parameters = {'gamma': np.concatenate([[1e-06, 0.5e-06,1e-05], np.linspace(2.5e-05, 4.5e-05, 5), [5.00000000e-05, 1.49000000e-04, 2.48000000e-04, 3.47000000e-04, 4.46000000e-04]]),
-                          'C': [4.03e+02, 6.02e+02, 700, 750, 780, 801, 820, 840, 900, 1000, 1050, 1200, 1300, 140]}
-            # v1 bio+network
-            density = 51
-            parameters = {'gamma': self.equallySpacedValueSamplingOverScales([-10, -5], density), 'C':self.equallySpacedValueSamplingOverScales([-3, 4], density)}
-            # v2 bio+network
             density = 101
-            density = 5
             parameters = {'gamma': np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)]), 'C':np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])}
         elif self.kernel == "poly":
             parameters = {"degree": np.arange(3, 9), "gamma":gammaParameter, "C":cParameter}
