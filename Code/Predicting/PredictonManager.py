@@ -17,6 +17,8 @@ from PredictonModelCreator import PredictonModelCreator
 
 class PredictonManager (object):
 
+    verbosity=1
+
     def __init__(self, plantNames, featureProperty, dataFolder="", sep=",",
                  featureAndLabelFolder="", resultsFolder="Results/Tissue mapping/",
                  testPlants=["P2"], timePointsPerPlant=5, centralCellsDict=None,
@@ -153,7 +155,12 @@ class PredictonManager (object):
             print("Feature filename: " + self.featureFilename)
             print("Label filename: " + self.labelFilename)
         self.modelFilename = self.resultsFolder + "models.pkl"
+        startTime = time.time()
         self.runManager()
+        runTimeInSeconds = time.time() - startTime
+        if verbosity > 1:
+            runTime = runTimeInSeconds / 360
+            print("Prediction took {} {}".format(np.round(runTime, 3), "hours"))
 
     def createSpecialGraphPorperties(self):
         specialGraphPorperties = {}
