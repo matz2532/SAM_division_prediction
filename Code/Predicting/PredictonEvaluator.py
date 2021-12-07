@@ -13,7 +13,7 @@ from pathlib import Path
 
 class PredictonEvaluator (object):
 
-    verbosity=1
+    verbosity=2
 
     def __init__(self, X_train, y_train, modelType, X_test=None, y_test=None,
                  nSplits=5, seed=42, startRange=8,
@@ -112,7 +112,7 @@ class PredictonEvaluator (object):
         trainSampleRange = np.arange(minMaxRange[0], minMaxRange[1])
         for i, trainSampleSize in enumerate(trainSampleRange):
             if self.verbosity == 2:
-                if i % 25 == 0:
+                if i % 100 == 0:
                     print("trainSampleSize at {}; {}/{}".format(trainSampleSize, i+1, len(trainSampleRange)))
             elif self.verbosity >= 2:
                 print("trainSampleSize", trainSampleSize)
