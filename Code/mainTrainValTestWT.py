@@ -8,8 +8,8 @@ def main():
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    useTemporaryResultsFolder = True
     runDivEventPred = True
+    usePreviousTrainedModelsIfPossible = True
     runModelTraining = True
     runModelTesting = True
     onlyTestModelWithoutTrainingData = False
@@ -55,6 +55,7 @@ def main():
                                    givenFeatureName=givenFeatureName,
                                    resultsFolder=newResultsFolder,
                                    modelType=modelType,
+                                   usePreviousTrainedModelsIfPossible=usePreviousTrainedModelsIfPossible,
                                    runModelTraining=runModelTraining,
                                    runModelTesting = runModelTesting,
                                    onlyTestModelWithoutTrainingData=onlyTestModelWithoutTrainingData,
@@ -84,8 +85,6 @@ def main():
             else:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
                 resultsFolder = "Results/topoPredData/diff/{}/".format(set)
-            if useTemporaryResultsFolder:
-                resultsFolder = "Temporary/{}/".format(set)
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
@@ -98,6 +97,7 @@ def main():
                                        givenFeatureName=givenFeatureName,
                                        resultsFolder=newResultsFolder,
                                        modelType=modelType,
+                                       usePreviousTrainedModelsIfPossible=usePreviousTrainedModelsIfPossible,
                                        runModelTraining = runModelTraining,
                                        runModelTesting = runModelTesting,
                                        saveLearningCurve = saveLearningCurve,

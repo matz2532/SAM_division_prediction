@@ -26,6 +26,7 @@ class PredictonManager (object):
                  useSpecificTestModelFilename=None,
                  normaliseOnTestData=False,
                  usePreviouslyTrainedModels=False,
+                 usePreviousTrainedModelsIfPossible=False,
                  onlyTestModelWithoutTrainingData=False,
                  saveLearningCurve=False,
                  seed=42, specialGraphProperties=None,
@@ -80,6 +81,7 @@ class PredictonManager (object):
         self.useSpecificTestModelFilename = useSpecificTestModelFilename
         self.normaliseOnTestData = normaliseOnTestData
         self.usePreviouslyTrainedModels = usePreviouslyTrainedModels
+        self.usePreviousTrainedModelsIfPossible = usePreviousTrainedModelsIfPossible
         self.onlyTestModelWithoutTrainingData = onlyTestModelWithoutTrainingData
         self.seed = seed
         # model properties
@@ -304,7 +306,7 @@ class PredictonManager (object):
                             printSampleOverview=self.printBalancedLabelCount)
         else:
             modelCreator.TrainAndTestModel(runModelTraining=self.runModelTraining,
-                                           usePreviousTrainedModelsIfPossible=False,
+                                           usePreviousTrainedModelsIfPossible=usePreviousTrainedModelsIfPossible,
                                            normaliseOnTestData=self.normaliseOnTestData,
                                            printSampleOverview=self.printBalancedLabelCount)
         if self.runModelTraining:
