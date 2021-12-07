@@ -199,12 +199,12 @@ class PredictonModelCreator (object):
                     model = self.calcModel(currentX_Train, currenty_Train,
                                                       validationX, validationy,
                                                       selectedData=self.selectedData)
-                    self.cvModels.append(model.GetModel())
                     if not self.folderToSaveVal is None:
                         alreadyRunEncapsulatedModels.append(model)
                         pickle.dump(alreadyRunEncapsulatedModels, open(modelFilename, "wb"))
                 else:
                     model = alreadyRunEncapsulatedModels[currentSplit-1]
+                self.cvModels.append(model.GetModel())
                 trainPerformance = model.TestModel(currentX_Train, currenty_Train)
                 if notUsedEnsamble is False:
                     model.PrintNrOfTiesBetweenCount("from train data")
