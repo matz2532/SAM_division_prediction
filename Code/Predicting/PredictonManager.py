@@ -306,7 +306,7 @@ class PredictonManager (object):
                             printSampleOverview=self.printBalancedLabelCount)
         else:
             modelCreator.TrainAndTestModel(runModelTraining=self.runModelTraining,
-                                           usePreviousTrainedModelsIfPossible=usePreviousTrainedModelsIfPossible,
+                                           usePreviousTrainedModelsIfPossible=self.usePreviousTrainedModelsIfPossible,
                                            normaliseOnTestData=self.normaliseOnTestData,
                                            printSampleOverview=self.printBalancedLabelCount)
         if self.runModelTraining:
