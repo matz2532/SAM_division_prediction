@@ -93,7 +93,7 @@ class ModelCreator (object):
         if isinstance(self.parametersToAddOrOverwrite, dict):
             parameters = self.addOrOverwriteParameters(parameters)
         model = self.setDefaultModel()
-        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=250, verbose=1)#, n_jobs=1, cv=10)
+        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=100, verbose=1)#, n_jobs=1, cv=10)
         model.fit(X_train, y_train)
         return model, model.best_params_, model.cv_results_
 
