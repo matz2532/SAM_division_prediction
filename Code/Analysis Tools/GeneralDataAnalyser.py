@@ -193,11 +193,11 @@ def main():
     if combineTopoPredResults:
         myGeneralDataAnalyser.combineResultsPerformances(**topoArgs)
 
-def mainAnalyseNumbersOfDividingCells():
-    analyseFolderWithExtension = ["WT", "ktn"]
-    baseFolderName = "Data/{}/divEventData/manualCentres/"
+def mainAnalyseNumbersOfDividingCells(baseFolderName="Data/{}/divEventData/manualCentres/",
+                analyseFolderWithExtension=["WT", "ktn"],
+                tissueNamesToExclude=["P6_1", "P6_2", "P8_2", "P8_3", "P10_2"],
+                redoTables=True):
     myGeneralDataAnalyser = GeneralDataAnalyser()
-    redoTables = False
     if redoTables:
         for folderExtension in analyseFolderWithExtension:
             folder = baseFolderName.format(folderExtension)
@@ -212,7 +212,7 @@ def mainAnalyseNumbersOfDividingCells():
     tableNames = [baseFolderName.format(folderExtension) + "labelCountPerTissue.csv" for folderExtension in analyseFolderWithExtension]
     tables = [pd.read_csv(tableName) for tableName in tableNames]
     myGeneralDataAnalyser.CheckSignificanceBetweenTables(tables[0], tables[1], selectedColumn=3,
-                                                        tissueNamesToExclude=["P6_1", "P6_2", "P8_2", "P8_3"])
+                                                        tissueNamesToExclude=tissueNamesToExclude)
 
 def mainAnalyseNumbersOfLocalTopologyPrediction():
     analyseFolderWithExtension = ["ktn/topoPredData", "WT/topoPredData"]
@@ -231,4 +231,5 @@ def mainAnalyseNumbersOfLocalTopologyPrediction():
 
 if __name__ == '__main__':
     # main()
-    mainAnalyseNumbersOfLocalTopologyPrediction()
+    mainAnalyseNumbersOfDividingCells()
+    # mainAnalyseNumbersOfLocalTopologyPrediction()
