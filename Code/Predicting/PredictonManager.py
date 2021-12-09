@@ -159,7 +159,7 @@ class PredictonManager (object):
         startTime = time.time()
         self.runManager()
         runTimeInSeconds = time.time() - startTime
-        if verbosity > 1:
+        if self.verbosity > 1:
             runTime = runTimeInSeconds / 360
             print("Prediction took {} {}".format(np.round(runTime, 3), "hours"))
 

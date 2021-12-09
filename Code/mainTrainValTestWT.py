@@ -35,7 +35,7 @@ def main():
     normaliseTrainValTestData = False
     featureProperty = "combinedTable"
     if runDivEventPred:
-        for set in ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        for set in ["area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]: #"allTopos", 
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/manualCentres/{}/".format(set)
