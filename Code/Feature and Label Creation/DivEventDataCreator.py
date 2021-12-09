@@ -435,6 +435,36 @@ def saveFeatureSets(set, dataFolder, plantNames, folderToSave, centralCellsDict=
     myDivEventDataCreator.SaveFeatureTable(folderToSave+"combinedFeatures_{}_notnormalised.csv".format(featureProperty))
     myDivEventDataCreator.SaveLabelTable(folderToSave+"combinedLabels.csv")
 
+def pruneFullParentLabeling(plantName, timePoint, baseFolder, overWriteUnprunedTable=False,
+                            baseParentLabelingFilename="parentLabeling{}T{}T{}.csv"):
+    tableFilename = baseFolder + baseParentLabelingFilename.format(plantName, timePoint, timePoint+1)
+    parentLabelingTable = pd.read_csv(tableFilename)
+    parentDaugherCellLabeling = DivEventDataCreator().calcParentDaughterDictFrom(parentLabelingTable)
+    columns = list(parentLabelingTable.columns)
+    daughterLabelKey, parentLabelKeys = columns[:2]
+    prunedParentLabelingTable = {daughterLabelKey:[], parentLabelKeys:[]}
+    for parentLabel, daughterLabels in parentDaugherCellLabeling.items():
+        if len(daughterLabels) > 1:
+            for daughterLabel in daughterLabels:
+                prunedParentLabelingTable[parentLabelKeys].append(parentLabel)
+                prunedParentLabelingTable[daughterLabelKey].append(daughterLabel)
+    prunedParentLabelingTable = pd.DataFrame(prunedParentLabelingTable, columns=[daughterLabelKey, parentLabelKeys])
+    unprunedTableFilename = tableFilename[:-4] + "_unpruned.csv"
+    if overWriteUnprunedTable or not Path(unprunedTableFilename).is_file():
+        parentLabelingTable.to_csv(unprunedTableFilename, index=False)
+    prunedParentLabelingTable.to_csv(tableFilename, index=False)
+
+def mainPruneFullParentLabeling():
+    overWriteUnprunedTable = False
+    dataFolder = "Data/WT/"
+    plantNames = ["P9", "P10", "P11"]
+    timePointRange = [0, 1, 2, 3]
+    for plantName in plantNames:
+        for timePoint in timePointRange:
+            baseFolder = dataFolder + plantName + "/"
+            pruneFullParentLabeling(plantName, timePoint, baseFolder,
+                                    overWriteUnprunedTable=overWriteUnprunedTable)
+
 def mainCreateWT():
     # keep in mind to exclude data from tissue to skip (can be identified by column 0 and 1)
     dataFolder = "Data/WT/"
@@ -473,4 +503,5 @@ def mainCreateMutantFeatureSets():
 
 if __name__ == '__main__':
     # mainCreateWT()
-    mainCreateMutantFeatureSets()
+    # mainCreateMutantFeatureSets()
+    mainPruneFullParentLabeling()
