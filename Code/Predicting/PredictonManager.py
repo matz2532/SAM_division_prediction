@@ -43,7 +43,7 @@ class PredictonManager (object):
                  normaliseTrainValTestData=False,
                  maxNormEdgeWeightPerGraph=False,
                  excludeDividingNeighbours=True,
-                 nestedModelProp=False, modelEnsambleNumber=1, selectedData=1,
+                 nestedModelProp=False, modelEnsambleNumber=1, balanceData=False,
                  modelNameExtension="", folderToSaveVal=None, setFeatureAndLabelFolder=None,
                  useOnlyTwo=False, labelName="combinedLabelsChecked.csv",
                  printPropertyName=False, printModelResults=False,
@@ -95,7 +95,7 @@ class PredictonManager (object):
         self.specialParName = specialParName
         self.nestedModelProp = nestedModelProp
         self.modelEnsambleNumber = modelEnsambleNumber
-        self.selectedData = selectedData
+        self.balanceData = balanceData
         self.modelNameExtension = modelNameExtension
         self.folderToSaveVal = folderToSaveVal
         self.useOnlyTwo = useOnlyTwo
@@ -206,10 +206,6 @@ class PredictonManager (object):
                 hyperParProp = ""
             if hyperParProp or kernelProp:
                 modelTypeProp += "_" + kernelProp + hyperParProp
-            if self.nestedModelProp:
-                modelTypeProp += "_nested"
-            if self.modelEnsambleNumber > 1:
-                modelTypeProp += "_ens{}_r{}".format(self.modelEnsambleNumber, self.selectedData)
             if self.modelNameExtension:
                 modelTypeProp += "{}".format(self.modelNameExtension)
         else:
@@ -305,7 +301,7 @@ class PredictonManager (object):
                                                      parametersToAddOrOverwrite=self.parametersToAddOrOverwrite,
                                                      nestedModelProp=self.nestedModelProp,
                                                      modelEnsambleNumber=self.modelEnsambleNumber,
-                                                     selectedData=self.selectedData,
+                                                     balanceData=self.balanceData,
                                                      folderToSaveVal=self.resultsFolder,
                                                      useOnlyTwo=self.useOnlyTwo)
         if self.usePreviouslyTrainedModels and self.doHyperParameterisation:
@@ -356,14 +352,14 @@ class PredictonManager (object):
             else:
                 hyperparamModels = None
             evaluator = PredictonEvaluator(X_train, y_train,
-                                                   modelType=self.modelType,
-                                                   saveToFolder=self.resultsFolder,
-                                                   seed=self.seed,
-                                                   hyperparamModels=hyperparamModels,
-                                                   nestedModelProp=self.nestedModelProp,
-                                                   modelEnsambleNumber=self.modelEnsambleNumber,
-                                                   selectedData=self.selectedData,
-                                                   nrOfClasses= 2 if self.useOnlyTwo is True else 3)
+                                           modelType=self.modelType,
+                                           saveToFolder=self.resultsFolder,
+                                           seed=self.seed,
+                                           hyperparamModels=hyperparamModels,
+                                           nestedModelProp=self.nestedModelProp,
+                                           modelEnsambleNumber=self.modelEnsambleNumber,
+                                           balanceData=self.balanceData,
+                                           nrOfClasses= 2 if self.useOnlyTwo is True else 3)
             evaluator.EvaluateModel()
         if self.savePCA:
             baseFolder = "{}PCA/{}/".format(self.dataFolder, self.defineFeatureTypeProperty())
@@ -688,7 +684,7 @@ def main():
     # print options:
     printBalancedLabelCount = True
     nestedModelProp = False
-    selectedData = 1
+    balanceData = False
     hyperParameters = None
     modelNameExtension = ""
     centralCellsDict =  {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
@@ -733,7 +729,7 @@ def main():
                                    doHyperParameterisation=doHyperParameterisation,
                                    hyperParameters=hyperParameters,
                                    nestedModelProp=nestedModelProp,
-                                   selectedData=selectedData,
+                                   balanceData=balanceData,
                                    modelNameExtension=modelNameExtension,
                                    folderToSaveVal=folderToSaveVal,
                                    setFeatureAndLabelFolder=setFeatureAndLabelFolder,
@@ -775,7 +771,7 @@ def main():
                                        doHyperParameterisation=doHyperParameterisation,
                                        hyperParameters=hyperParameters,
                                        nestedModelProp=nestedModelProp,
-                                       selectedData=selectedData,
+                                       balanceData=balanceData,
                                        modelNameExtension=modelNameExtension,
                                        folderToSaveVal=folderToSaveVal,
                                        setFeatureAndLabelFolder=setFeatureAndLabelFolder,

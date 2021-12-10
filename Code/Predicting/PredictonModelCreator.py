@@ -27,7 +27,7 @@ class PredictonModelCreator (object):
                  nestedModelProp=False,
                  allNestedModelProp=[[0, [1,2]], [1, [0,2]], [2, [0,1]]],
                  modelEnsambleNumber=False,
-                 selectedData=1,
+                 balanceData=1,
                  parametersToAddOrOverwrite=None,
                  folderToSaveVal=None,
                  useOnlyTwo=True,
@@ -48,7 +48,7 @@ class PredictonModelCreator (object):
         self.nestedModelProp = nestedModelProp
         self.allNestedModelProp = allNestedModelProp
         self.modelEnsambleNumber = modelEnsambleNumber
-        self.selectedData = selectedData
+        self.balanceData = balanceData
         self.parametersToAddOrOverwrite = parametersToAddOrOverwrite
         self.folderToSaveVal = folderToSaveVal
         self.useOnlyTwo = useOnlyTwo
