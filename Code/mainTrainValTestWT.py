@@ -11,9 +11,9 @@ def main():
     runDivEventPred = True
     usePreviousTrainedModelsIfPossible = True
     runModelTraining = True
-    runModelTesting = True
+    runModelTesting = False
     onlyTestModelWithoutTrainingData = False
-    saveLearningCurve = True
+    saveLearningCurve = False
     useManualCentres = True
     # print options:
     printBalancedLabelCount = True
