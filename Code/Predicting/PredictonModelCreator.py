@@ -14,6 +14,8 @@ from sklearn.model_selection import KFold
 
 class PredictonModelCreator (object):
 
+    verbosity=1
+
     def __init__(self, features, labels, testPlants, modelType, nSplits=5,
                  seed=42, folderToSave=None,
                  normaliseTrainTestData=False,
@@ -115,18 +117,6 @@ class PredictonModelCreator (object):
         X_train = x_Data[np.invert(isCellTest), :]
         X_test = x_Data[isCellTest, :]
         return X_train, X_test
-        columnsNeedingToFit = np.arange(tillProperty-1)
-        correspondingFeatureColumns = np.arange(tillProperty-1)
-        labelCellCorespondingToFeatureIdx = np.zeros(len(isCellTest), dtype=int)
-        for i in range(len(isCellTest)):
-            idx = self.findCorrespondingFeatureRow(i, columnsNeedingToFit,
-                                                   correspondingFeatureColumns)
-            labelCellCorespondingToFeatureIdx[i] = idx
-        selectedTrainCells = labelCellCorespondingToFeatureIdx[np.invert(isCellTest)]
-        selectedTestCells = labelCellCorespondingToFeatureIdx[isCellTest]
-        X_train = self.features.iloc[selectedTrainCells, tillProperty:].to_numpy()
-        X_test = self.features.iloc[selectedTestCells, tillProperty:].to_numpy()
-        return X_train, X_test
 
     def findCorrespondingFeatureRow(self, labelIdx, columnsNeedingToFit,
                                     correspondingFeatureColumns):
@@ -156,96 +146,87 @@ class PredictonModelCreator (object):
 
     def trainModel(self, X_train, y_train, nSplits=5, seed=42,
                    usePreviousTrainedModelsIfPossible=True):
-        xFold = BalancedXFold(n_splits=nSplits, random_state=seed)
-        self.cvModels = []
-        nrOfPreviouslyDOneCVModles = 0
-        alreadyRunEncapsulatedModels = []
+        self.cvModels, self.alreadyRunEncapsulatedModels = [], []
+        self.nrOfPreviouslyDOneCVModles = 0
+        self.currentSplit = 1
+        self.allTrainPerfromance, self.allValidationPerfromance = [], []
+        self.valXs, self.valYs = [], []
         if self.usePreviouslyTrainedModels is None:
-            modelFilename = self.folderToSaveVal + "normalFittedModelEncaps.pkl"
+            self.modelFilename = self.folderToSaveVal + "normalFittedModelEncaps.pkl"
         else:
-            modelFilename = self.folderToSaveVal + "ReFittedModelEncaps.pkl"
+            self.modelFilename = self.folderToSaveVal + "ReFittedModelEncaps.pkl"
         if not self.folderToSaveVal is None and usePreviousTrainedModelsIfPossible is True:
-            if Path(modelFilename).is_file():
-                alreadyRunEncapsulatedModels = pickle.load(open(modelFilename, "rb"))
-                nrOfPreviouslyDOneCVModles = len(alreadyRunEncapsulatedModels)
-        allTrainPerfromance = []
-        allValidationPerfromance = []
-        currentSplit = 1
-        if self.useOnlyTwo:
-            avgConfMt = np.zeros((3,3))
+            if Path(self.modelFilename).is_file():
+                self.alreadyRunEncapsulatedModels = pickle.load(open(self.modelFilename, "rb"))
+                self.nrOfPreviouslyDOneCVModles = len(self.alreadyRunEncapsulatedModels)
+        if type(nSplits) == int:
+            self.trainBasicCrossValSplit(X_train, y_train, nSplits, seed)
         else:
-            avgConfMt = np.zeros((2,2))
-        valXs, valYs = [], []
+            self.trainPerPlantSplit(X_train, y_train)
+        if not self.folderToSaveVal is None:
+            Path(self.folderToSaveVal).mkdir(parents=True, exist_ok=True)
+            pickle.dump(self.valXs, open(self.folderToSaveVal+"valXs.pkl", "wb"))
+            pickle.dump(self.valYs, open(self.folderToSaveVal+"valYs.pkl", "wb"))
+
+    def trainBasicCrossValSplit(self, X_train, y_train, nSplits, seed):
+        xFold = BalancedXFold(n_splits=nSplits, random_state=seed)
         for trainIdx, validationIdx in xFold.split(X_train, y_train):
             if self.printCurrentSplit or True:
                 print("split {}/{}".format(currentSplit, nSplits))
-            currentX_Train = X_train[trainIdx, :]
-            currenty_Train = y_train[trainIdx]
-            validationX = X_train[validationIdx, :]
-            validationy = y_train[validationIdx]
-            if not self.normaliseTrainTestData and self.normaliseTrainValTestData:
-                currentX_Train, normParameters = self.doZNormalise(currentX_Train, returnParameter=True)
-                validationX = self.doZNormalise(validationX, useParameters=normParameters)
-            if self.printLabelsAndCount:
-                print("train", np.unique(currenty_Train, return_counts=True))
-                print("val", np.unique(validationy, return_counts=True))
-            validationX, validationy = self.balanceData(validationX, validationy)
-            valXs.append(validationX)
-            valYs.append(validationy)
-            if self.usePreviouslyTrainedModels is None:
-                print("fitting model {}".format(currentSplit))
-                notUsedEnsamble = (self.modelEnsambleNumber == 1 or self.modelEnsambleNumber == False) and not (self.nestedModelProp is True)
-                if currentSplit > nrOfPreviouslyDOneCVModles:# continue here <------------------------------
-                    model = self.calcModel(currentX_Train, currenty_Train,
-                                                      validationX, validationy,
-                                                      selectedData=self.selectedData)
-                    if not self.folderToSaveVal is None:
-                        alreadyRunEncapsulatedModels.append(model)
-                        pickle.dump(alreadyRunEncapsulatedModels, open(modelFilename, "wb"))
-                else:
-                    model = alreadyRunEncapsulatedModels[currentSplit-1]
-                self.cvModels.append(model.GetModel())
-                trainPerformance = model.TestModel(currentX_Train, currenty_Train)
-                if notUsedEnsamble is False:
-                    model.PrintNrOfTiesBetweenCount("from train data")
-                validationPerformance = model.TestModel(validationX, validationy)
-                if notUsedEnsamble is False:
-                    model.PrintNrOfTiesBetweenCount("from val data")
-            else:
-                print("refitting previous trained model {}".format(currentSplit))
-                model = self.usePreviouslyTrainedModels[currentSplit-1].best_estimator_
-                model.fit(currentX_Train, currenty_Train)
-            y_pred = model.predict(validationX)
-            allTrainPerfromance.append(trainPerformance)
-            allValidationPerfromance.append(validationPerformance)
-            currentSplit += 1
-        if not self.folderToSaveVal is None:
-            Path(self.folderToSaveVal).mkdir(parents=True, exist_ok=True)
-            pickle.dump(valXs, open(self.folderToSaveVal+"valXs.pkl", "wb"))
-            pickle.dump(valYs, open(self.folderToSaveVal+"valYs.pkl", "wb"))
-        self.allTrainPerfromance = allTrainPerfromance
-        self.allValidationPerfromance = allValidationPerfromance
+            trainPerformance, validationPerformance = self.trainAndValidateModel(X_train, y_train, trainIdx, validationIdx)
+            self.allTrainPerfromance.append(trainPerformance)
+            self.allValidationPerfromance.append(validationPerformance)
+            self.currentSplit += 1
 
-    def calcModel(self, currentX_Train, currenty_Train,
-                  validationX, validationy, selectedData=1):
-        nrOfTrainSamples = len(currenty_Train)
-        sampleIdx = np.arange(nrOfTrainSamples)
-        nrOfSelectedSamples = int(nrOfTrainSamples*selectedData)
-        np.random.shuffle(sampleIdx)
-        selectedSampleIndices = sampleIdx[:nrOfSelectedSamples]
-        selectedX_train = currentX_Train[selectedSampleIndices]
-        selectedy_train = currenty_Train[selectedSampleIndices]
-        selectedX_train, selectedy_train = self.balanceData(selectedX_train, selectedy_train)
-        model = NestedModelCreator(selectedX_train, selectedy_train,
-                                  validationX, validationy, modelType=self.modelType,
-                                  performanceModus="all performances", # "accuracy",
-                                  doHyperParameterisation=self.doHyperParameterisation,
-                                  hyperParameterRange=self.hyperParameterRange,
-                                  hyperParameters=self.hyperParameters,
-                                  parametersToAddOrOverwrite=self.parametersToAddOrOverwrite,
-                                  nestedModelProp=self.nestedModelProp,
-                                  nrOfClasses=self.nrOfClasses)
-        return model
+    def trainPerPlantSplit(self, X_train, y_train, plantNameColIdx=0):
+        plantOfTrainData = self.features.iloc[np.invert(self.isCellTest), plantNameColIdx].to_numpy()
+        _, uniqueIdx = np.unique(plantOfTrainData, return_index=True)
+        uniquePlantNames = plantOfTrainData[uniqueIdx]
+        for currentValidationPlant in uniquePlantNames:
+            if self.printCurrentSplit or True:
+                print("val plant {} with split {}/{}".format(currentValidationPlant, currentSplit, nSplits))
+            isValidationPlant = np.isin(plantOfTrainData, currentValidationPlant)
+            validationIdx, trainIdx = np.where(isValidationPlant)[0], np.where(np.invert(isValidationPlant))[0]
+            trainPerformance, validationPerformance = self.trainAndValidateModel(X_train, y_train, trainIdx, validationIdx)
+            self.allTrainPerfromance.append(trainPerformance)
+            self.allValidationPerfromance.append(validationPerformance)
+            self.currentSplit += 1
+
+    def trainAndValidateModel(self, X, y, trainIdx, validationIdx):
+        currentX_Train, validationX = X[trainIdx, :], X[validationIdx, :]
+        currentY_Train, validationY = y[trainIdx], y[validationIdx]
+        if not self.normaliseTrainTestData and self.normaliseTrainValTestData:
+            currentX_Train, normParameters = self.doZNormalise(currentX_Train, returnParameter=True)
+            validationX = self.doZNormalise(validationX, useParameters=normParameters)
+        if self.printLabelsAndCount:
+            print("train", np.unique(currentY_Train, return_counts=True))
+            print("val", np.unique(validationY, return_counts=True))
+        if self.balanceData:
+            currentX_Train, currentY_Train = self.balanceData(currentX_Train, currentY_Train)
+            validationX, validationY = self.balanceData(validationX, validationY)
+        self.valXs.append(validationX)
+        self.valYs.append(validationY)
+        if self.usePreviouslyTrainedModels is None:
+            if self.currentSplit > self.nrOfPreviouslyDOneCVModles:
+                if self.verbosity > 0:
+                    print("train model {}".format(self.currentSplit))
+                model = self.trainModelWith(currentX_Train, currentY_Train, validationX, validationY)
+            else:
+                model = self.alreadyRunEncapsulatedModels[self.currentSplit-1]
+        else:
+            if self.verbosity > 0:
+                print("refitting previous trained model {}".format(self.currentSplit))
+            model = self.usePreviouslyTrainedModels[self.currentSplit-1].best_estimator_
+            model.fit(currentX_Train, currentY_Train)
+        self.cvModels.append(model.GetModel())
+        trainPerformance = model.TestModel(currentX_Train, currentY_Train)
+        notUsedEnsamble = (self.modelEnsambleNumber == 1 or self.modelEnsambleNumber == False) and not (self.nestedModelProp is True)
+        if notUsedEnsamble is False:
+            model.PrintNrOfTiesBetweenCount("from train data")
+        validationPerformance = model.TestModel(validationX, validationY)
+        if notUsedEnsamble is False:
+            model.PrintNrOfTiesBetweenCount("from val data")
+        return trainPerformance, validationPerformance
 
     def balanceData(self, usedX_train, usedY_train):
         label, counts = np.unique(usedY_train, return_counts=True)
@@ -272,6 +253,21 @@ class PredictonModelCreator (object):
         usedY_train = copy.deepcopy(usedY_train[selectedIdx])
         usedX_train = copy.deepcopy(usedX_train[selectedIdx])
         return usedX_train, usedY_train
+
+    def trainModelWith(self, currentX_Train, currentY_Train, validationX, validationY):
+        model = NestedModelCreator(currentX_Train, currentY_Train,
+                                  validationX, validationY, modelType=self.modelType,
+                                  performanceModus="all performances",
+                                  doHyperParameterisation=self.doHyperParameterisation,
+                                  hyperParameterRange=self.hyperParameterRange,
+                                  hyperParameters=self.hyperParameters,
+                                  parametersToAddOrOverwrite=self.parametersToAddOrOverwrite,
+                                  nestedModelProp=self.nestedModelProp,
+                                  nrOfClasses=self.nrOfClasses)
+        if not self.folderToSaveVal is None:
+            self.alreadyRunEncapsulatedModels.append(model)
+            pickle.dump(self.alreadyRunEncapsulatedModels, open(self.modelFilename, "wb"))
+        return model
 
     def testModelOn(self, X, y):
         pass
