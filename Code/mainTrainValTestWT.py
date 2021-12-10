@@ -9,7 +9,7 @@ def main():
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
     runDivEventPred = True
-    usePreviousTrainedModelsIfPossible = True
+    usePreviousTrainedModelsIfPossible = False
     runModelTraining = True
     runModelTesting = False
     onlyTestModelWithoutTrainingData = False
