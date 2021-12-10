@@ -25,6 +25,7 @@ class PredictonManager (object):
                  testPlants=["P2"], timePointsPerPlant=5, centralCellsDict=None,
                  modelType = {"modelType":"svm","kernel":"rbf"},
                  rebuildData=False, saveRecreatedData=True,
+                 nSplits=5,
                  runModelTraining=True, runModelTesting=False,
                  useSpecificTestModelFilename=None,
                  normaliseOnTestData=False,
@@ -57,6 +58,7 @@ class PredictonManager (object):
         self.timePointsPerPlant = timePointsPerPlant
         self.rebuildData = rebuildData
         self.saveRecreatedData = saveRecreatedData
+        self.nSplits = nSplits
         self.simplifyLabels = simplifyLabels
         self.modelType = modelType
         self.dataFolder = dataFolder
@@ -295,6 +297,7 @@ class PredictonManager (object):
                                                      normaliseTrainValTestData=self.normaliseTrainValTestData,
                                                      excludeDividingNeighboursDict=self.excludeDividingNeighboursDict,
                                                      seed=self.seed,
+                                                     nSplits=self.nSplits,
                                                      doHyperParameterisation=self.doHyperParameterisation,
                                                      hyperParameterRange=self.hyperParameterRange,
                                                      hyperParameters=self.hyperParameters,

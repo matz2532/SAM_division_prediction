@@ -17,8 +17,8 @@ def main():
     useManualCentres = True
     # print options:
     printBalancedLabelCount = True
-    nestedModelProp = False
-    selectedData = 1
+    nSplits = "per plant"
+    balanceData = False
     hyperParameters = None
     modelNameExtension = ""
     centralCellsDict = {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
@@ -35,7 +35,7 @@ def main():
     normaliseTrainValTestData = False
     featureProperty = "combinedTable"
     if runDivEventPred:
-        for set in ["area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]: #"allTopos", 
+        for set in ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/manualCentres/{}/".format(set)
@@ -54,6 +54,8 @@ def main():
                                    featureAndLabelFolder=setFeatureAndLabelFolder,
                                    givenFeatureName=givenFeatureName,
                                    resultsFolder=newResultsFolder,
+                                   nSplits=nSplits,
+                                   balanceData=balanceData,
                                    modelType=modelType,
                                    usePreviousTrainedModelsIfPossible=usePreviousTrainedModelsIfPossible,
                                    runModelTraining=runModelTraining,
