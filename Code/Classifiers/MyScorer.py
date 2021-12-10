@@ -44,8 +44,14 @@ class MyScorer (object):
 
     def calcWeightLabelOccurence(self, y):
         n_samples = len(y)
-        n_classes = len(np.unique(y))
-        return n_samples / (n_classes * np.bincount(y))
+        uniqueLabel, counts = np.unique(y, return_counts=True)
+        n_classes = len(uniqueLabel)
+        weightOfUniqueLabels = dict(zip(uniqueLabel, n_samples / (n_classes * counts)))
+        sample_weight = np.zeros(n_samples)
+        for label in uniqueLabel:
+            isLabel = np.isin(y, label)
+            sample_weight[isLabel] = weightOfUniqueLabels[label]
+        return sample_weight
 
     def calcF1Score(self, y_true, y_pred, inPercent=True, setAverage="not set"):
         if setAverage == "not set":
