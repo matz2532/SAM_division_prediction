@@ -172,7 +172,7 @@ class PredictonModelCreator (object):
         xFold = BalancedXFold(n_splits=nSplits, random_state=seed)
         for trainIdx, validationIdx in xFold.split(X_train, y_train):
             if self.printCurrentSplit or True:
-                print("split {}/{}".format(self.currentSplit, nSplits))
+                print("split {}/{}".format(self.currentSplit, self.nSplits))
             trainPerformance, validationPerformance = self.trainAndValidateModel(X_train, y_train, trainIdx, validationIdx)
             self.allTrainPerfromance.append(trainPerformance)
             self.allValidationPerfromance.append(validationPerformance)
@@ -184,7 +184,7 @@ class PredictonModelCreator (object):
         uniquePlantNames = plantOfTrainData[uniqueIdx]
         for currentValidationPlant in uniquePlantNames:
             if self.printCurrentSplit or True:
-                print("val plant {} with split {}/{}".format(currentValidationPlant, self.currentSplit, nSplits))
+                print("val plant {} with split {}/{}".format(currentValidationPlant, self.currentSplit, self.nSplits))
             isValidationPlant = np.isin(plantOfTrainData, currentValidationPlant)
             validationIdx, trainIdx = np.where(isValidationPlant)[0], np.where(np.invert(isValidationPlant))[0]
             trainPerformance, validationPerformance = self.trainAndValidateModel(X_train, y_train, trainIdx, validationIdx)
