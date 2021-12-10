@@ -79,11 +79,8 @@ class ModelCreator (object):
             model = self.trainModelWithParameters(self.hyperParameters)
             model.fit(X_train, y_train)
         else:
-            model = self.setDefaultModel()
-            model.fit(X_train, y_train)
-        if self.modelType == "k-neighbors":
-            self.hyperParameters = model.get_params()
-            model = model.best_estimator_
+            print("This is not yet implemented.")
+            sys.exit()
         return model, time.time()-startingTime
 
     def perfromeHyperParameterisation(self, X_train, y_train, parameters=None):
@@ -93,49 +90,19 @@ class ModelCreator (object):
         if isinstance(self.parametersToAddOrOverwrite, dict):
             parameters = self.addOrOverwriteParameters(parameters)
         model = self.setDefaultModel()
-        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=100, verbose=1)#, n_jobs=1, cv=10)
+        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=100, verbose=1)
         model.fit(X_train, y_train)
         return model, model.best_params_, model.cv_results_
 
     def calcDefaultHyperPar(self, X_train):
-        # defaultGamma = [1/X_train.shape[1], 1/(X_train.shape[1]*np.var(X_train))]
-        # print("defaultGamma", defaultGamma)
-        # gammaSmall = [0.00000001, 0.0000001, 0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100] #np.linspace(0.00000001, 0.0001, 30, endpoint=False)
-        gammaSmall = np.linspace(0.00005,0.005,51) #np.linspace(0.00000001, 0.0001, 30, endpoint=False)
-        gammaBig = np.linspace(0.008, 0.1, 10)
-        # gammaSmall = np.linspace(0.0001, 1, 30, endpoint=False)
-        # gammaBig = np.linspace(0.01, 1000, 15)
-        # gammaParameter = np.concatenate([gammaSmall, gammaBig, defaultGamma])
-        gammaParameter = np.concatenate([np.linspace(0.0001, 0.0002625, 14)]) # every 0.0000125
-        cSmall = np.linspace(0.001, 1, 30, endpoint=False)
-        cBig = np.linspace(1, 1000, 40, endpoint=False)
-        cParameter = np.concatenate([cSmall, cBig])
-        cParameter = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 3, 4, 5]
-        cBig = np.linspace(5, 1000, 5, endpoint=False)
-        cParameter = np.concatenate([cParameter, cBig])
-        cParameter = np.concatenate([np.arange(100, 981, 75)])
         if self.kernel == "rbf":
             density = 101
-            parameters = {'gamma': np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)]), 'C':np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])}
-        elif self.kernel == "poly":
-            parameters = {"degree": np.arange(3, 9), "gamma":gammaParameter, "C":cParameter}
+            gamma = np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)])
+            C = np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])
+            parameters = {'gamma' : gamma, 'C' : C}
         else:
-            parameters = {"C":cParameter, "gamma":gammaParameter}#{"C":[0.001, 0.1, 1, 5]}#
-            #improved sigmoid parameters
-            cParameter = np.concatenate([[1,2,3,4,5,10,15,20,30,40,50,55,60,75,100,125,150, 175,200, 204, 250, 300, 350, 400,500,550, 600, 700, 800, 900, 1000, 1005, 1010, 1015]])
-            gammaParameter = np.concatenate([np.linspace(0.00001, 0.0001, 18, False), np.linspace(0.001, 0.004, 7)])
-            coef0Parameter = np.concatenate([np.linspace(0, 0.5, 31)]) # alternatives would be 25, 31, or 49
-            parameters = {"C":cParameter, "gamma":gammaParameter, "coef0":coef0Parameter}
-        if self.kernel == "poly" or (self.kernel == "sigmoid" and not "coef0" in parameters):
-            parameters["coef0"] = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 3, 4, 5, 10]
-
-        # cParameter = np.concatenate([np.linspace(1, 10, 41, False), np.linspace(150, 250, 41, True), [204]])
-        # gammaParameter = np.concatenate([np.linspace(0.000001, 0.00001, 41, False), np.linspace(0.00001, 0.0001, 41, False)])
-        # parameters = {"C":cParameter, "gamma":gammaParameter}
-#         parameters = {'gamma': [5e-05, 0.000149, 0.000248, 0.000347, 0.000446, 0.000545, 0.000644, 0.000743, 0.000842, 0.000941, 0.00104, 0.001139, 0.001238, 0.001337, 0.001436, 0.001535, 0.001634, 0.001733, 0.001832, 0.001931, 0.00203, 0.002129, 0.002228, 0.002327, 0.002426, 0.002525, 0.002624, 0.002723, 0.002822, 0.002921, 0.00302, 0.003119, 0.003218, 0.003317, 0.003416, 0.003515, 0.003614, 0.003713, 0.003812, 0.003911, 0.00401, 0.004109, 0.004208, 0.004307, 0.004406, 0.004505, 0.004604, 0.004703, 0.004802, 0.004901, 0.005, 0.008, 0.0182222222, 0.0284444444, 0.0386666667, 0.0488888889, 0.0591111111, 0.0693333333, 0.0795555556, 0.0897777778, 0.1, 0.0212765957, 0.0226984962],
-# 'C': [1e-05, 0.0001, 0.001, 0.01, 0.1, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 5.0, 204.0, 403.0, 602.0, 801.0]}
-        # otherFeatureSetsHv3\diffPar_concat_normPerTissue\svm_k2h_combinedTable_l3f0n2c0ex1
-        # parameters = {"C": np.arange(1, 251), "gamma":  np.linspace(1.5e-5, 6.5e-5, 161, False)}
+            print("The kernel {} is not yet implemented.".format(self.kernel))
+            sys.exit()
         return parameters
 
     def addOrOverwriteParameters(self, parameters):
@@ -161,22 +128,10 @@ class ModelCreator (object):
 
     def setDefaultModel(self):
         if self.modelType == "svm":
-            model = svm.SVC(kernel=self.kernel, gamma=self.gamma, C=self.C)
-        elif self.modelType == "k-neighbors":
-            parameters = {"n_neighbors":np.arange(2, 15)}
-            model = GridSearchCV(KNeighborsClassifier(), parameters, cv=3)
-        elif self.modelType == "random forest":
-            model = RandomForestClassifier(random_state=self.seed,
-                                           n_estimators=self.nEstimators,
-                                           max_depth=8, #self.max_depth
-                                           min_samples_split=self.min_samples_split,
-                                           min_samples_leaf=self.min_samples_leaf,
-                                           max_features=self.max_features,
-                                           max_leaf_nodes=self.max_leaf_nodes,
-                                           max_samples=self.max_samples,
-                                           n_jobs=-1)
+            model = svm.SVC(class_weight="balanced", kernel=self.kernel, gamma=self.gamma, C=self.C)
         else:
-            model = LogisticRegression(random_state=self.seed, solver='lbfgs', max_iter=20000)
+            print("The model type {} is not yet implemented.".format(self.modelType))
+            sys.exit()
         return model
 
     def trainModelWithParameters(self, hyperParameters):
@@ -186,23 +141,6 @@ class ModelCreator (object):
                 model = svm.SVC(kernel=kernel, gamma=hyperParameters["gamma"], C=hyperParameters["C"])
             else:
                 model = svm.SVC(kernel=kernel, C=hyperParameters["C"])
-        elif self.modelType == "random forest":
-            seed = hyperParameters["seed"] if "seed" in hyperParameters else self.seed
-            max_depth = hyperParameters["max_depth"] if "max_depth" in hyperParameters else self.max_depth
-            n_estimators = hyperParameters["n_estimators"] if "n_estimators" in hyperParameters else self.n_estimators
-            min_samples_split = hyperParameters["min_samples_split"] if "min_samples_split" in hyperParameters else self.min_samples_split
-            min_samples_leaf = hyperParameters["min_samples_leaf"] if "min_samples_leaf" in hyperParameters else self.min_samples_leaf
-            max_features = hyperParameters["max_features"] if "max_features" in hyperParameters else self.max_features
-            max_leaf_nodes = hyperParameters["max_leaf_nodes"] if "max_leaf_nodes" in hyperParameters else self.max_leaf_nodes
-            max_samples = hyperParameters["max_samples"] if "max_samples" in hyperParameters else self.max_samples
-            model = RandomForestClassifier(random_state=seed,
-                                           n_estimators=n_estimators,
-                                           max_depth=max_depth,
-                                           min_samples_split=min_samples_split,
-                                           min_samples_leaf=min_samples_leaf,
-                                           max_features=max_features,
-                                           max_leaf_nodes=max_leaf_nodes,
-                                           max_samples=max_samples)
         else:
             print("The model type {} is not yet implemented.".format(self.modelType))
             sys.exit()
@@ -217,11 +155,11 @@ class ModelCreator (object):
             return accuracy
         else:
             y_scores = model.decision_function(X_test)
-            f1Score, accuracy, TPRate, TNRate, auc = MyScorer(y_test, predictions,
+            f1Score, accuracy, precision, auc = MyScorer(y_test, predictions,
                                                          y_scores=y_scores,
                                                          nrOfClasses=self.nrOfClasses
                                                          ).GetAllScores()
-            return [f1Score, accuracy, TPRate, TNRate, auc]
+            return [f1Score, accuracy, precision, auc]
 
     def GetModel(self):
         if not self.model is False:
