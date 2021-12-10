@@ -13,24 +13,39 @@ from sklearn.preprocessing import label_binarize
 
 class MyScorer (object):
 
-    def __init__(self, y_true=None, y_pred=None, setAverage="not set", y_scores=None, nrOfClasses=2):
+    f1Score=np.NaN
+    accuracy=np.NaN
+    precision=np.NaN
+    TPRate=np.NaN
+    FPRate=np.NaN
+    auc=np.NaN
+
+    def __init__(self, y_true=None, y_pred=None, setAverage="not set", y_scores=None, nrOfClasses=2, weightLabelOccurence=True):
         self.y_true = y_true
         self.y_pred = y_pred
         self.y_scores = y_scores
         self.nrOfClasses = nrOfClasses
+        self.weightLabelOccurence = weightLabelOccurence
         isYTrueGiven = not self.y_true is None
         isYPredGiven = not self.y_pred is None
         if isYTrueGiven and isYPredGiven:
             self.calcAllScores(self.y_true, self.y_pred, setAverage=setAverage, y_scores=self.y_scores)
 
     def calcAllScores(self, y_true, y_pred, setAverage="not set", y_scores=None):
+        if self.weightLabelOccurence:
+            self.sample_weight = self.calcWeightLabelOccurence(y_true)
+        else:
+            self.sample_weight = None
         self.f1Score = self.calcF1Score(y_true, y_pred, setAverage=setAverage)
         self.accuracy = self.calcAccuracy(y_true, y_pred)
-        self.TPRate = self.calcTruePositiveRate(y_true, y_pred)
-        self.FPRate = self.calcFalsePositiveRate(y_true, y_pred)
+        self.precision = self.calcPrecision(y_true, y_pred)
         if not y_scores is None:
             self.auc = self.calcAUC(y_true, y_scores)
-        # self.TNRate = self.calcTrueNegativeRate(y_true, y_pred)
+
+    def calcWeightLabelOccurence(self, y):
+        n_samples = len(y)
+        n_classes = len(np.unique(y))
+        return n_samples / (n_classes * np.bincount(y))
 
     def calcF1Score(self, y_true, y_pred, inPercent=True, setAverage="not set"):
         if setAverage == "not set":
@@ -40,21 +55,31 @@ class MyScorer (object):
                 average = "binary"
         else:
             average = setAverage
-        f1Score = metrics.f1_score(y_true, y_pred, average=average)
+        f1Score = metrics.f1_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
         if inPercent:
             return 100*f1Score
         else:
             return f1Score
 
     def calcAccuracy(self, y_true, y_pred, inPercent=True):
-        correctClassification = 0
-        for i in range(len(y_pred)):
-            if y_true[i] == y_pred[i]:
-                correctClassification += 1
+        accuracy = metrics.accuracy_score(y_true, y_pred, sample_weight=self.sample_weight)
         if inPercent:
-            return 100*correctClassification/len(y_pred)
+            return 100*accuracy
+        return accuracy
+
+    def calcPrecision(self, y_true, y_pred, inPercent=True, setAverage="not set"):
+        if setAverage == "not set":
+            if self.nrOfClasses > 2:
+                average = None
+            else:
+                average = "binary"
         else:
-            return correctClassification/len(y_pred)
+            average = setAverage
+        f1Score = metrics.precision_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
+        if inPercent:
+            return 100*f1Score
+        else:
+            return f1Score
 
     def calcTruePositiveRate(self, y_true, y_pred, inPercent=True):
         confusionMatrix = self.calcTestedConfusionMatrix(y_true, y_pred)
@@ -130,11 +155,11 @@ class MyScorer (object):
         if self.nrOfClasses == 3:
             binarized_y_true = label_binarize(y_true, classes=[0, 1, 2])
             fpr, tpr, _ = roc_curve(binarized_y_true.ravel(), y_scores.ravel(),
-                                sample_weight=None,
+                                sample_weight=self.sample_weight,
                                 drop_intermediate=True)
         else:
             fpr, tpr, _ = roc_curve(y_true, y_scores,
-                                sample_weight=None,
+                                sample_weight=self.sample_weight,
                                 drop_intermediate=True)
         roc_auc = auc(fpr, tpr)
         return roc_auc
@@ -147,7 +172,7 @@ class MyScorer (object):
             self.calcAllScores(y_true, y_pred, setAverage=setAverage, y_scores=y_scores)
         elif self.y_true is None or self.y_pred is None:
             assert False, "You need to give y_true and y_pred in GetAllScores() or while object initialisation."
-        performance = [self.f1Score, self.accuracy, self.TPRate, self.FPRate]
+        performance = [self.f1Score, self.accuracy, self.precision]
         if return1DList:
             if type(performance[0]) == np.ndarray:
                 for f1 in performance[0][::-1]:
@@ -167,7 +192,7 @@ class MyScorer (object):
     def CalculateRocCurve(self, y_true, y_prob):
         n_classes = len(np.unique(y_true))
         if n_classes == 2:
-            fpr, tpr, thresholds = metrics.roc_curve(y_true, y_prob)
+            fpr, tpr, thresholds = metrics.roc_curve(y_true, y_prob, sample_weight=self.sample_weight)
         else:
             self.calcMultiClassOrcCurve(y_true, y_prob, n_classes)
         return fpr, tpr, thresholds
@@ -178,7 +203,7 @@ class MyScorer (object):
         thresholds = dict()
         roc_auc = dict()
         for i in range(n_classes):
-            fpr[i], tpr[i], thresholds[i] = metrics.roc_curve(y_true[:, i], y_prob[:, i])
+            fpr[i], tpr[i], thresholds[i] = metrics.roc_curve(y_true[:, i], y_prob[:, i], sample_weight=self.sample_weight)
             roc_auc[i] = metrics.auc(fpr[i], tpr[i])
 
         # Plot of a ROC curve for a specific class
