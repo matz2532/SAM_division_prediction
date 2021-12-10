@@ -491,11 +491,11 @@ class PredictonManager (object):
         if not self.useOnlyTwo:
             trainP = [self.combineToF1(i) for i in trainP]
             valP = [self.combineToF1(i) for i in valP]
-            columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train TPR", "train FPR", "train Auc",
-                       "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val TPR", "val FPR", "val Auc"]
+            columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train precision", "train Auc",
+                       "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val Auc"]
         else:
-            columns = ["train F1", "train Acc", "train TPR", "train FPR", "train Auc",
-                       "val F1", "val Acc", "val TPR", "val FPR", "val Auc"]
+            columns = ["train F1", "train Acc", "train precision", "train Auc",
+                       "val F1", "val Acc", "val precision", "val Auc"]
         trainP = np.asarray(trainP)
         valP = np.asarray(valP)
         try:
