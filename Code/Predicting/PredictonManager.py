@@ -602,6 +602,7 @@ class PredictonManager (object):
         else:
             myModelCreator = NestedModelCreator(X_train, y_train,
                                                 performanceModus="all performances 1D list",
+                                                doHyperParameterisation=True,
                                                 nrOfClasses=2 if self.useOnlyTwo is True else 3)
             pickle.dump(myModelCreator, open(testModelFilename, "wb"))
         trainP = myModelCreator.TestModel(X_train, y_train)
