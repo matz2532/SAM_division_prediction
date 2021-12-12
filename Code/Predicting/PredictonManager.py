@@ -347,7 +347,7 @@ class PredictonManager (object):
             if self.onlyTestModelWithoutTrainingData or len(X_train) == 0:
                 self.onlyTestModelOnTestData(X_test, y_test, save=True, printOutNrOfTrainTestSamples=self.printBalancedLabelCount)
             else:
-                self.testModels(models, X_train,  y_train, X_test, y_test,
+                self.testModels(X_train,  y_train, X_test, y_test,
                                 printOutNrOfTrainTestSamples=self.printBalancedLabelCount)
         if self.saveLearningCurve:
             if self.doHyperParameterisation:
@@ -583,11 +583,12 @@ class PredictonManager (object):
         pickle.dump([X_test], open(self.resultsFolder+"testXs.pkl", "wb"))
         pickle.dump([y_test], open(self.resultsFolder+"testYs.pkl", "wb"))
 
-    def testModels(self, models, X_train, y_train, X_test, y_test, redoModel=True,
+    def testModels(self, X_train, y_train, X_test, y_test, redoModel=True,
                    perfromanceTrainValDf=None, printOut=False, save=True,
                    printOutNrOfTrainTestSamples=True):
-        X_train, y_train = DataBalancer(X_train, y_train).GetBalancedData()
-        X_test, y_test = DataBalancer(X_test, y_test).GetBalancedData()
+        if self.balanceData:
+            X_train, y_train = DataBalancer(X_train, y_train).GetBalancedData()
+            X_test, y_test = DataBalancer(X_test, y_test).GetBalancedData()
         self.dumpTestXAndYs(X_test, y_test)
         if printOutNrOfTrainTestSamples:
             print("train labels:" , np.unique(y_train, return_counts=True))
@@ -599,21 +600,13 @@ class PredictonManager (object):
         if Path(testModelFilename).is_file() and not redoModel:
             myModelCreator = pickle.load(open(testModelFilename, "rb"))
         else:
-            testModel = models[0]
-            myModelCreator = NestedModelCreator(performanceModus="all performances 1D list",
-                                                nestedModelProp=self.nestedModelProp,
+            myModelCreator = NestedModelCreator(X_train, y_train,
+                                                performanceModus="all performances 1D list",
                                                 nrOfClasses=2 if self.useOnlyTwo is True else 3)
-            myModelCreator.SetModel(testModel)
-            myModelCreator.TrainModel(X_train,  y_train, trainSetModel=True)
             pickle.dump(myModelCreator, open(testModelFilename, "wb"))
         trainP = myModelCreator.TestModel(X_train, y_train)
         testP = myModelCreator.TestModel(X_test, y_test)
-        if not self.useOnlyTwo:
-            columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train TPR", "train FPR", "train Auc",
-                       "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val TPR", "val FPR", "val Auc"]
-        else:
-            columns = ["train F1", "train Acc", "train TPR", "train FPR", "train Auc",
-                       "val F1", "val Acc", "val TPR", "val FPR", "val Auc"]
+        columns = self.getPerformanceColumnNames(excludeTrainingPerformance=True)
         if perfromanceTrainValDf is None:
             perfromanceTrainValDf = pd.read_csv(self.resultsFolder+"results.csv", index_col=0)
         trainP = np.asarray(trainP)
