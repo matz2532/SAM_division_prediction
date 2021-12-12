@@ -10,8 +10,8 @@ def main():
     modelType =  {"modelType":"svm","kernel":"rbf"}
     runDivEventPred = True
     usePreviousTrainedModelsIfPossible = False
-    runModelTraining = True
-    runModelTesting = False
+    runModelTraining = False
+    runModelTesting = True
     onlyTestModelWithoutTrainingData = False
     saveLearningCurve = False
     useManualCentres = True
