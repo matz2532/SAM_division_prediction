@@ -13,15 +13,11 @@ class ModelCreator (object):
 
     def __init__(self, X_train=False, y_train=False, X_test=False, y_test=False,
                 modelType="svm", kernel="linear", gamma="scale", C=1.0,
-                nEstimators=100, maxDepth=None, minSampleSplit=2,
-                minSampleLeaf=1, maxFeatures="auto", maxLeafNodes=None, maxSamples=None,
                 hyperParameters=None, performanceModus=None,
                 doHyperParameterisation=False, hyperParameterRange=None, parametersToAddOrOverwrite=None,
                 seed=42):
         self.modelType = modelType
-        self.setDefaultModelParameters(kernel, gamma, C, maxDepth, maxFeatures,
-                                       nEstimators, minSampleLeaf, minSampleSplit,
-                                       maxLeafNodes, maxSamples)
+        self.setDefaultModelParameters(kernel, gamma, C)
         self.hyperParameters = hyperParameters
         self.allHyperparameterResults = None
         self.performanceModus = performanceModus
@@ -33,19 +29,10 @@ class ModelCreator (object):
             self.setModelTypeParameters()
         self.initData(X_train, y_train, X_test, y_test)
 
-    def setDefaultModelParameters(self, kernel, gamma, C, maxDepth, maxFeatures,
-                                  nEstimators, minSampleLeaf, minSampleSplit,
-                                  maxLeafNodes, maxSamples):
+    def setDefaultModelParameters(self, kernel, gamma, C):
         self.kernel = kernel
         self.gamma = gamma
         self.C = C
-        self.nEstimators = nEstimators # reduces training time
-        self.max_depth = maxDepth
-        self.min_samples_split = minSampleSplit
-        self.min_samples_leaf = minSampleLeaf
-        self.max_features = maxFeatures # close to sqrt(nFeatures) generally good
-        self.max_leaf_nodes = maxLeafNodes
-        self.max_samples = maxSamples # reduces training time
 
     def setModelTypeParameters(self):
         if "kernel" in self.modelType:

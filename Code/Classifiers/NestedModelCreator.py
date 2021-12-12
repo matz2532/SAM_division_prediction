@@ -9,15 +9,11 @@ class NestedModelCreator (ModelCreator):
 
     def __init__(self, X_train=False, y_train=False, X_test=False, y_test=False,
                 modelType="svm", kernel="linear", gamma="scale", C=1.0,
-                nEstimators=100, maxDepth=None, minSampleSplit=2,
-                minSampleLeaf=1, maxFeatures="auto", maxLeafNodes=None, maxSamples=None,
                 hyperParameters=None, performanceModus="accuracy",
                 doHyperParameterisation=False, hyperParameterRange=None, parametersToAddOrOverwrite=None,
                 seed=42, nestedModelProp=False, nrOfClasses=2):
         self.modelType = modelType
-        self.setDefaultModelParameters(kernel, gamma, C, maxDepth, maxFeatures,
-                                       nEstimators, minSampleLeaf, minSampleSplit,
-                                       maxLeafNodes, maxSamples)
+        self.setDefaultModelParameters(kernel, gamma, C)
         self.performanceModus = performanceModus
         self.doHyperParameterisation = doHyperParameterisation
         self.nrOfClasses = nrOfClasses
