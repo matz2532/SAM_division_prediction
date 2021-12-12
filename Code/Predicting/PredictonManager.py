@@ -490,11 +490,7 @@ class PredictonManager (object):
         if not self.useOnlyTwo:
             trainP = [self.combineToF1(i) for i in trainP]
             valP = [self.combineToF1(i) for i in valP]
-            columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train precision", "train Auc",
-                       "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val Auc"]
-        else:
-            columns = ["train F1", "train Acc", "train precision", "train Auc",
-                       "val F1", "val Acc", "val precision", "val Auc"]
+        columns = self.getPerformanceColumnNames(excludeTrainingPerformance=False)
         trainP = np.asarray(trainP)
         valP = np.asarray(valP)
         try:
@@ -522,6 +518,21 @@ class PredictonManager (object):
         if save:
             performanceDf.to_csv(self.resultsFolder+"results.csv")
         return performanceDf
+
+    def getPerformanceColumnNames(self, excludeTrainingPerformance=False):
+        if not self.useOnlyTwo:
+            if excludeTrainingPerformance:
+                columns = ["val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val Auc"]
+            else:
+                columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train precision", "train Auc",
+                           "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val Auc"]
+        else:
+            if excludeTrainingPerformance:
+                columns = ["val F1", "val Acc", "val precision", "val Auc"]
+            else:
+                columns = ["train F1", "train Acc", "train precision", "train Auc",
+                           "val F1", "val Acc", "val precision", "val Auc"]
+        return columns
 
     def saveFeatures(self, featureArray, name="normalizedFeatures_train.csv", folder=None, columnNames=None):
         if folder is None:
@@ -553,10 +564,7 @@ class PredictonManager (object):
         assert Path(testModelFilename).is_file(), "The filename {} of the model does not exist.".format(testModelFilename)
         myModelCreator = pickle.load(open(testModelFilename, "rb"))
         testP = myModelCreator.TestModel(X_test, y_test)
-        if not self.useOnlyTwo:
-            columns = [ "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val TPR", "val FPR", "val Auc"]
-        else:
-            columns = ["val F1", "val Acc", "val TPR", "val FPR", "val Auc"]
+        columns = self.getPerformanceColumnNames(excludeTrainingPerformance=True)
         performance = np.asarray(testP)
         performanceLen = len(performance)
         rowsToRound4Places = [performanceLen//2 - 1, performanceLen - 1]
