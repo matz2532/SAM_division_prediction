@@ -608,7 +608,7 @@ class PredictonManager (object):
             pickle.dump(myModelCreator, open(testModelFilename, "wb"))
         trainP = myModelCreator.TestModel(X_train, y_train)
         testP = myModelCreator.TestModel(X_test, y_test)
-        columns = self.getPerformanceColumnNames(excludeTrainingPerformance=True)
+        columns = self.getPerformanceColumnNames(excludeTrainingPerformance=False)
         if perfromanceTrainValDf is None:
             perfromanceTrainValDf = pd.read_csv(self.resultsFolder+"results.csv", index_col=0)
         trainP = np.asarray(trainP)
