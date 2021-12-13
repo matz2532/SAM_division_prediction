@@ -8,10 +8,10 @@ def main():
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    runDivEventPred = True
+    runDivEventPred = False
     usePreviousTrainedModelsIfPossible = False
-    runModelTraining = False
-    runModelTesting = True
+    runModelTraining = True
+    runModelTesting = False
     onlyTestModelWithoutTrainingData = False
     saveLearningCurve = False
     useManualCentres = True
