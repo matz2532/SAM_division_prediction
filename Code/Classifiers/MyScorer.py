@@ -160,8 +160,9 @@ class MyScorer (object):
     def calcAUC(self, y_true, y_scores):
         if self.nrOfClasses == 3:
             binarized_y_true = label_binarize(y_true, classes=[0, 1, 2])
+            sample_weight = self.calcWeightLabelOccurence(binarized_y_true.ravel())
             fpr, tpr, _ = roc_curve(binarized_y_true.ravel(), y_scores.ravel(),
-                                sample_weight=self.sample_weight,
+                                sample_weight=sample_weight,
                                 drop_intermediate=True)
         else:
             fpr, tpr, _ = roc_curve(y_true, y_scores,
