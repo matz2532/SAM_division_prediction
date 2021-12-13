@@ -182,9 +182,10 @@ class PredictonModelCreator (object):
         plantOfTrainData = self.features.iloc[np.invert(self.isCellTest), plantNameColIdx].to_numpy()
         _, uniqueIdx = np.unique(plantOfTrainData, return_index=True)
         uniquePlantNames = plantOfTrainData[uniqueIdx]
+        numberOfPlants = len(uniquePlantNames)
         for currentValidationPlant in uniquePlantNames:
             if self.printCurrentSplit or True:
-                print("val plant {} with split {}/{}".format(currentValidationPlant, self.currentSplit, self.nSplits))
+                print("val plant {} with split {}/{}".format(currentValidationPlant, self.currentSplit, numberOfPlants))
             isValidationPlant = np.isin(plantOfTrainData, currentValidationPlant)
             validationIdx, trainIdx = np.where(isValidationPlant)[0], np.where(np.invert(isValidationPlant))[0]
             trainPerformance, validationPerformance = self.trainAndValidateModel(X_train, y_train, trainIdx, validationIdx)
