@@ -81,11 +81,11 @@ class MyScorer (object):
                 average = "binary"
         else:
             average = setAverage
-        f1Score = metrics.precision_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
+        precision = metrics.precision_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
         if inPercent:
-            return 100*f1Score
+            return 100*precision
         else:
-            return f1Score
+            return precision
 
     def calcTruePositiveRate(self, y_true, y_pred, inPercent=True):
         confusionMatrix = self.calcTestedConfusionMatrix(y_true, y_pred)
