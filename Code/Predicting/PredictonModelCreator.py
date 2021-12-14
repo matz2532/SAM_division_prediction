@@ -14,7 +14,7 @@ from sklearn.model_selection import KFold
 
 class PredictonModelCreator (object):
 
-    verbosity=1
+    verbosity=0
 
     def __init__(self, features, labels, testPlants, modelType, nSplits=5,
                  seed=42, folderToSave=None,
