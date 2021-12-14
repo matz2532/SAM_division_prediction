@@ -488,9 +488,48 @@ class PredictonManager (object):
 
     def createModelResultsTxt(self, trainP, valP, save=True, printOut=True):
         if not self.useOnlyTwo:
-            trainP = [self.combineToF1(i) for i in trainP]
-            valP = [self.combineToF1(i) for i in valP]
+            trainP = self.mergeListsInPerformanceArray(trainP, addMeanOfList=True)
+            valP = self.mergeListsInPerformanceArray(valP, addMeanOfList=True)
         columns = self.getPerformanceColumnNames(excludeTrainingPerformance=False)
+        performanceDf = self.combinePerformanceArraysToDataFrame(trainP, valP, columns)
+        if printOut:
+            print(performanceDf.to_string())
+        if save:
+            performanceDf.to_csv(self.resultsFolder+"results.csv")
+        return performanceDf
+
+    def mergeListsInPerformanceArray(self, potentialNestedArray, addMeanOfList=False):
+        mergedPeformanceArray = []
+        for xList in potentialNestedArray:
+            xOfMergedPeformances = []
+            for performance in xList:
+                try:
+                    len(performance)
+                    if addMeanOfList:
+                        xOfMergedPeformances.append(np.mean(performance))
+                    for i in performance:
+                        xOfMergedPeformances.append(i)
+                except:
+                    xOfMergedPeformances.append(performance)
+            mergedPeformanceArray.append(xOfMergedPeformances)
+        return mergedPeformanceArray
+
+    def getPerformanceColumnNames(self, excludeTrainingPerformance=False):
+        if not self.useOnlyTwo:
+            if excludeTrainingPerformance:
+                columns = ["val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val c0 precision", "val c1 precision", "val c2 precision", "val Auc"]
+            else:
+                columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train precision", "train c0 precision", "train c1 precision", "train c2 precision", "train Auc",
+                           "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val c0 precision", "val c1 precision", "val c2 precision", "val Auc"]
+        else:
+            if excludeTrainingPerformance:
+                columns = ["val F1", "val Acc", "val precision", "val Auc"]
+            else:
+                columns = ["train F1", "train Acc", "train precision", "train Auc",
+                           "val F1", "val Acc", "val precision", "val Auc"]
+        return columns
+
+    def combinePerformanceArraysToDataFrame(self, trainP, valP, columns=None):
         trainP = np.asarray(trainP)
         valP = np.asarray(valP)
         try:
@@ -513,26 +552,7 @@ class PredictonManager (object):
         idx.append("mean")
         idx.append("std")
         performanceDf = pd.DataFrame(performanceDf, columns=columns, index=idx)
-        if printOut:
-            print(performanceDf.to_string())
-        if save:
-            performanceDf.to_csv(self.resultsFolder+"results.csv")
         return performanceDf
-
-    def getPerformanceColumnNames(self, excludeTrainingPerformance=False):
-        if not self.useOnlyTwo:
-            if excludeTrainingPerformance:
-                columns = ["val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val Auc"]
-            else:
-                columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train precision", "train Auc",
-                           "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val Auc"]
-        else:
-            if excludeTrainingPerformance:
-                columns = ["val F1", "val Acc", "val precision", "val Auc"]
-            else:
-                columns = ["train F1", "train Acc", "train precision", "train Auc",
-                           "val F1", "val Acc", "val precision", "val Auc"]
-        return columns
 
     def saveFeatures(self, featureArray, name="normalizedFeatures_train.csv", folder=None, columnNames=None):
         if folder is None:
@@ -627,13 +647,6 @@ class PredictonManager (object):
         if save:
             performanceDf.to_csv(self.resultsFolder+"resultsWithTesting.csv")
         return performanceDf
-
-    def combineToF1(self, performance):
-        multiF1 = performance[0]
-        p = [np.mean(multiF1)]
-        p.extend([i for i in multiF1])
-        p.extend(performance[1:])
-        return p
 
     def saveModelProperties(self):
         file = open(self.resultsFolder+"modelProperty.txt", "w")
