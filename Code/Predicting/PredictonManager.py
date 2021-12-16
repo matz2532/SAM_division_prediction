@@ -365,7 +365,7 @@ class PredictonManager (object):
                 hyperparamModels = models
             else:
                 hyperparamModels = None
-            if type(nSplits) == int:
+            if type(self.nSplits) == int:
                 plantNameOfTrainData = None
             else:
                 plantNameOfTrainData = modelCreator.GetPlantNameOfTrainingData()
