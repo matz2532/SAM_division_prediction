@@ -174,18 +174,3 @@ class PredictonEvaluator (object):
 
     def testModelOn(self, X_test, y_test):
         print("Testing is not yet implemented and will be done at the last step.")
-
-def main():
-    selectedFeature = 0
-    dataFolder = "Data/WT/topoPredData/ratio/"
-    allFeatureProperties = ["topology", "topologyArea", "topologyWall", "topologyDist"]
-    features = dataFolder + "combinedFeatures_{}_notnormalised.csv".format(allFeatureProperties[selectedFeature])
-    labels = dataFolder + "combinedLabels.csv"
-    features = pd.read_csv(features)
-    labels = pd.read_csv(labels)
-    doPCA = True
-    evaluator = PredictonEvaluator(features, labels)
-    evaluator.PlotPCA()
-
-if __name__ == '__main__':
-    main()
