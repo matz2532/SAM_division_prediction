@@ -10,22 +10,24 @@ from LearningCurvePlotter import LearningCurvePlotter
 from BalancedXFold import BalancedXFold
 from NestedModelCreator import NestedModelCreator
 from pathlib import Path
+from PerPlantFold import PerPlantFold
 
 class PredictonEvaluator (object):
 
     verbosity=2
 
     def __init__(self, X_train, y_train, modelType, X_test=None, y_test=None,
-                 nSplits=5, seed=42, startRange=8,
+                 nSplits=5, seed=42, plantNameOfTrainData=None, startRange=8,
                  useTestData=False, saveToFolder=None,
                  hyperparamModels=None, nestedModelProp=False,
                  modelEnsambleNumber=False,
-                 selectedData=1, nrOfClasses=3,
+                 balanceData=False, selectedData=1, nrOfClasses=3,
                  printLearningCurveSplit=True):
         self.X_train, self.y_train = X_train, y_train
         self.X_test, self.y_test = X_test, y_test
         self.seed = seed
         self.nSplits = nSplits
+        self.plantNameOfTrainData = plantNameOfTrainData
         self.useTestData = useTestData
         self.modelType = modelType
         self.saveToFolder = saveToFolder
@@ -34,6 +36,7 @@ class PredictonEvaluator (object):
         self.nestedModelProp = nestedModelProp
         self.modelEnsambleNumber = modelEnsambleNumber
         self.selectedData = selectedData
+        self.balanceData = balanceData
         self.nrOfClasses = nrOfClasses
         self.printLearningCurveSplit = printLearningCurveSplit
         np.random.seed(self.seed)
@@ -56,10 +59,10 @@ class PredictonEvaluator (object):
         else:
             allTrainPs = pickle.load(open(allTrainPsFilename, "rb"))
             allValPs = pickle.load(open(allValPsFilename, "rb"))
-        assert allValPs.shape[0] == 8 or allValPs.shape[0] == 5, "Assuming that there are 5 or 8 rows/performance measures, {} != 5 or != 8".format(allValPs.shape[0])
+        assert allValPs.shape[0] == 8 or allValPs.shape[0] == 4, "Assuming that there are 5 or 8 rows/performance measures, {} != 5 or != 8".format(allValPs.shape[0])
         # doing this to ensure -4th row is accuracy which is used in the learning curve
         sampleNrRange = np.arange(self.startRange, self.startRange + allTrainPs.shape[1])
-        LearningCurvePlotter(allValPs[-4,:,:], allTrainPs[-4,:,:], sampleNrRange,
+        LearningCurvePlotter(allValPs[1,:,:], allTrainPs[1,:,:], sampleNrRange,
                              yLabel="Accuracy [%]",
                              showPlot=self.saveToFolder is None,
                              testLabel="Validation Score",
@@ -69,14 +72,26 @@ class PredictonEvaluator (object):
         else:
             plt.show()
 
-    def calcTrainAndValPerformances(self, startRange=10):
+    def calcTrainAndValPerformances(self, startRange=50, stepSize=2):
         allTrainPs, allValPs = [], []
         allTrainLengths = []
         currentSplit = 0
-        xFold = BalancedXFold(n_splits=self.nSplits, random_state=self.seed)
+        doPerPlantSplit = type(self.nSplits) != int
+        if doPerPlantSplit:
+            assert not self.plantNameOfTrainData is None, "The plantNameOfTrainData needs to be defined, when doing per plant name split."
+            xFold = PerPlantFold(plantNameVector=self.plantNameOfTrainData, balanceData=self.balanceData)
+            uniquePlantNames = xFold.GetUniquePlantNames()
+        else:
+            if self.balanceData:
+                xFold = BalancedXFold(n_splits=self.nSplits, random_state=self.seed)
+            else:
+                raise NotImplementedError
         for trainIdx, validationIdx in xFold.split(self.X_train, self.y_train):
             if self.printLearningCurveSplit or self.verbosity >= 1:
-                print("Split {}/{} of learning curve calculation".format(currentSplit+1, self.nSplits))
+                if doPerPlantSplit:
+                    print("val plant {} with split {}/{} of learning curve calculation".format(uniquePlantNames[currentSplit], currentSplit+1, len(uniquePlantNames)+1))
+                else:
+                    print("Split {}/{} of learning curve calculation".format(currentSplit+1, self.nSplits))
             X_train = self.X_train[trainIdx, :]
             y_train = self.y_train[trainIdx]
             X_val = self.X_train[validationIdx, :]
@@ -85,16 +100,11 @@ class PredictonEvaluator (object):
             if self.hyperparamModels is None:
                 modelWithParamsSet = None
             else:
-                modelWithParamsSet = self.hyperparamModels[currentSplit]
-                if self.modelEnsambleNumber > 1 and self.nestedModelProp:
-                    modelWithParamsSet = [[model.best_estimator_ for model in nestedModel] for nestedModel in modelWithParamsSet]
-                elif self.nestedModelProp or self.modelEnsambleNumber > 1:
-                    modelWithParamsSet = [model.best_estimator_ for model in modelWithParamsSet]
-                else:
-                    modelWithParamsSet = modelWithParamsSet.best_estimator_
+                modelWithParamsSet = self.hyperparamModels[currentSplit].best_estimator_
             trainPs, valPs = self.calcScoreForRange(X_train, y_train,
                                                   X_val, y_val,
                                                   minMaxRange=[startRange, len(X_train)],
+                                                  stepSize=stepSize,
                                                   modelWithParamsSet=modelWithParamsSet)
             allTrainPs.append(trainPs)
             allValPs.append(valPs)
@@ -106,10 +116,11 @@ class PredictonEvaluator (object):
         allValPs = np.asarray(allValPs).T
         return allTrainPs, allValPs
 
-    def calcScoreForRange(self, X_train, y_train, X_val, y_val, minMaxRange, modelWithParamsSet=None):
+    def calcScoreForRange(self, X_train, y_train, X_val, y_val, minMaxRange,
+                          stepSize=1, modelWithParamsSet=None):
         allTrainP = []
         allValP = []
-        trainSampleRange = np.arange(minMaxRange[0], minMaxRange[1])
+        trainSampleRange = np.arange(minMaxRange[0], minMaxRange[1], stepSize)
         for i, trainSampleSize in enumerate(trainSampleRange):
             if self.verbosity == 2:
                 if i % 100 == 0:
