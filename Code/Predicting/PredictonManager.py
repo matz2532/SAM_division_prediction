@@ -516,18 +516,15 @@ class PredictonManager (object):
 
     def getPerformanceColumnNames(self, excludeTrainingPerformance=False):
         if not self.useOnlyTwo:
-            if excludeTrainingPerformance:
-                columns = ["val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val c0 precision", "val c1 precision", "val c2 precision", "val Auc"]
-            else:
-                columns = ["train F1", "train c0 F1", "train c1 F1", "train c2 F1", "train Acc", "train precision", "train c0 precision", "train c1 precision", "train c2 precision", "train Auc",
-                           "val F1", "val c0 F1", "val c1 F1", "val c2 F1", "val Acc", "val precision", "val c0 precision", "val c1 precision", "val c2 precision", "val Auc"]
+            basePerformances = ["F1", "c0 F1", "c1 F1", "c2 F1", "Acc", "precision", "c0 precision", "c1 precision", "c2 precision", "Auc"]
         else:
-            if excludeTrainingPerformance:
-                columns = ["val F1", "val Acc", "val precision", "val Auc"]
-            else:
-                columns = ["train F1", "train Acc", "train precision", "train Auc",
-                           "val F1", "val Acc", "val precision", "val Auc"]
-        return columns
+            basePerformances = ["F1", "Acc", "precision", "Auc"]
+        if excludeTrainingPerformance is None:
+            return basePerformances
+        extendedPerformances = ["train {}".format(i) for i in basePerformances]
+        if excludeTrainingPerformance == False:
+            extendedPerformances.extend(["val {}".format(i) for i in basePerformances])
+        return extendedPerformances
 
     def combinePerformanceArraysToDataFrame(self, trainP, valP, columns=None):
         trainP = np.asarray(trainP)
