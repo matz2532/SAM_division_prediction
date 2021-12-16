@@ -245,13 +245,18 @@ class PredictonManager (object):
             isCetralCellAutomaticallyProp = "c1"
         else:
             isCetralCellAutomaticallyProp = "c0"
+        if self.balanceData:
+            trainValTestOnBalancedDataProp = "bal1"
+        else:
+            trainValTestOnBalancedDataProp = "bal0"
         if self.excludeDividingNeighbours:
             excludeDivNeighboursProp = "ex1"
         else:
             excludeDivNeighboursProp = "ex0"
-        featureProperty = "{}_{}{}{}{}{}".format(self.featureProperty, labelProp,
+        featureProperty = "{}_{}{}{}{}{}{}".format(self.featureProperty, labelProp,
                                       featureUsage,  normalisationCoeff,
                                       isCetralCellAutomaticallyProp,
+                                      trainValTestOnBalancedDataProp,
                                       excludeDivNeighboursProp)
         return featureProperty
 
