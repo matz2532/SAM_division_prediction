@@ -14,6 +14,7 @@ from sklearn.model_selection import KFold
 
 class PredictonModelCreator (object):
 
+    isCellTest=None
     verbosity=0
 
     def __init__(self, features, labels, testPlants, modelType, nSplits=5,
@@ -179,14 +180,14 @@ class PredictonModelCreator (object):
             self.currentSplit += 1
 
     def trainPerPlantSplit(self, X_train, y_train, plantNameColIdx=0):
-        plantOfTrainData = self.features.iloc[np.invert(self.isCellTest), plantNameColIdx].to_numpy()
-        _, uniqueIdx = np.unique(plantOfTrainData, return_index=True)
-        uniquePlantNames = plantOfTrainData[uniqueIdx]
+        plantNameOfTrainData = self.GetPlantNameOfTrainingData(plantNameColIdx)
+        _, uniqueIdx = np.unique(plantNameOfTrainData, return_index=True)
+        uniquePlantNames = plantNameOfTrainData[uniqueIdx]
         numberOfPlants = len(uniquePlantNames)
         for currentValidationPlant in uniquePlantNames:
             if self.printCurrentSplit or True:
                 print("val plant {} with split {}/{}".format(currentValidationPlant, self.currentSplit, numberOfPlants))
-            isValidationPlant = np.isin(plantOfTrainData, currentValidationPlant)
+            isValidationPlant = np.isin(plantNameOfTrainData, currentValidationPlant)
             validationIdx, trainIdx = np.where(isValidationPlant)[0], np.where(np.invert(isValidationPlant))[0]
             trainPerformance, validationPerformance = self.trainAndValidateModel(X_train, y_train, trainIdx, validationIdx)
             self.allTrainPerfromance.append(trainPerformance)
@@ -272,6 +273,11 @@ class PredictonModelCreator (object):
 
     def testModelOn(self, X, y):
         pass
+
+    def GetPlantNameOfTrainingData(self, plantNameColIdx=0):
+        assert not self.features is None, "The features are not yet defined."
+        assert not self.isCellTest is None, "isCellTest array are not yet defined."
+        return self.features.iloc[np.invert(self.isCellTest), plantNameColIdx].to_numpy()
 
     def GetTrainAndTestUniqueTissueIdentifiers(self, plantNameColIdx=0, timePointColIdx=1):
         trainTissueIds = self.GetTissueId(fromTest=False, plantNameColIdx=plantNameColIdx, timePointColIdx=timePointColIdx)
