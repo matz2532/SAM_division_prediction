@@ -66,8 +66,7 @@ class ModelCreator (object):
             model = self.trainModelWithParameters(self.hyperParameters)
             model.fit(X_train, y_train)
         else:
-            print("This is not yet implemented.")
-            sys.exit()
+            raise NotImplementedError
         return model, time.time()-startingTime
 
     def perfromeHyperParameterisation(self, X_train, y_train, parameters=None):
