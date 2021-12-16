@@ -33,6 +33,7 @@ class PredictonManager (object):
                  usePreviousTrainedModelsIfPossible=False,
                  onlyTestModelWithoutTrainingData=False,
                  saveLearningCurve=False,
+                 testValidationPerTissue=True,
                  seed=42, specialGraphProperties=None,
                  simplifyLabels=False,
                  useRatio=False, useDifferenceInFeatures=False,
@@ -72,6 +73,7 @@ class PredictonManager (object):
         self.estimatedFeatures=True
         self.estimatedLabels=True
         self.saveLearningCurve = saveLearningCurve
+        self.testValidationPerTissue = testValidationPerTissue
         self.saveDistributionsOfFeatures = False
         self.savePCA = False
         self.printPropertyName = printPropertyName
@@ -329,6 +331,10 @@ class PredictonManager (object):
         else:
             models = self.loadModel()
         X_train, y_train, X_test, y_test = modelCreator.GetTrainTestDataAndLabels()
+        if self.testValidationPerTissue:
+            trainTissueIds, testTissueIds = modelCreator.GetTrainAndTestUniqueTissueIdentifiers()
+        else:
+            trainTissueIds, testTissueIds = None, None
         if self.isSaveNormalizedFeatures:
             self.saveFeatures(X_train, name="normalizedFeatures_train.csv")
             self.saveFeatures(X_test, name="normalizedFeatures_test.csv")
@@ -347,7 +353,7 @@ class PredictonManager (object):
             if self.onlyTestModelWithoutTrainingData or len(X_train) == 0:
                 self.onlyTestModelOnTestData(X_test, y_test, save=True, printOutNrOfTrainTestSamples=self.printBalancedLabelCount)
             else:
-                self.testModels(X_train,  y_train, X_test, y_test,
+                self.testModels(X_train,  y_train, X_test, y_test, trainTissueIds, testTissueIds,
                                 printOutNrOfTrainTestSamples=self.printBalancedLabelCount)
         if self.saveLearningCurve:
             if self.doHyperParameterisation:
@@ -579,8 +585,8 @@ class PredictonManager (object):
             testModelFilename = self.resultsFolder + "testModel.pkl"
         print(testModelFilename)
         assert Path(testModelFilename).is_file(), "The filename {} of the model does not exist.".format(testModelFilename)
-        myModelCreator = pickle.load(open(testModelFilename, "rb"))
-        testP = myModelCreator.TestModel(X_test, y_test)
+        self.testModelCreator = pickle.load(open(testModelFilename, "rb"))
+        testP = self.testModelCreator.TestModel(X_test, y_test)
         columns = self.getPerformanceColumnNames(excludeTrainingPerformance=True)
         performance = np.asarray(testP)
         performanceLen = len(performance)
@@ -600,9 +606,9 @@ class PredictonManager (object):
         pickle.dump([X_test], open(self.resultsFolder+"testXs.pkl", "wb"))
         pickle.dump([y_test], open(self.resultsFolder+"testYs.pkl", "wb"))
 
-    def testModels(self, X_train, y_train, X_test, y_test, redoModel=True,
-                   perfromanceTrainValDf=None, printOut=False, save=True,
-                   printOutNrOfTrainTestSamples=True):
+    def testModels(self, X_train, y_train, X_test, y_test, trainTissueIds=None, testTissueIds=None,
+                   redoModel=True, perfromanceTrainValDf=None,
+                   save=True, printOut=False, printOutNrOfTrainTestSamples=True):
         if self.balanceData:
             X_train, y_train = DataBalancer(X_train, y_train).GetBalancedData()
             X_test, y_test = DataBalancer(X_test, y_test).GetBalancedData()
@@ -615,35 +621,73 @@ class PredictonManager (object):
         else:
             testModelFilename = self.resultsFolder + "testModel.pkl"
         if Path(testModelFilename).is_file() and not redoModel:
-            myModelCreator = pickle.load(open(testModelFilename, "rb"))
+            self.testModelCreator = pickle.load(open(testModelFilename, "rb"))
         else:
-            myModelCreator = NestedModelCreator(X_train, y_train,
+            self.testModelCreator = NestedModelCreator(X_train, y_train,
                                                 performanceModus="all performances 1D list",
                                                 doHyperParameterisation=True,
                                                 modelType=self.modelType,
                                                 nrOfClasses=2 if self.useOnlyTwo is True else 3)
-            pickle.dump(myModelCreator, open(testModelFilename, "wb"))
-        trainP = myModelCreator.TestModel(X_train, y_train)
-        testP = myModelCreator.TestModel(X_test, y_test)
-        columns = self.getPerformanceColumnNames(excludeTrainingPerformance=False)
-        if perfromanceTrainValDf is None:
-            perfromanceTrainValDf = pd.read_csv(self.resultsFolder+"results.csv", index_col=0)
-        trainP = np.asarray(trainP)
-        testP = np.asarray(testP)
-        performance = np.concatenate([trainP, testP])
-        performanceLen = len(performance)
-        rowsToRound4Places = [performanceLen//2 - 1, performanceLen - 1]
-        rowsToRound2Places = np.delete(np.arange(performanceLen), rowsToRound4Places)
-        performance[rowsToRound4Places] = np.round(performance[rowsToRound4Places], 4)
-        performance[rowsToRound2Places] = np.round(performance[rowsToRound2Places], 2)
-        idx = ["testing"]
-        performanceDf = pd.DataFrame([performance], columns=columns, index=idx)
-        performanceDf = pd.concat([perfromanceTrainValDf, performanceDf], axis=0)
-        if printOut:
-            print(performanceDf.to_string())
-        if save:
-            performanceDf.to_csv(self.resultsFolder+"resultsWithTesting.csv")
+            pickle.dump(self.testModelCreator, open(testModelFilename, "wb"))
+        if not trainTissueIds is None and not testTissueIds is None:
+            trainPerformance = self.calcFinalPerTissuePerformanceOf(X_train, y_train, trainTissueIds)
+            testPerformance = self.calcFinalPerTissuePerformanceOf(X_test, y_test, testTissueIds)
+            performance = np.concatenate([trainPerformance, testPerformance], axis=0)
+            columns = self.getPerformanceColumnNames(excludeTrainingPerformance=None)
+            idx = ["train tissue {}".format(int(i)) for i in np.unique(trainTissueIds)]
+            idx.extend(["train mean", "train std"])
+            idx.extend(["test tissue {}".format(int(i)) for i in np.unique(testTissueIds)])
+            idx.extend(["test mean", "test std"])
+            performanceDf = pd.DataFrame(performance, columns=columns, index=idx)
+            if printOut:
+                print(performanceDf.to_string())
+            if save:
+                performanceDf.to_csv(self.resultsFolder+"resultsWithOnlyTesting.csv")
+                testMeanAndStdPerformance = pd.concat([ (performanceDf.loc[["train mean", "train std"], :]).reset_index(drop=True),
+                                                        (performanceDf.loc[["test mean", "test std"], :]).reset_index(drop=True) ],
+                                                       axis=1)
+                testMeanAndStdPerformance.index = ["test mean", "test std"]
+                if perfromanceTrainValDf is None:
+                    perfromanceTrainValDf = pd.read_csv(self.resultsFolder+"results.csv", index_col=0)
+                testMeanAndStdPerformance.columns = perfromanceTrainValDf.columns
+                trainTestPerformanceDf = pd.concat([perfromanceTrainValDf, testMeanAndStdPerformance], axis=0)
+                trainTestPerformanceDf.to_csv(self.resultsFolder+"resultsWithTesting.csv")
+        else:
+            trainP = self.testModelCreator.TestModel(X_train, y_train)
+            testP = self.testModelCreator.TestModel(X_test, y_test)
+            columns = self.getPerformanceColumnNames(excludeTrainingPerformance=False)
+            if perfromanceTrainValDf is None:
+                perfromanceTrainValDf = pd.read_csv(self.resultsFolder+"results.csv", index_col=0)
+            trainP = np.asarray(trainP)
+            testP = np.asarray(testP)
+            performance = np.concatenate([trainP, testP])
+            performanceLen = len(performance)
+            rowsToRound4Places = [performanceLen//2 - 1, performanceLen - 1]
+            rowsToRound2Places = np.delete(np.arange(performanceLen), rowsToRound4Places)
+            performance[rowsToRound4Places] = np.round(performance[rowsToRound4Places], 4)
+            performance[rowsToRound2Places] = np.round(performance[rowsToRound2Places], 2)
+            idx = ["testing"]
+            performanceDf = pd.DataFrame([performance], columns=columns, index=idx)
+            performanceDf = pd.concat([perfromanceTrainValDf, performanceDf], axis=0)
+            if printOut:
+                print(performanceDf.to_string())
+            if save:
+                performanceDf.to_csv(self.resultsFolder+"resultsWithTesting.csv")
         return performanceDf
+
+    def calcFinalPerTissuePerformanceOf(self, X, y, tissueIds):
+        performanceArray = []
+        for i in np.unique(tissueIds):
+            currentTissuesIdx = np.where(tissueIds==i)[0]
+            currentX, currentY = X[currentTissuesIdx, :], y[currentTissuesIdx]
+            performanceArray.append(self.testModelCreator.TestModel(currentX, currentY))
+        if not self.useOnlyTwo:
+            performanceArray = self.mergeListsInPerformanceArray(performanceArray, addMeanOfList=True)
+        perfromanceMean = np.mean(performanceArray, axis=0)
+        perfromanceStd = np.std(performanceArray, axis=0)
+        performanceArray.append(perfromanceMean)
+        performanceArray.append(perfromanceStd)
+        return performanceArray
 
     def saveModelProperties(self):
         file = open(self.resultsFolder+"modelProperty.txt", "w")
