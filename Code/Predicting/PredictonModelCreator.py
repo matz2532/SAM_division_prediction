@@ -273,6 +273,35 @@ class PredictonModelCreator (object):
     def testModelOn(self, X, y):
         pass
 
+    def GetTrainAndTestUniqueTissueIdentifiers(self, plantNameColIdx=0, timePointColIdx=1):
+        trainTissueIds = self.GetTissueId(fromTest=False, plantNameColIdx=plantNameColIdx, timePointColIdx=timePointColIdx)
+        testTissueIds = self.GetTissueId(fromTest=True, plantNameColIdx=plantNameColIdx, timePointColIdx=timePointColIdx)
+        return trainTissueIds, testTissueIds
+
+    def GetTissueId(self, fromTest=False, plantNameColIdx=0, timePointColIdx=1):
+        columnNamesToGroupBy = list(np.asarray(self.labels.columns)[[plantNameColIdx, timePointColIdx]])
+        if not fromTest is None:
+            if fromTest:
+                labelDf = self.labels.iloc[self.isCellTest, :].copy()
+            else:
+                labelDf = self.labels.iloc[np.invert(self.isCellTest), :].copy()
+        else:
+            labelDf = self.labels.copy()
+        labelDf.set_index(np.arange(len(labelDf)), inplace=True)
+        perTissueGroupedDfs = labelDf.groupby(columnNamesToGroupBy, axis=0)
+        tissueIds = self.GetTissueIdFromGrouping(perTissueGroupedDfs)
+        return tissueIds
+
+    def GetTissueIdFromGrouping(self, perTissueGroupedDfs):
+        numberOfSamples = 0
+        for i, grouping in enumerate(perTissueGroupedDfs):
+            numberOfSamples += len(grouping[1])
+        tissueId = np.full(numberOfSamples, np.NaN)
+        for i, grouping in enumerate(perTissueGroupedDfs):
+            idx = grouping[1].index
+            tissueId[idx] = i
+        return tissueId
+
     def GetTrainPerformance(self):
         return self.allTrainPerfromance
 
