@@ -8,12 +8,12 @@ def main():
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    runDivEventPred = False
+    runDivEventPred = True
     usePreviousTrainedModelsIfPossible = False
     runModelTraining = True
     runModelTesting = False
     onlyTestModelWithoutTrainingData = False
-    saveLearningCurve = False
+    saveLearningCurve = True
     useManualCentres = True
     # print options:
     printBalancedLabelCount = True
@@ -35,7 +35,7 @@ def main():
     normaliseTrainValTestData = False
     featureProperty = "combinedTable"
     if runDivEventPred:
-        for set in ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        for set in ["allTopos"]:#, "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/manualCentres/{}/".format(set)
@@ -43,6 +43,7 @@ def main():
             else:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/{}/".format(set)
                 resultsFolder = "Results/divEventData/{}/".format(set)
+            resultsFolder = "Results/temp/"
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
@@ -76,8 +77,8 @@ def main():
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
         sys.exit()
-    for excludeDividingNeighbours in [True, False]:
-        for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+    for excludeDividingNeighbours in [True]:#, False]:
+        for set in ["allTopos"]:#, "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
@@ -85,6 +86,7 @@ def main():
             else:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
                 resultsFolder = "Results/topoPredData/diff/{}/".format(set)
+            resultsFolder = "Results/temp/"
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
