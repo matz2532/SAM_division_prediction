@@ -365,10 +365,16 @@ class PredictonManager (object):
                 hyperparamModels = models
             else:
                 hyperparamModels = None
+            if type(nSplits) == int:
+                plantNameOfTrainData = None
+            else:
+                plantNameOfTrainData = modelCreator.GetPlantNameOfTrainingData()
             evaluator = PredictonEvaluator(X_train, y_train,
                                            modelType=self.modelType,
                                            saveToFolder=self.resultsFolder,
                                            seed=self.seed,
+                                           nSplits=self.nSplits,
+                                           plantNameOfTrainData=plantNameOfTrainData,
                                            hyperparamModels=hyperparamModels,
                                            nestedModelProp=self.nestedModelProp,
                                            modelEnsambleNumber=self.modelEnsambleNumber,
