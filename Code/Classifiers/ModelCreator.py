@@ -82,7 +82,7 @@ class ModelCreator (object):
 
     def calcDefaultHyperPar(self, X_train):
         if self.kernel == "rbf":
-            density = 5
+            density = 101
             gamma = np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)])
             C = np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])
             parameters = {'gamma' : gamma, 'C' : C}

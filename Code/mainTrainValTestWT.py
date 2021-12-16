@@ -35,7 +35,7 @@ def main():
     normaliseTrainValTestData = False
     featureProperty = "combinedTable"
     if runDivEventPred:
-        for set in ["allTopos"]:#, "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        for set in ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/manualCentres/{}/".format(set)
@@ -43,7 +43,6 @@ def main():
             else:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/{}/".format(set)
                 resultsFolder = "Results/divEventData/{}/".format(set)
-            resultsFolder = "Results/temp/"
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
@@ -76,9 +75,10 @@ def main():
                                    labelName=labelName,
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
-        sys.exit()
-    for excludeDividingNeighbours in [True]:#, False]:
-        for set in ["allTopos"]:#, "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+    runDivEventPred = False
+    saveLearningCurve = False
+    for excludeDividingNeighbours in [True, False]:
+        for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
@@ -86,7 +86,6 @@ def main():
             else:
                 setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
                 resultsFolder = "Results/topoPredData/diff/{}/".format(set)
-            resultsFolder = "Results/temp/"
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
