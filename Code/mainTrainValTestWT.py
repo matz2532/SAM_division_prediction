@@ -9,7 +9,7 @@ def main():
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
     runDivEventPred = True
-    usePreviousTrainedModelsIfPossible = False
+    usePreviousTrainedModelsIfPossible = True
     runModelTraining = True
     runModelTesting = False
     onlyTestModelWithoutTrainingData = False
@@ -18,7 +18,7 @@ def main():
     # print options:
     printBalancedLabelCount = True
     nSplits = "per plant"
-    balanceData = False
+    balanceData = True
     hyperParameters = None
     modelNameExtension = ""
     centralCellsDict = {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
