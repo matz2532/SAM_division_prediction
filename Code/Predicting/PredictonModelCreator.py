@@ -28,7 +28,7 @@ class PredictonModelCreator (object):
                  nestedModelProp=False,
                  allNestedModelProp=[[0, [1,2]], [1, [0,2]], [2, [0,1]]],
                  modelEnsambleNumber=False,
-                 balanceData=1,
+                 balanceData=True,
                  parametersToAddOrOverwrite=None,
                  folderToSaveVal=None,
                  useOnlyTwo=True,
@@ -204,8 +204,8 @@ class PredictonModelCreator (object):
             print("train", np.unique(currentY_Train, return_counts=True))
             print("val", np.unique(validationY, return_counts=True))
         if self.balanceData:
-            currentX_Train, currentY_Train = self.balanceData(currentX_Train, currentY_Train)
-            validationX, validationY = self.balanceData(validationX, validationY)
+            currentX_Train, currentY_Train = self.balanceFeaturesAndLabels(currentX_Train, currentY_Train)
+            validationX, validationY = self.balanceFeaturesAndLabels(validationX, validationY)
         self.valXs.append(validationX)
         self.valYs.append(validationY)
         if self.usePreviouslyTrainedModels is None:
@@ -230,7 +230,7 @@ class PredictonModelCreator (object):
             model.PrintNrOfTiesBetweenCount("from val data")
         return trainPerformance, validationPerformance
 
-    def balanceData(self, usedX_train, usedY_train):
+    def balanceFeaturesAndLabels(self, usedX_train, usedY_train):
         label, counts = np.unique(usedY_train, return_counts=True)
         if self.useOnlyTwo:
             assert len(counts) == 2, "The number of labels needs to be two. The labels {} are present. {} != 2".format(label, len(counts))
