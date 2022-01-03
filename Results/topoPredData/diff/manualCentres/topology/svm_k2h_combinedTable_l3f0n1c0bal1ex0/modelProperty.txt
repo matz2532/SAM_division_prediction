@@ -1,0 +1,4 @@
+propertyName: svm_k2h_combinedTable_l3f0n1c0bal1ex0,
+featureFilename: Data/WT/topoPredData/diff/manualCentres/topology/combinedFeatures_topology_notnormalised.csv,
+labelFilename: Data/WT/topoPredData/diff/manualCentres/topology/combinedLabels.csv,
+nrOfLabels: {0: 2073, 1: 1676, 2: 1767}nrOfFeatures: 38

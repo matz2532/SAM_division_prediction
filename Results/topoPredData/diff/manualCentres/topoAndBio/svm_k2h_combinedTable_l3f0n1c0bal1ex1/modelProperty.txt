@@ -1,0 +1,4 @@
+propertyName: svm_k2h_combinedTable_l3f0n1c0bal1ex1,
+featureFilename: Data/WT/topoPredData/diff/manualCentres/topoAndBio/combinedFeatures_topoAndBio_notnormalised.csv,
+labelFilename: Data/WT/topoPredData/diff/manualCentres/topoAndBio/combinedLabels.csv,
+nrOfLabels: {0: 1173, 1: 905, 2: 937}nrOfFeatures: 110
