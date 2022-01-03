@@ -215,7 +215,7 @@ class BarPlotPlotter (object):
         return yLabel
 
     def calcPValueTable(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5,
-                        correctPValues=True, printPValues=False, tukey=True):
+                        correctPValues=True, printPValues=False, tukey=False):
         trainValues = []
         valValues = []
         startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
