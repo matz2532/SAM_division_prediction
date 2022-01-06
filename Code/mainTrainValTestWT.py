@@ -13,7 +13,7 @@ def main():
     runModelTraining = True
     runModelTesting = False
     onlyTestModelWithoutTrainingData = False
-    saveLearningCurve = True
+    saveLearningCurve = False
     useManualCentres = True
     # print options:
     printBalancedLabelCount = True
