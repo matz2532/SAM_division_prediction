@@ -299,8 +299,8 @@ class TopologyPredictonDataCreator (object):
         self.myStandardTableFormater = StandardTableFormater(self.plantNames)
         columnNames = ["plant", "time point", "parent neighbor"]
         featuresAndSources = []
-        plantNames = np.unique(self.labelTable.iloc[:, 0])
-        timePoints = np.unique(self.labelTable.iloc[:, 1])
+        plantNames = self.labelTable.iloc[:, 0].unique()
+        timePoints = self.labelTable.iloc[:, 1].unique()
         for plantName in plantNames:
             for timePoint in timePoints:
                 tissueLabelTable = self.getTissueLabels(plantName, timePoint)
