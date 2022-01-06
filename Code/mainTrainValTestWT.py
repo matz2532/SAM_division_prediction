@@ -8,8 +8,8 @@ def main():
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    runDivEventPred = True
-    usePreviousTrainedModelsIfPossible = True
+    runDivEventPred = False
+    usePreviousTrainedModelsIfPossible = False
     runModelTraining = True
     runModelTesting = False
     onlyTestModelWithoutTrainingData = False
@@ -18,7 +18,7 @@ def main():
     # print options:
     printBalancedLabelCount = True
     nSplits = "per plant"
-    balanceData = True
+    balanceData = False
     hyperParameters = None
     modelNameExtension = ""
     centralCellsDict = {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
@@ -75,47 +75,48 @@ def main():
                                    labelName=labelName,
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
-    runDivEventPred = False
-    saveLearningCurve = False
-    for excludeDividingNeighbours in [True, False]:
-        for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
-            labelName = "combinedLabels.csv"
-            if useManualCentres:
-                setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
-                resultsFolder = "Results/topoPredData/diff/manualCentres/{}/".format(set)
-            else:
-                setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
-                resultsFolder = "Results/topoPredData/diff/{}/".format(set)
-            newResultsFolder = resultsFolder
-            folderToSaveVal = newResultsFolder
-            givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
-            print("newResultsFolder: "+newResultsFolder)
-            manager = PredictonManager(plantNames=plantNames,
-                                       testPlants=testPlants,
-                                       featureProperty=featureProperty,
-                                       dataFolder=dataFolder,
-                                       featureAndLabelFolder=setFeatureAndLabelFolder,
-                                       givenFeatureName=givenFeatureName,
-                                       resultsFolder=newResultsFolder,
-                                       nSplits=nSplits,
-                                       balanceData=balanceData,
-                                       modelType=modelType,
-                                       usePreviousTrainedModelsIfPossible=usePreviousTrainedModelsIfPossible,
-                                       runModelTraining = runModelTraining,
-                                       runModelTesting = runModelTesting,
-                                       saveLearningCurve = saveLearningCurve,
-                                       centralCellsDict=centralCellsDict,
-                                       normalisePerTissue=normalisePerTissue,
-                                       normaliseTrainTestData=normaliseTrainTestData,
-                                       normaliseTrainValTestData=normaliseTrainValTestData,
-                                       doHyperParameterisation=doHyperParameterisation,
-                                       hyperParameters=hyperParameters,
-                                       modelNameExtension=modelNameExtension,
-                                       folderToSaveVal=folderToSaveVal,
-                                       setFeatureAndLabelFolder=setFeatureAndLabelFolder,
-                                       labelName=labelName,
-                                       excludeDividingNeighbours=excludeDividingNeighbours,
-                                       printBalancedLabelCount=printBalancedLabelCount)
+    else:
+        for excludeDividingNeighbours in [True, False]:
+            for balanceData in [False, True]:
+                for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+                    labelName = "combinedLabels.csv"
+                    if useManualCentres:
+                        setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
+                        resultsFolder = "Results/topoPredData/diff/manualCentres/{}/".format(set)
+                    else:
+                        setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
+                        resultsFolder = "Results/topoPredData/diff/{}/".format(set)
+                    newResultsFolder = resultsFolder
+                    folderToSaveVal = newResultsFolder
+                    givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
+                    print("newResultsFolder: "+newResultsFolder)
+                    manager = PredictonManager(plantNames=plantNames,
+                                               testPlants=testPlants,
+                                               featureProperty=featureProperty,
+                                               dataFolder=dataFolder,
+                                               featureAndLabelFolder=setFeatureAndLabelFolder,
+                                               givenFeatureName=givenFeatureName,
+                                               resultsFolder=newResultsFolder,
+                                               nSplits=nSplits,
+                                               balanceData=balanceData,
+                                               modelType=modelType,
+                                               usePreviousTrainedModelsIfPossible=usePreviousTrainedModelsIfPossible,
+                                               runModelTraining = runModelTraining,
+                                               runModelTesting = runModelTesting,
+                                               saveLearningCurve = saveLearningCurve,
+                                               centralCellsDict=centralCellsDict,
+                                               normalisePerTissue=normalisePerTissue,
+                                               normaliseTrainTestData=normaliseTrainTestData,
+                                               normaliseTrainValTestData=normaliseTrainValTestData,
+                                               doHyperParameterisation=doHyperParameterisation,
+                                               hyperParameters=hyperParameters,
+                                               modelNameExtension=modelNameExtension,
+                                               folderToSaveVal=folderToSaveVal,
+                                               setFeatureAndLabelFolder=setFeatureAndLabelFolder,
+                                               labelName=labelName,
+                                               excludeDividingNeighbours=excludeDividingNeighbours,
+                                               printBalancedLabelCount=printBalancedLabelCount)
+
 
 if __name__ == '__main__':
     main()
