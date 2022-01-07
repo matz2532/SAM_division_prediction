@@ -10,10 +10,10 @@ def main():
     modelType =  {"modelType":"svm","kernel":"rbf"}
     runDivEventPred = False
     usePreviousTrainedModelsIfPossible = False
-    runModelTraining = False
+    runModelTraining = True
     runModelTesting = False
     onlyTestModelWithoutTrainingData = False
-    saveLearningCurve = True
+    saveLearningCurve = False
     useManualCentres = True
     # print options:
     printBalancedLabelCount = True
@@ -76,9 +76,11 @@ def main():
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
     else:
-        for excludeDividingNeighbours in [True]:#, False]:
-            for balanceData in [False]:#, True]:
-                for set in ["lowCor0.3"]:#["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        for excludeDividingNeighbours in [True, False]:
+            for balanceData in [False, True]:
+                if balanceData == False and excludeDividingNeighbours == True:
+                    break
+                for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
                     labelName = "combinedLabels.csv"
                     if useManualCentres:
                         setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
