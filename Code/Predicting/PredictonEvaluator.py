@@ -59,7 +59,7 @@ class PredictonEvaluator (object):
         else:
             allTrainPs = pickle.load(open(allTrainPsFilename, "rb"))
             allValPs = pickle.load(open(allValPsFilename, "rb"))
-        assert allValPs.shape[0] == 8 or allValPs.shape[0] == 4, "Assuming that there are 5 or 8 rows/performance measures, {} != 5 or != 8".format(allValPs.shape[0])
+        assert allValPs.shape[0] == 7 or allValPs.shape[0] == 4, "Assuming that there are 5 or 8 rows/performance measures, {} != 4 or != 7".format(allValPs.shape[0])
         # doing this to ensure -4th row is accuracy which is used in the learning curve
         sampleNrRange = np.arange(self.startRange, self.startRange + allTrainPs.shape[1])
         LearningCurvePlotter(allValPs[1,:,:], allTrainPs[1,:,:], sampleNrRange,
@@ -72,7 +72,7 @@ class PredictonEvaluator (object):
         else:
             plt.show()
 
-    def calcTrainAndValPerformances(self, startRange=50, stepSize=2):
+    def calcTrainAndValPerformances(self, startRange=50, stepSize=50):
         allTrainPs, allValPs = [], []
         allTrainLengths = []
         currentSplit = 0
