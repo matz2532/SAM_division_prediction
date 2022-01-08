@@ -356,7 +356,8 @@ class PredictonManager (object):
             labelOverviewDf.to_csv(self.resultsFolder + "labelOverviewDf.csv", index=False)
         if self.runModelTesting:
             if self.onlyTestModelWithoutTrainingData or len(X_train) == 0:
-                self.onlyTestModelOnTestData(X_test, y_test, save=True, printOutNrOfTrainTestSamples=self.printBalancedLabelCount)
+                self.onlyTestModelOnTestData(X_test, y_test, testTissueIds=testTissueIds,
+                                save=True, printOutNrOfTrainTestSamples=self.printBalancedLabelCount)
             else:
                 self.testModels(X_train,  y_train, X_test, y_test, trainTissueIds, testTissueIds,
                                 printOutNrOfTrainTestSamples=self.printBalancedLabelCount)
@@ -584,9 +585,10 @@ class PredictonManager (object):
         filename = folder + name
         featureTable.to_csv(filename, index=False)
 
-    def onlyTestModelOnTestData(self, X_test, y_test, printOut=True, save=True,
-                                printOutNrOfTrainTestSamples=True):
-        X_test, y_test = DataBalancer(X_test, y_test).GetBalancedData()
+    def onlyTestModelOnTestData(self, X_test, y_test, testTissueIds=None, printOut=True, save=True,
+                                printOutNrOfTrainTestSamples=True, printOutTestModelFilename=True):
+        if self.balanceData:
+            X_test, y_test = DataBalancer(X_test, y_test).GetBalancedData()
         self.dumpTestXAndYs(X_test, y_test)
         if printOutNrOfTrainTestSamples:
             print("test labels:" , np.unique(y_test, return_counts=True))
@@ -594,23 +596,36 @@ class PredictonManager (object):
             testModelFilename = self.useSpecificTestModelFilename
         else:
             testModelFilename = self.resultsFolder + "testModel.pkl"
-        print(testModelFilename)
+        if printOutTestModelFilename:
+            print(testModelFilename)
         assert Path(testModelFilename).is_file(), "The filename {} of the model does not exist.".format(testModelFilename)
         self.testModelCreator = pickle.load(open(testModelFilename, "rb"))
-        testP = self.testModelCreator.TestModel(X_test, y_test)
-        columns = self.getPerformanceColumnNames(excludeTrainingPerformance=True)
-        performance = np.asarray(testP)
-        performanceLen = len(performance)
-        rowsToRound4Places = [performanceLen//2 - 1, performanceLen - 1]
-        rowsToRound2Places = np.delete(np.arange(performanceLen), rowsToRound4Places)
-        performance[rowsToRound4Places] = np.round(performance[rowsToRound4Places], 4)
-        performance[rowsToRound2Places] = np.round(performance[rowsToRound2Places], 2)
-        idx = ["testing"]
-        performanceDf = pd.DataFrame([performance], columns=columns, index=idx)
-        if printOut:
-            print(performanceDf.to_string())
-        if save:
-            performanceDf.to_csv(self.resultsFolder+"resultsWithTesting.csv")
+        if not testTissueIds is None:
+            testPerformance = self.calcFinalPerTissuePerformanceOf(X_test, y_test, testTissueIds)
+            columns = self.getPerformanceColumnNames(excludeTrainingPerformance=None)
+            idx = ["test tissue {}".format(int(i)) for i in np.unique(testTissueIds)]
+            idx.extend(["test mean", "test std"])
+            performanceDf = pd.DataFrame(testPerformance, columns=columns, index=idx)
+            if printOut:
+                print(performanceDf.to_string())
+            if save:
+                performanceDf.to_csv(self.resultsFolder+"resultsWithOnlyTesting.csv")
+                trainTestPerformanceDf = performanceDf.loc[["test mean", "test std"], :].to_csv(self.resultsFolder+"resultsWithTesting.csv")
+        else:
+            testP = self.testModelCreator.TestModel(X_test, y_test)
+            columns = self.getPerformanceColumnNames(excludeTrainingPerformance=True)
+            performance = np.asarray(testP)
+            performanceLen = len(performance)
+            rowsToRound4Places = [performanceLen//2 - 1, performanceLen - 1]
+            rowsToRound2Places = np.delete(np.arange(performanceLen), rowsToRound4Places)
+            performance[rowsToRound4Places] = np.round(performance[rowsToRound4Places], 4)
+            performance[rowsToRound2Places] = np.round(performance[rowsToRound2Places], 2)
+            idx = ["testing"]
+            performanceDf = pd.DataFrame([performance], columns=columns, index=idx)
+            if printOut:
+                print(performanceDf.to_string())
+            if save:
+                performanceDf.to_csv(self.resultsFolder+"resultsWithTesting.csv")
         return performanceDf
 
     def dumpTestXAndYs(self, X_test, y_test):

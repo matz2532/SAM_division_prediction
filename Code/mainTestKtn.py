@@ -12,15 +12,14 @@ def main():
     testPlants = ["ktnP1", "ktnP2", "ktnP3"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
     useTemporaryResultsFolder = False
-    runDivEventPred = False
+    runDivEventPred = True
     runModelTraining = False
     runModelTesting = True
     useManualCentres = True
     # print options:
     printBalancedLabelCount = True
-    nestedModelProp = False
-    modelEnsambleNumber = 1
-    selectedData = 1
+    nSplits = "per plant"
+    balanceData = False
     parametersToAddOrOverwrite = None
     hyperParameters = None
     modelNameExtension = ""
@@ -40,9 +39,8 @@ def main():
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}divEventData/manualCentres/{}/".format(dataFolder, set)
-            resultsFolder = "Results/ktnDivEventData/manualCentres/adjusted div Pred/{}/".format(set)
-            useSpecificTestModelFilename = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0ex0/testModel.pkl".format(set)
-            useSpecificTestModelFilename = "Results/divEventData/manualCentres/adjusted div Pred/{}/svm_k2h_combinedTable_l3f0n1c0ex0/testModel.pkl".format(set)
+            resultsFolder = "Results/ktnDivEventData/temp/{}/".format(set)
+            useSpecificTestModelFilename = "Results/divEventData/temp/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/testModel.pkl".format(set)
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
@@ -54,6 +52,8 @@ def main():
                                    featureAndLabelFolder=featureAndLabelFolder,
                                    givenFeatureName=givenFeatureName,
                                    resultsFolder=newResultsFolder,
+                                   nSplits=nSplits,
+                                   balanceData=balanceData,
                                    modelType=modelType,
                                    runModelTraining=runModelTraining,
                                    runModelTesting = runModelTesting,
@@ -65,9 +65,6 @@ def main():
                                    normaliseTrainValTestData=normaliseTrainValTestData,
                                    doHyperParameterisation=doHyperParameterisation,
                                    hyperParameters=hyperParameters,
-                                   nestedModelProp=nestedModelProp,
-                                   modelEnsambleNumber=modelEnsambleNumber,
-                                   selectedData=selectedData,
                                    parametersToAddOrOverwrite=parametersToAddOrOverwrite,
                                    specialParName=parName,
                                    modelNameExtension=modelNameExtension,
