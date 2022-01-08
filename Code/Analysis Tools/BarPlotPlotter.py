@@ -13,35 +13,44 @@ class BarPlotPlotter (object):
     # plot bar plots of all bar result figures
     def __init__(self, baseResultsFolder, selectedFolders,
                  addOtherTestWithBaseFolder=None,
-                 furtherFolder="svm_k2h_combinedTable_l3f0n1c0ex0/",
+                 furtherFolder="svm_k2h_combinedTable_l3f0n1c0bal1ex0/",
                  randFilename="combinedResultsWithTestingOf_1000_randomizedRuns_ex1.csv",
-                 resultFilename="resultsWithTesting.csv", performanceIdx=1,
+                 resultFilename="results.csv", resultsTestFilename="resultsWithOnlyTesting.csv", performanceIdx=1,
                  plotOnlyRandom=False, filenameToSave="",
-                 compareRandAndNorm=True, minY=0, doSpecial=False):
+                 compareRandAndNorm=True, minY=0, doSpecial=False, nrOfReplicates=6):
         self.baseResultsFolder = baseResultsFolder
         self.selectedFolders = selectedFolders
         self.addOtherTestWithBaseFolder = addOtherTestWithBaseFolder
         self.furtherFolder = furtherFolder
         self.randFilename = randFilename
         self.resultFilename = resultFilename
+        self.resultsTestFilename = resultsTestFilename
         self.performanceIdx = performanceIdx
         self.plotOnlyRandom = plotOnlyRandom
         self.compareRandAndNorm = compareRandAndNorm or doSpecial
         self.minY = minY
         self.doSpecial = doSpecial
         self.filenameToSave = filenameToSave
+        self.nrOfReplicates = nrOfReplicates
         self.loadFiles()
         self.createFigures(self.performanceIdx, self.compareRandAndNorm,
                            minY=self.minY)
 
     def loadFiles(self):
         self.randTable = []
+        self.testResultTables = None
+        self.furtherTestResults = None
         self.resultsTable = self.loadTables(self.baseResultsFolder)
         if (self.plotOnlyRandom or self.compareRandAndNorm) and not self.doSpecial:
             self.randTable = self.loadTables(self.baseResultsFolder, addFurtherFolder=False,
                                              addSpecificNameSuffix=self.randFilename)
+        else:
+            if not self.resultsTestFilename is None:
+                self.testResultTables = self.loadTables(self.baseResultsFolder, addFurtherFolder=True,
+                                                 addSpecificNameSuffix=self.resultsTestFilename)
         if not self.addOtherTestWithBaseFolder is None:
-            self.furtherTestResults = self.loadTables(self.addOtherTestWithBaseFolder)
+            self.furtherTestResults = self.loadTables(self.addOtherTestWithBaseFolder, addFurtherFolder=True,
+                                             addSpecificNameSuffix=self.resultsTestFilename)
 
     def loadTables(self, baseFolder, addFurtherFolder=True, addSpecificNameSuffix=None):
         resultsTables = []
@@ -60,9 +69,14 @@ class BarPlotPlotter (object):
 
     def createFigures(self, performanceIdx=1, compareRandAndNorm=True, minY=0,
                       printPValues=True):
-        x_pos, mean, std, colors = self.setupData(performanceIdx, compareRandAndNorm)
+        x_pos, mean, std, colors = self.setupData(performanceIdx, compareRandAndNorm, nrOfReplicates=self.nrOfReplicates)
+        for i in range(len(self.selectedFolders)):
+            print(self.selectedFolders[i])
+            print(self.resultsTable[i].to_string())
+            print(mean[i*2], mean[i*2+1])
         if not np.all(np.asarray(std) == 0):
             pValueTable = self.calcPValueTable(performanceIdx, compareRandAndNorm,
+                                               nrOfReplicates=self.nrOfReplicates,
                                                correctPValues=True, printPValues=printPValues)
         yLabel = self.setYLabel(performanceIdx)
         # Build the plot
@@ -105,7 +119,7 @@ class BarPlotPlotter (object):
         else:
             plt.show()
 
-    def setupData(self, performanceIdx, compareRandAndNorm, useTesting=True):
+    def setupData(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5, useTesting=True):
         if self.doSpecial:
             mean = self.doSpecial["mean"]
             std = self.doSpecial["std"]
@@ -113,23 +127,20 @@ class BarPlotPlotter (object):
             idx = self.doSpecial["idx"]
         else:
             if compareRandAndNorm:
-                mean, std = self.extractMeanAndStd(performanceIdx)
+                mean, std = self.extractMeanAndStd(performanceIdx, nrOfReplicates=nrOfReplicates)
                 coloryByHtml = ["#00aeff", "#ffb100", "#004f99", "#ff6900"]
                 idx = 4
             else:
-                mean, std = self.extractMeanAndStd(performanceIdx,
+                mean, std = self.extractMeanAndStd(performanceIdx, nrOfReplicates=nrOfReplicates,
                                             plotOnlyRandom=self.plotOnlyRandom)
                 idx = 2
                 coloryByHtml = ["#2E75B6", "#548235"]
                 if useTesting:
-                    mean, std = self.addTestData(mean, std, idx, performanceIdx,
-                                                 plotOnlyRandom=self.plotOnlyRandom)
+                    mean, std = self.addTestData(mean, std, idx, performanceIdx, self.testResultTables)
                     idx += 1
                     coloryByHtml.append("#ff5800")
                 if self.furtherTestResults:
-                    mean, std = self.addTestData(mean, std, idx, performanceIdx,
-                                                 plotAdditionalTable=True,
-                                                 containsTrainAndValPerformance=False)
+                    mean, std = self.addTestData(mean, std, idx, performanceIdx, self.furtherTestResults)
                     idx += 1
                     coloryByHtml.append("#d1008f")
         x_pos = np.arange(len(mean))
@@ -146,24 +157,24 @@ class BarPlotPlotter (object):
                 colors[[i%idx==3 for i in range(len(mean))]] = coloryByHtml[2+useTesting]
         return x_pos, mean, std, colors
 
-    def extractMeanAndStdForRandAndNorm(self, performanceIdx=1):
+    def extractMeanAndStdForRandAndNorm(self, performanceIdx=1, nrOfReplicates=5):
         mean = np.zeros(4*len(self.selectedFolders))
         std = np.zeros(4*len(self.selectedFolders))
         startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
         for i in range(len(self.selectedFolders)):
             table = self.randTable[i]
-            mean[i*4] = table.iloc[5, performanceIdx]
-            mean[i*4+1] = table.iloc[5, performanceIdx+startPerformanceValIdx]
-            std[i*4] = table.iloc[6, performanceIdx]
-            std[i*4+1] = table.iloc[6, performanceIdx+startPerformanceValIdx]
+            mean[i*4] = table.iloc[nrOfReplicates, performanceIdx]
+            mean[i*4+1] = table.iloc[nrOfReplicates, performanceIdx+startPerformanceValIdx]
+            std[i*4] = table.iloc[nrOfReplicates+1, performanceIdx]
+            std[i*4+1] = table.iloc[nrOfReplicates+1, performanceIdx+startPerformanceValIdx]
             table = self.resultsTable[i]
-            mean[i*4+2] = table.iloc[5, performanceIdx]
-            mean[i*4+3] = table.iloc[5, performanceIdx+startPerformanceValIdx]
-            std[i*4+2] = table.iloc[6, performanceIdx]
-            std[i*4+3] = table.iloc[6, performanceIdx+startPerformanceValIdx]
+            mean[i*4+2] = table.iloc[nrOfReplicates, performanceIdx]
+            mean[i*4+3] = table.iloc[nrOfReplicates, performanceIdx+startPerformanceValIdx]
+            std[i*4+2] = table.iloc[nrOfReplicates+1, performanceIdx]
+            std[i*4+3] = table.iloc[nrOfReplicates+1, performanceIdx+startPerformanceValIdx]
         return mean, std
 
-    def extractMeanAndStd(self, performanceIdx=1, plotOnlyRandom=False):
+    def extractMeanAndStd(self, performanceIdx=1, nrOfReplicates=5, plotOnlyRandom=False):
         mean = np.zeros(2*len(self.selectedFolders))
         std = np.zeros(2*len(self.selectedFolders))
         startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
@@ -172,32 +183,23 @@ class BarPlotPlotter (object):
                 table = self.randTable[i]
             else:
                 table = self.resultsTable[i]
-            mean[i*2] = table.iloc[5, performanceIdx]
-            mean[i*2+1] = table.iloc[5, performanceIdx+startPerformanceValIdx]
-            std[i*2] = table.iloc[6, performanceIdx]
-            std[i*2+1] = table.iloc[6, performanceIdx+startPerformanceValIdx]
+            mean[i*2] = table.iloc[nrOfReplicates, performanceIdx]
+            mean[i*2+1] = table.iloc[nrOfReplicates, performanceIdx+startPerformanceValIdx]
+            std[i*2] = table.iloc[nrOfReplicates+1, performanceIdx]
+            std[i*2+1] = table.iloc[nrOfReplicates+1, performanceIdx+startPerformanceValIdx]
         return mean, std
 
-    def addTestData(self, mean, std, idx, performanceIdx, plotOnlyRandom=False,
-                    plotAdditionalTable=False, containsTrainAndValPerformance=True):
+    def addTestData(self, mean, std, idx, performanceIdx, tableList,
+                    testMeanIdxName="test mean", testStdIdxName="test std"):
         mean, std = list(mean), list(std)
-        testP = []
-        if containsTrainAndValPerformance:
-            testRowIdx = 7
-            startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
-        else:
-            testRowIdx = 0
-            startPerformanceValIdx = 0
-        if plotOnlyRandom:
-            tableList = self.randTable
-        elif plotAdditionalTable:
-            tableList = self.furtherTestResults
-        else:
-            tableList = self.resultsTable
         for i, table in enumerate(tableList):
-            testP = table.iloc[testRowIdx, startPerformanceValIdx+performanceIdx]
-            mean.insert((idx+1)*i+idx, testP)
-            std.insert((idx+1)*i+idx, 0)
+            indices = np.asarray(table.index)
+            isTestMean = indices == testMeanIdxName
+            isTestStd = indices == testStdIdxName
+            meanTestP = table.iloc[isTestMean, performanceIdx].to_numpy()
+            stdTestP = table.iloc[isTestStd, performanceIdx].to_numpy()
+            mean.insert((idx+1)*i+idx, meanTestP)
+            std.insert((idx+1)*i+idx, stdTestP)
         mean, std = np.asarray(mean), np.asarray(std)
         return mean, std
 
@@ -281,30 +283,33 @@ class BarPlotPlotter (object):
         return textResult.split("\n")
 
 def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=True,
-                             addOtherTestWithBaseFolder=None):
-    print(performance)
-    performanceToIdxDict = {"F1":0, "Acc":1, "AUC":4}
+                             baseResultsFolder = "Results/divEventData/manualCentres/",
+                             addOtherTestWithBaseFolder=None, balanceData=False):
+    performanceToIdxDict = {"F1":0, "Acc":1, "AUC":3}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
         minY = 50
     else:
         minY = 0.5
     if doMainFig:
-        divEventPred = ["allTopos", "area", "topoAndBio", "lowCor0.7", "lowCor0.5", "topology"]# ["allTopos", "area", "topoAndBio"]#
-    else:
-        divEventPred = ["lowCor0.5", "lowCor0.7", "topology", "area"]
-    baseResultsFolder = "Results/divEventData/manualCentres/"
-    baseResultsFolder = "Results/divEventData/manualCentres/adjusted div Pred/"
-    # baseResultsFolder = "Results/Test2/"
-    if len(divEventPred) == 3:
+        divEventPred = ["allTopos", "area", "topoAndBio", "lowCor0.3", "topology"]
         addition = " main fig"
     else:
+        divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "area"]
         addition = " sup low area"
+    if not balanceData is None:
+        if balanceData:
+            balanceTxt = "bal1"
+        else:
+            balanceTxt = "bal0"
+    else:
+        balanceTxt = ""
+    furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
     setNames = ", ".join(divEventPred)
     if plotOnlyRandom:
         filenameToSave = baseResultsFolder + "div pred random results{} {} {}.png".format(addition, performance, setNames)
     else:
-        filenameToSave = baseResultsFolder + "div pred results{} {} {}.png".format(addition, performance, setNames)
+        filenameToSave = baseResultsFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
@@ -313,27 +318,36 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
                                       plotOnlyRandom=plotOnlyRandom,
                                       performanceIdx=performanceIdx,
                                       minY=minY,
+                                      furtherFolder=furtherFolder,
                                       filenameToSave=filenameToSave)
 
 def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                               plotOnlyRandom=False, doMainFig=True,
+                              balanceData=True,
                               excludeDivNeighbours=True, addOtherTestWithBaseFolder=None,
                               baseResultsFolder="Results/topoPredData/diff/manualCentres/"):
-    performanceToIdxDict = {"F1":0, "Acc":4, "AUC":7}
+    performanceToIdxDict = {"F1":0, "Acc":4, "AUC":9}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
         minY = 30
     else:
         minY = 0.5
     if doMainFig:
-        divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.7", "lowCor0.5", "topology"]# ["allTopos", "bio", "topoAndBio"]
+        divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.3", "topology"]# ["allTopos", "bio", "topoAndBio"]
     else:
-        divEventPred = ["lowCor0.5", "lowCor0.7", "topology", "bio"]
+        divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "bio"]
     if excludeDivNeighbours:
         excludingTxt = "ex1"
     else:
         excludingTxt = "ex0"
-    furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}/".format(excludingTxt)
+    if not balanceData is None:
+        if balanceData:
+            balanceTxt = "bal1"
+        else:
+            balanceTxt = "bal0"
+    else:
+        balanceTxt = ""
+    furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
     if len(divEventPred) == 3:
         addition = " main fig"
     else:
@@ -343,7 +357,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         randFilename = "combinedResultsWithTestingOf_1000_randomizedRuns_{}.csv".format(excludingTxt)
         filenameToSave = baseResultsFolder + "topo random pred results {}{} {} {}.png".format(excludingTxt, addition, performance, setNames)
     else:
-        filenameToSave = baseResultsFolder + "topo pred results {}{} {} {}.png".format(excludingTxt, addition, performance, setNames)
+        filenameToSave = baseResultsFolder + "topo pred {} results {}{} {} {}.png".format(balanceTxt, excludingTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
     if doSpecial:
@@ -370,9 +384,9 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                                       filenameToSave=filenameToSave)
 
 def main():
-    doDivPredPlots = False
+    doDivPredPlots = True
     plotRandomResults = False
-    addOtherTestWithBaseFolder = True
+    addOtherTestWithBaseFolder = True # set True to include _WithKtnTest
     if plotRandomResults:
         if doDivPredPlots:
             mainDivPredRandomization(performance="Acc", plotOnlyRandom=plotRandomResults)
@@ -383,21 +397,27 @@ def main():
     else:
         if doDivPredPlots:
             if addOtherTestWithBaseFolder:
-                addOtherTestWithBaseFolder = "Results/ktnDivEventData/manualCentres/adjusted div Pred/"
+                addOtherTestWithBaseFolder = "Results/ktnDivEventData/temp/"
             else:
                 addOtherTestWithBaseFolder = None
-            for p, isMain in zip(["Acc", "AUC", "Acc", "AUC"], [True, True, False, False]):
-                mainDivPredRandomization(performance=p, doMainFig=isMain,
-                                         addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
+            mainDivPredRandomization(performance="Acc", doMainFig=True, baseResultsFolder="Results/divEventData/temp/",
+                                     addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
+            # for p, isMain in zip(["Acc", "AUC", "Acc", "AUC"], [True, True, False, False]):
+            #     mainDivPredRandomization(performance=p, doMainFig=isMain,
+            #                              addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
         else:
             if addOtherTestWithBaseFolder:
                 addOtherTestWithBaseFolder = "Results/ktnTopoPredData/diff/manualCentres/"
             else:
                 addOtherTestWithBaseFolder = None
-            for p, isMain in zip(["Acc", "AUC", "Acc", "AUC"], [True, True, False, False]):
-                mainTopoPredRandomization(performance=p, doMainFig=isMain,
-                                          addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
+            # for p, isMain in zip(["Acc", "AUC", "Acc", "AUC"], [True, True, False, False]):
+            #     mainTopoPredRandomization(performance=p, doMainFig=isMain,
+            #                               addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
             # mainTopoPredRandomization(performance="AUC", doMainFig=False, doSpecial=True)
+            mainTopoPredRandomization(performance="Acc", doMainFig=True, balanceData=False,
+                                      addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
+            mainTopoPredRandomization(performance="Acc", doMainFig=True, balanceData=True,
+                                      addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
 
 if __name__ == '__main__':
     main()
