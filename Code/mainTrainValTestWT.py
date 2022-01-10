@@ -76,9 +76,6 @@ def mainTrainValTestWT(runDivEventPred=True):
                                    printBalancedLabelCount=printBalancedLabelCount)
     else:
         for excludeDividingNeighbours in [True, False]:
-            for balanceData in [False, True]:
-                if balanceData == False and excludeDividingNeighbours == True:
-                    break
                 for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
                     labelName = "combinedLabels.csv"
                     if useManualCentres:
