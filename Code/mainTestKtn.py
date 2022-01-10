@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, "./Code/Predicting/")
 from PredictonManager import PredictonManager
 
-def main():
+def mainTestKtn(runDivEventPred=True):
     dataFolder = "Data/ktn/"
     featureAndLabelFolder = "Data/ktn/topoPredData/"
     folderToSaveVal = None
@@ -12,7 +12,6 @@ def main():
     testPlants = ["ktnP1", "ktnP2", "ktnP3"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
     useTemporaryResultsFolder = False
-    runDivEventPred = True
     runModelTraining = False
     runModelTesting = True
     useManualCentres = True
@@ -35,7 +34,7 @@ def main():
     featureProperty = "combinedTable"
     parName = None
     if runDivEventPred:
-        for set in ["topoAndBio", "allTopos", "area", "topology", "lowCor0.5", "lowCor0.7"]:
+        for set in ["topoAndBio", "allTopos", "area", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}divEventData/manualCentres/{}/".format(dataFolder, set)
@@ -75,12 +74,12 @@ def main():
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
         sys.exit()
-    for set in ["topoAndBio", "allTopos", "bio", "topology", "lowCor0.5", "lowCor0.7"]:
+    for set in ["topoAndBio", "allTopos", "bio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
         print("testing topo prediction with set ", set)
         labelName = "combinedLabels.csv"
         setFeatureAndLabelFolder = "{}topoPredData/diff/manualCentres/{}/".format(dataFolder, set)
         resultsFolder = "Results/ktnTopoPredData/diff/manualCentres/{}/".format(set)
-        useSpecificTestModelFilename = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0ex1/testModel.pkl".format(set)
+        useSpecificTestModelFilename = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/testModel.pkl".format(set)
         if useTemporaryResultsFolder:
             resultsFolder = "Temporary/{}/".format(set)
         newResultsFolder = resultsFolder
@@ -97,6 +96,8 @@ def main():
                                    featureAndLabelFolder=featureAndLabelFolder,
                                    givenFeatureName=givenFeatureName,
                                    resultsFolder=newResultsFolder,
+                                   nSplits=nSplits,
+                                   balanceData=balanceData,
                                    modelType=modelType,
                                    runModelTraining = runModelTraining,
                                    runModelTesting = runModelTesting,
@@ -108,9 +109,6 @@ def main():
                                    normaliseTrainValTestData=normaliseTrainValTestData,
                                    doHyperParameterisation=doHyperParameterisation,
                                    hyperParameters=hyperParameters,
-                                   nestedModelProp=nestedModelProp,
-                                   modelEnsambleNumber=modelEnsambleNumber,
-                                   selectedData=selectedData,
                                    parametersToAddOrOverwrite=parametersToAddOrOverwrite,
                                    specialParName=parName,
                                    modelNameExtension=modelNameExtension,
@@ -120,4 +118,5 @@ def main():
                                    printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    main()
+    mainTestKtn(runDivEventPred=True)
+    mainTestKtn(runDivEventPred=False)

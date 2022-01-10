@@ -3,15 +3,14 @@ import sys
 sys.path.insert(0, "./Code/Predicting/")
 from PredictonManager import PredictonManager
 
-def main():
+def mainTrainValTestWT(runDivEventPred=True):
     dataFolder = "Data/WT/"
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    runDivEventPred = False
     usePreviousTrainedModelsIfPossible = False
-    runModelTraining = True
-    runModelTesting = False
+    runModelTraining = False
+    runModelTesting = True
     onlyTestModelWithoutTrainingData = False
     saveLearningCurve = False
     useManualCentres = True
@@ -121,4 +120,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    mainTrainValTestWT(runDivEventPred=True)
+    mainTrainValTestWT(runDivEventPred=False)
