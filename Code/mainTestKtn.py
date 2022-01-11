@@ -38,8 +38,8 @@ def mainTestKtn(runDivEventPred=True):
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}divEventData/manualCentres/{}/".format(dataFolder, set)
-            resultsFolder = "Results/ktnDivEventData/temp/{}/".format(set)
-            useSpecificTestModelFilename = "Results/divEventData/temp/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/testModel.pkl".format(set)
+            resultsFolder = "Results/ktnDivEventData/manualCentres/{}/".format(set)
+            useSpecificTestModelFilename = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/testModel.pkl".format(set)
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
@@ -118,5 +118,5 @@ def mainTestKtn(runDivEventPred=True):
                                    printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    mainTestKtn(runDivEventPred=True)
     mainTestKtn(runDivEventPred=False)
+    mainTestKtn(runDivEventPred=True)
