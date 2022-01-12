@@ -3,16 +3,17 @@ import sys
 sys.path.insert(0, "./Code/Predicting/")
 from PredictonManager import PredictonManager
 
-def mainTrainValTestWT(runDivEventPred=True):
+def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=None,
+                       excludeDividingNeighboursProperties=[True, False],
+                       saveLearningCurve=False):
     dataFolder = "Data/WT/"
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
     usePreviousTrainedModelsIfPossible = False
     runModelTraining = False
-    runModelTesting = True
+    runModelTesting = False
     onlyTestModelWithoutTrainingData = False
-    saveLearningCurve = False
     useManualCentres = True
     # print options:
     printBalancedLabelCount = True
@@ -34,25 +35,27 @@ def mainTrainValTestWT(runDivEventPred=True):
     normaliseTrainValTestData = False
     featureProperty = "combinedTable"
     if runDivEventPred:
-        for set in ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        if givenSets is None:
+            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+        if baseResultsFolder is None:
+            baseResultsFolder = "Results/divEventData/"
+        for set in givenSets:
             labelName = "combinedLabels.csv"
             if useManualCentres:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/manualCentres/{}/".format(set)
-                resultsFolder = "Results/divEventData/manualCentres/{}/".format(set)
+                resultsFolder = "{}manualCentres/{}/".format(baseResultsFolder, set)
             else:
                 setFeatureAndLabelFolder = "Data/WT/divEventData/{}/".format(set)
-                resultsFolder = "Results/divEventData/{}/".format(set)
-            newResultsFolder = resultsFolder
-            folderToSaveVal = newResultsFolder
+                resultsFolder = "{}{}/".format(baseResultsFolder, set)
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
-            print("newResultsFolder: "+newResultsFolder)
+            print("resultsFolder: "+resultsFolder)
             manager = PredictonManager(plantNames=plantNames,
                                    testPlants=testPlants,
                                    featureProperty=featureProperty,
                                    dataFolder=dataFolder,
                                    featureAndLabelFolder=setFeatureAndLabelFolder,
                                    givenFeatureName=givenFeatureName,
-                                   resultsFolder=newResultsFolder,
+                                   resultsFolder=resultsFolder,
                                    nSplits=nSplits,
                                    balanceData=balanceData,
                                    modelType=modelType,
@@ -68,33 +71,35 @@ def mainTrainValTestWT(runDivEventPred=True):
                                    doHyperParameterisation=doHyperParameterisation,
                                    hyperParameters=hyperParameters,
                                    modelNameExtension=modelNameExtension,
-                                   folderToSaveVal=folderToSaveVal,
+                                   folderToSaveVal=resultsFolder,
                                    setFeatureAndLabelFolder=setFeatureAndLabelFolder,
                                    useOnlyTwo=True,
                                    labelName=labelName,
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
     else:
-        for excludeDividingNeighbours in [True, False]:
-                for set in ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        if givenSets is None:
+            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+        if baseResultsFolder is None:
+            baseResultsFolder = "Results/topoPredData/"
+        for excludeDividingNeighbours in excludeDividingNeighboursProperties:
+                for set in givenSets:
                     labelName = "combinedLabels.csv"
                     if useManualCentres:
                         setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
-                        resultsFolder = "Results/topoPredData/diff/manualCentres/{}/".format(set)
+                        resultsFolder = "diff/manualCentres/{}/".format(baseResultsFolder, set)
                     else:
                         setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
-                        resultsFolder = "Results/topoPredData/diff/{}/".format(set)
-                    newResultsFolder = resultsFolder
-                    folderToSaveVal = newResultsFolder
+                        resultsFolder = "{}diff/{}/".format(baseResultsFolder, set)
                     givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
-                    print("newResultsFolder: "+newResultsFolder)
+                    print("resultsFolder: "+resultsFolder)
                     manager = PredictonManager(plantNames=plantNames,
                                                testPlants=testPlants,
                                                featureProperty=featureProperty,
                                                dataFolder=dataFolder,
                                                featureAndLabelFolder=setFeatureAndLabelFolder,
                                                givenFeatureName=givenFeatureName,
-                                               resultsFolder=newResultsFolder,
+                                               resultsFolder=resultsFolder,
                                                nSplits=nSplits,
                                                balanceData=balanceData,
                                                modelType=modelType,
@@ -109,7 +114,7 @@ def mainTrainValTestWT(runDivEventPred=True):
                                                doHyperParameterisation=doHyperParameterisation,
                                                hyperParameters=hyperParameters,
                                                modelNameExtension=modelNameExtension,
-                                               folderToSaveVal=folderToSaveVal,
+                                               folderToSaveVal=resultsFolder,
                                                setFeatureAndLabelFolder=setFeatureAndLabelFolder,
                                                labelName=labelName,
                                                excludeDividingNeighbours=excludeDividingNeighbours,
@@ -117,5 +122,6 @@ def mainTrainValTestWT(runDivEventPred=True):
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=True)
-    mainTrainValTestWT(runDivEventPred=False)
+    mainTrainValTestWT(runDivEventPred=False, givenSets=["bio"], baseResultsFolder="Results/topoPredBroaderPar/",
+                           excludeDividingNeighboursProperties=[False])
+    mainTrainValTestWT(runDivEventPred=True, baseResultsFolder="Results/divEventBroaderPar/", saveLearningCurve=True)
