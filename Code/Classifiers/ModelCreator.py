@@ -102,7 +102,6 @@ class ModelCreator (object):
     def equallySpacedValueSamplingOverScales(self, minMaxScale=[-10, -5], nrOfSamplesPerScale=10):
         parameters = []
         includeLast = False
-        nrOfSamplesPerScale -= 1
         for i in range(minMaxScale[0], minMaxScale[1]+1):
             if i == minMaxScale[1]:
                 includeLast = True
