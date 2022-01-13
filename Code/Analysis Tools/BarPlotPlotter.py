@@ -86,6 +86,15 @@ class BarPlotPlotter (object):
             valGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"validation p-values":"p-value"})).GetGroupNameLetters()
             statisticsLetters += f"trainingGroupLetters {trainingGroupLetters}\n"
             statisticsLetters += f"valGroupLetters {valGroupLetters}\n"
+        if not self.testResultTables is None:
+            pValueTable = self.calcDifferenceBetweenTestPerformances(performanceIdx, existingPValueTable=pValueTable,
+                        correctPValues=True)
+            pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_trainValTestPValues.csv")
+            pValueTable.to_csv(pValueTableName)
+            testGroupLetters = PValueToLetterConverter(testPerformanceDiffTable.rename(columns={"test p-values":"p-value"})).GetGroupNameLetters()
+            statisticsLetters += f"testGroupLetters {testGroupLetters}\n"
+        if printPValues:
+            print(pValueTable.to_string())
         with open(statisticsLettersFilename, "w") as file:
             file.write(statisticsLetters)
         yLabel = self.setYLabel(performanceIdx)
@@ -276,8 +285,6 @@ class BarPlotPlotter (object):
                         "training p-values":trainPValues, "training T-stat:":trainTStat,
                        "validation p-values":valPValues, "validation T-stat:":valTStat}
         pValueTable = pd.DataFrame(pValueTable, index=testCases)
-        if printPValues:
-            print(pValueTable.to_string())
         return pValueTable
 
     def doTukey(self, values, name, alpha=0.05):
@@ -300,6 +307,53 @@ class BarPlotPlotter (object):
         m_comp = pairwise_tukeyhsd(endog=values, groups=groupName, alpha=0.05)
         textResult = name+"\n"+f"Results of ANOVA test:\n The F-statistic is: {fvalue}\n The p-value is: {pvalue}\n"+str(m_comp)
         return textResult.split("\n")
+
+    def calcDifferenceBetweenTestPerformances(self, performanceIdx, existingPValueTable=None,
+                    indexName="test tissue", pValueColumnName="test p-values",
+                    tStatsColumnName="test T-stat", correctPValues=True):
+        testPerformancesPerSet = self.selectPerformancesFromTableList(self.testResultTables, performanceIdx, indexName)
+        numberOfTissuesPerSet = np.asarray([len(i) for i in testPerformancesPerSet])
+        assert np.all(numberOfTissuesPerSet[0] == numberOfTissuesPerSet), f"The number of selected test tissues should be the same for all sets, number of tissues per set {numberOfTissuesPerSet} of sets {self.selectedFolders}"
+        pValueTable = self.createPValueTable(testPerformancesPerSet, setNames=self.selectedFolders,
+                               correctPValues=correctPValues,
+                               addGroupColumns=existingPValueTable is None,
+                               pValueColumnName=pValueColumnName,
+                               tStatsColumnName=tStatsColumnName)
+        if not existingPValueTable is None:
+            pValueTable = pd.concat([existingPValueTable, pValueTable], axis=1)
+        return pValueTable
+
+    def selectPerformancesFromTableList(self, tableList, performanceIdx, indexName):
+        performanceValues = []
+        for table in tableList:
+            selectedTissueIndices = np.where([indexName in index for index in table.index])[0]
+            performanceValues.append(table.iloc[selectedTissueIndices, performanceIdx].to_numpy())
+        return performanceValues
+
+    def createPValueTable(self, performancesPerSet, setNames, correctPValues=True, addGroupColumns=True,
+                          pValueColumnName="p-values", tStatsColumnName="T-stat"):
+        allPValues, allTStats, testCases, group1, group2 = [], [], [], [], []
+        nrOfConditions = len(performancesPerSet)
+        for i, j in itertools.combinations(range(nrOfConditions), 2):
+            TStat, pValue = st.ttest_rel(performancesPerSet[i], performancesPerSet[j])
+            if np.isnan(pValue):
+                pValue = 1
+            allPValues.append(pValue)
+            allTStats.append(TStat)
+            testCases.append(setNames[i]+" vs "+ setNames[j])
+            group1.append(setNames[i])
+            group2.append(setNames[j])
+        if correctPValues:
+            allPValues = list(multipletests(allPValues, method='fdr_bh')[1])
+        if addGroupColumns:
+            pValueTable = {"group1" : group1, "group2" : group2,
+                           pValueColumnName : allPValues,
+                           tStatsColumnName : allTStats}
+        else:
+            pValueTable = {pValueColumnName : allPValues,
+                           tStatsColumnName : allTStats}
+        pValueTable = pd.DataFrame(pValueTable, index=testCases)
+        return pValueTable
 
 def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=True,
                              baseResultsFolder = "Results/divEventData/manualCentres/",
