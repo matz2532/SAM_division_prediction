@@ -91,8 +91,18 @@ class BarPlotPlotter (object):
                         correctPValues=True)
             pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_trainValTestPValues.csv")
             pValueTable.to_csv(pValueTableName)
-            testGroupLetters = PValueToLetterConverter(testPerformanceDiffTable.rename(columns={"test p-values":"p-value"})).GetGroupNameLetters()
+            testGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"test p-values":"p-value"})).GetGroupNameLetters()
             statisticsLetters += f"testGroupLetters {testGroupLetters}\n"
+            if not self.furtherTestResults is None:
+                firstScenarioName, secondScenarioName = "WT", "ktn1-2"
+                pValueColumnName = f"{firstScenarioName} vs {secondScenarioName} p-values"
+                tStatsColumnName = f"{firstScenarioName} vs {secondScenarioName} T-stat"
+                differencesBetweenTestScenariosDf = self.comparePerformancesBetween(self.testResultTables, self.furtherTestResults, performanceIdx,
+                            firstScenarioName=firstScenarioName, secondScenarioName=secondScenarioName,
+                            correctPValues=True, printPValues=printPValues,
+                            pValueColumnName=pValueColumnName, tStatsColumnName=tStatsColumnName)
+                betweenTestScenariosTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_betweenTestScenariosPValues.csv")
+                differencesBetweenTestScenariosDf.to_csv(betweenTestScenariosTableName)
         if printPValues:
             print(pValueTable.to_string())
         with open(statisticsLettersFilename, "w") as file:
@@ -355,6 +365,39 @@ class BarPlotPlotter (object):
         pValueTable = pd.DataFrame(pValueTable, index=testCases)
         return pValueTable
 
+    def comparePerformancesBetween(self, performanceTables1, performanceTables2,
+                    performanceIdx, indexName="test tissue", correctPValues=True, printPValues=True,
+                    firstScenarioName="first Scenario", secondScenarioName="second scenario",
+                    pValueColumnName="p-values", tStatsColumnName="T-stat", addGroupColumns=True):
+        performancesPerSet1 = self.selectPerformancesFromTableList(performanceTables1, performanceIdx, indexName)
+        performancesPerSet2 = self.selectPerformancesFromTableList(performanceTables2, performanceIdx, indexName)
+        assert len(performancesPerSet1) == len(performancesPerSet2), f"The number of performance sets need to be equal between {firstScenarioName} and {secondScenarioName}"
+        allPValues, allTStats, testCases, group1, group2 = [], [], [], [], []
+        setNames = self.selectedFolders
+        nrOfConditions = len(performancesPerSet1)
+        for i in range(nrOfConditions):
+            TStat, pValue = st.ttest_ind(performancesPerSet1[i], performancesPerSet2[i])
+            if np.isnan(pValue):
+                pValue = 1
+            allPValues.append(pValue)
+            allTStats.append(TStat)
+            testCases.append(f"{firstScenarioName} vs {secondScenarioName} {setNames[i]}")
+            group1.append(f"{firstScenarioName} {setNames[i]}")
+            group2.append(f"{firstScenarioName} {setNames[i]}")
+        if correctPValues:
+            allPValues = list(multipletests(allPValues, method='fdr_bh')[1])
+        if addGroupColumns:
+            pValueTable = {"group1" : group1, "group2" : group2,
+                           pValueColumnName : allPValues,
+                           tStatsColumnName : allTStats}
+        else:
+            pValueTable = {pValueColumnName : allPValues,
+                           tStatsColumnName : allTStats}
+        pValueTable = pd.DataFrame(pValueTable, index=testCases)
+        if printPValues:
+            print(pValueTable.to_string())
+        return pValueTable
+
 def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=True,
                              baseResultsFolder = "Results/divEventData/manualCentres/",
                              addOtherTestWithBaseFolder=None, balanceData=False):
@@ -464,7 +507,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
 def main():
     doDivPredPlots = True
     plotRandomResults = False
-    addOtherTestWithBaseFolder = False # set True to include _WithKtnTest
+    addOtherTestWithBaseFolder = True # set True to include _WithKtnTest
     if plotRandomResults:
         if doDivPredPlots:
             mainDivPredRandomization(performance="Acc", plotOnlyRandom=plotRandomResults)
