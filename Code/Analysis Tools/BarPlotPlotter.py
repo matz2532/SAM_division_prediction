@@ -5,6 +5,8 @@ import pandas as pd
 import scipy.stats as st
 import sys
 
+from pathlib import Path
+from PValueToLetterConverter import PValueToLetterConverter
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.stats.multitest import multipletests
 
@@ -40,7 +42,7 @@ class BarPlotPlotter (object):
         self.randTable = []
         self.testResultTables = None
         self.furtherTestResults = None
-        self.resultsTable = self.loadTables(self.baseResultsFolder)
+        self.resultsTable = self.loadTables(self.baseResultsFolder) # add check for number of replicates
         if (self.plotOnlyRandom or self.compareRandAndNorm) and not self.doSpecial:
             self.randTable = self.loadTables(self.baseResultsFolder, addFurtherFolder=False,
                                              addSpecificNameSuffix=self.randFilename)
@@ -69,15 +71,23 @@ class BarPlotPlotter (object):
 
     def createFigures(self, performanceIdx=1, compareRandAndNorm=True, minY=0,
                       printPValues=True):
-        x_pos, mean, std, colors = self.setupData(performanceIdx, compareRandAndNorm, nrOfReplicates=self.nrOfReplicates)
-        for i in range(len(self.selectedFolders)):
-            print(self.selectedFolders[i])
-            print(self.resultsTable[i].to_string())
-            print(mean[i*2], mean[i*2+1])
+        x_pos, mean, std, colors = self.setupData(performanceIdx, compareRandAndNorm,
+                                                  nrOfReplicates=self.nrOfReplicates,
+                                                  useTesting=not self.testResultTables is None)
+        statisticsLetters = ""
+        statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
         if not np.all(np.asarray(std) == 0):
             pValueTable = self.calcPValueTable(performanceIdx, compareRandAndNorm,
                                                nrOfReplicates=self.nrOfReplicates,
                                                correctPValues=True, printPValues=printPValues)
+            pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_trainValPValues.csv")
+            pValueTable.to_csv(pValueTableName)
+            trainingGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"training p-values":"p-value"})).GetGroupNameLetters()
+            valGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"validation p-values":"p-value"})).GetGroupNameLetters()
+            statisticsLetters += f"trainingGroupLetters {trainingGroupLetters}\n"
+            statisticsLetters += f"valGroupLetters {valGroupLetters}\n"
+        with open(statisticsLettersFilename, "w") as file:
+            file.write(statisticsLetters)
         yLabel = self.setYLabel(performanceIdx)
         # Build the plot
         plt.rcParams.update({'font.size': 18})
@@ -227,6 +237,8 @@ class BarPlotPlotter (object):
         trainPValues, valPValues, trainTStat, valTStat = [], [], [], []
         nrOfConditions = len(self.resultsTable)
         testCases = []
+        group1 = []
+        group2 = []
         if tukey:
             valTukey = self.doTukey(valValues, "validation")
             trainTukey = self.doTukey(trainValues, "train")
@@ -245,16 +257,23 @@ class BarPlotPlotter (object):
                 print(tukey)
         for i, j in itertools.combinations(range(nrOfConditions), 2):
             TStat, pValues = st.ttest_rel(trainValues[i], trainValues[j])
+            if np.isnan(pValues):
+                pValues = 1
             trainPValues.append(pValues)
             trainTStat.append(TStat)
             TStat, pValues = st.ttest_rel(valValues[i], valValues[j])
+            if np.isnan(pValues):
+                pValues = 1
             valPValues.append(pValues)
             valTStat.append(TStat)
             testCases.append(self.selectedFolders[i]+" vs "+ self.selectedFolders[j])
+            group1.append(self.selectedFolders[i])
+            group2.append(self.selectedFolders[j])
         if correctPValues:
             trainPValues = list(multipletests(trainPValues, method='fdr_bh')[1])
             valPValues = list(multipletests(valPValues, method='fdr_bh')[1])
-        pValueTable = {"training p-values":trainPValues, "training T-stat:":trainTStat,
+        pValueTable = {"group1":group1, "group2":group2,
+                        "training p-values":trainPValues, "training T-stat:":trainTStat,
                        "validation p-values":valPValues, "validation T-stat:":valTStat}
         pValueTable = pd.DataFrame(pValueTable, index=testCases)
         if printPValues:
@@ -292,7 +311,7 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
     else:
         minY = 0.5
     if doMainFig:
-        divEventPred = ["allTopos", "area", "topoAndBio", "lowCor0.3", "topology"]
+        divEventPred = ["allTopos", "area", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]
         addition = " main fig"
     else:
         divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "area"]
@@ -323,19 +342,23 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
 
 def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                               plotOnlyRandom=False, doMainFig=True,
-                              balanceData=True,
+                              balanceData=False,
                               excludeDivNeighbours=True, addOtherTestWithBaseFolder=None,
-                              baseResultsFolder="Results/topoPredData/diff/manualCentres/"):
+                              baseResultsFolder="Results/topoPredData/diff/manualCentres/",
+                              selectedDivEventPred=None):
     performanceToIdxDict = {"F1":0, "Acc":4, "AUC":9}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
         minY = 30
     else:
         minY = 0.5
-    if doMainFig:
-        divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.3", "topology"]# ["allTopos", "bio", "topoAndBio"]
+    if selectedDivEventPred is None:
+        if doMainFig:
+            divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]# ["allTopos", "bio", "topoAndBio"]
+        else:
+            divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "bio"]
     else:
-        divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "bio"]
+        divEventPred = selectedDivEventPred
     if excludeDivNeighbours:
         excludingTxt = "ex1"
     else:
@@ -376,6 +399,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         filenameToSave = baseResultsFolder + "topo pred results detailed auc allTopos, bio, topoAndBio.png"
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
                                       compareRandAndNorm=False,
+                                      resultsTestFilename=None,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder,
                                       plotOnlyRandom=plotOnlyRandom,
                                       furtherFolder=furtherFolder,
@@ -386,7 +410,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
 def main():
     doDivPredPlots = True
     plotRandomResults = False
-    addOtherTestWithBaseFolder = True # set True to include _WithKtnTest
+    addOtherTestWithBaseFolder = False # set True to include _WithKtnTest
     if plotRandomResults:
         if doDivPredPlots:
             mainDivPredRandomization(performance="Acc", plotOnlyRandom=plotRandomResults)
@@ -397,13 +421,13 @@ def main():
     else:
         if doDivPredPlots:
             if addOtherTestWithBaseFolder:
-                addOtherTestWithBaseFolder = "Results/ktnDivEventData/temp/"
+                addOtherTestWithBaseFolder = "Results/ktnDivEventData/manualCentres/"
             else:
                 addOtherTestWithBaseFolder = None
-            mainDivPredRandomization(performance="Acc", doMainFig=True, baseResultsFolder="Results/divEventData/temp/",
+            mainDivPredRandomization(performance="Acc", doMainFig=True, baseResultsFolder="Results/divEventData/manualCentres/",
                                      addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
             # for p, isMain in zip(["Acc", "AUC", "Acc", "AUC"], [True, True, False, False]):
-            #     mainDivPredRandomization(performance=p, doMainFig=isMain,
+            #     mainDivPredRandomization(performance=p, doMainFig=isMain, baseResultsFolder="Results/divEventData/manualCentres/",
             #                              addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
         else:
             if addOtherTestWithBaseFolder:
@@ -415,8 +439,7 @@ def main():
             #                               addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
             # mainTopoPredRandomization(performance="AUC", doMainFig=False, doSpecial=True)
             mainTopoPredRandomization(performance="Acc", doMainFig=True, balanceData=False,
-                                      addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
-            mainTopoPredRandomization(performance="Acc", doMainFig=True, balanceData=True,
+                                      excludeDivNeighbours=True,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder)
 
 if __name__ == '__main__':
