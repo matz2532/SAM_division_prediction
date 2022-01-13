@@ -77,7 +77,7 @@ class BarPlotPlotter (object):
         statisticsLetters = ""
         statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
         if not np.all(np.asarray(std) == 0):
-            pValueTable = self.calcPValueTable(performanceIdx, compareRandAndNorm,
+            pValueTable = self.calcTrainAndValDifferences(performanceIdx, compareRandAndNorm,
                                                nrOfReplicates=self.nrOfReplicates,
                                                correctPValues=True, printPValues=printPValues)
             pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_trainValPValues.csv")
@@ -226,7 +226,7 @@ class BarPlotPlotter (object):
             yLabel = ""
         return yLabel
 
-    def calcPValueTable(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5,
+    def calcTrainAndValDifferences(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5,
                         correctPValues=True, printPValues=False, tukey=False):
         trainValues = []
         valValues = []
