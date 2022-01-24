@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
 import sys
+
+sys.path.insert(0, "./Code/")
 sys.path.insert(0, "./Code/Analysis Tools/")
 sys.path.insert(0, "./Code/Classifiers/")
 
@@ -11,6 +13,7 @@ from BalancedXFold import BalancedXFold
 from NestedModelCreator import NestedModelCreator
 from pathlib import Path
 from PerPlantFold import PerPlantFold
+from utils import doZNormalise
 
 class PredictonEvaluator (object):
 
@@ -96,6 +99,7 @@ class PredictonEvaluator (object):
             y_train = self.y_train[trainIdx]
             X_val = self.X_train[validationIdx, :]
             y_val = self.y_train[validationIdx]
+            X_train, X_val = self.normaliseFeatures(X_train, X_val)
             allTrainLengths.append(len(X_train))
             if self.hyperparamModels is None:
                 modelWithParamsSet = None
@@ -115,6 +119,11 @@ class PredictonEvaluator (object):
         allTrainPs = np.asarray(allTrainPs).T
         allValPs = np.asarray(allValPs).T
         return allTrainPs, allValPs
+
+    def normaliseFeatures(self, X_train, X_val):
+        X_train, normParameters = doZNormalise(X_train, returnParameter=True)
+        X_val = doZNormalise(X_val, useParameters=normParameters)
+        return X_train, X_val
 
     def calcScoreForRange(self, X_train, y_train, X_val, y_val, minMaxRange,
                           stepSize=1, modelWithParamsSet=None):
