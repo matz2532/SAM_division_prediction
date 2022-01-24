@@ -1,4 +1,9 @@
 import numpy as np
+import sys
+
+sys.path.insert(0, "./Code/")
+
+from utils import doZNormalise
 
 class InversedTissuePropagation (DivAndTopoPredictor):
 
@@ -44,8 +49,8 @@ class InversedTissuePropagation (DivAndTopoPredictor):
         isTestPlant = self.divSampleData.iloc[:, 0] == testPlant
         idxOfTrainPlants = np.where(np.invert(isTestPlant))[0]
         idxOfTestPlant = np.where(isTestPlant)[0]
-        self.divSampleData.iloc[idxOfTrainPlants, 3:], self.meanStdPar = self.doZNormalise(self.divSampleData.iloc[idxOfTrainPlants, 3:], returnParameter=True)
-        self.divSampleData.iloc[idxOfTestPlant, 3:] = self.doZNormalise(self.divSampleData.iloc[idxOfTestPlant, 3:], useParameters=self.meanStdPar)
+        self.divSampleData.iloc[idxOfTrainPlants, 3:], self.meanStdPar = doZNormalise(self.divSampleData.iloc[idxOfTrainPlants, 3:], returnParameter=True)
+        self.divSampleData.iloc[idxOfTestPlant, 3:] = doZNormalise(self.divSampleData.iloc[idxOfTestPlant, 3:], useParameters=self.meanStdPar)
         # as area is the first feature given but not the first when later used for network feature normalisation
         if self.useBioFeatures:
             self.meanStdPar = [self.meanStdPar[0][1:], self.meanStdPar[1][1:]]
@@ -56,23 +61,10 @@ class InversedTissuePropagation (DivAndTopoPredictor):
         isTrainValPlant = np.invert(bioTopoSampleData.iloc[:, 0]==testPlant)
         idxOfTissue = np.where(isTrainValPlant)[0]
         bioTrainVal = bioTopoSampleData.iloc[idxOfTissue, 4:]
-        _, bioMeanStdPar = self.doZNormalise(bioTrainVal, returnParameter=True)
+        _, bioMeanStdPar = doZNormalise(bioTrainVal, returnParameter=True)
         if printOut:
             print(list(bioMeanStdPar[0]), list(bioMeanStdPar[1]))
         return bioMeanStdPar
-
-    def doZNormalise(self, X_train, useParameters=None, returnParameter=False):
-        if not useParameters is None:
-            mean = useParameters[0]
-            std = useParameters[1]
-        else:
-            mean = np.mean(X_train, axis=0)
-            std = np.std(X_train, axis=0)
-        X_train = (X_train-mean)/std
-        if returnParameter:
-            return [X_train, [mean, std]]
-        else:
-            return X_train
 
     def calcNetworks(self, baseFolder, plantName, timePoints, baseFolderExtension="{}/",
                      baseNetworkFilename="cellularConnectivityNetwork{}T{}.csv"):
@@ -215,7 +207,7 @@ class InversedTissuePropagation (DivAndTopoPredictor):
         allFeatures = np.concatenate(allFeatures, axis=1)
         allFeatures = np.delete(allFeatures, self.duplicateColIdx, axis=1)
         meanStdPar = [self.meanStdPar[0].to_numpy(), self.meanStdPar[1].to_numpy()]
-        allFeatures = self.doZNormalise(allFeatures, useParameters=meanStdPar)
+        allFeatures = doZNormalise(allFeatures, useParameters=meanStdPar)
         return allFeatures
 
     def calcBioFeatures(self, divCellNeighbourPairs, timePoint):
@@ -227,7 +219,7 @@ class InversedTissuePropagation (DivAndTopoPredictor):
         topoStandardTable = topoStandardTable.astype({"time point":int, "dividing parent cell":int, "parent neighbor":int})
         bioFeatures = BiologicalFeatureCreatorForNetworkRecreation(baseFolder=self.baseFolder, oldFeatureTable=topoStandardTable).CreateBiologicalFeatures()
         bioMeanPar = [self.bioMeanPar, self.bioStdPar]
-        bioFeatures.iloc[:, 4:] = self.doZNormalise(bioFeatures.iloc[:, 4:], useParameters=bioMeanPar)
+        bioFeatures.iloc[:, 4:] = doZNormalise(bioFeatures.iloc[:, 4:], useParameters=bioMeanPar)
         return bioFeatures
 
     def predTopoChanges(self):
@@ -431,7 +423,7 @@ class InversedTissuePropagation (DivAndTopoPredictor):
         # duplicateColIdx = self.duplicateColIdx[self.duplicateColIdx<featureMt.shape[1]]
         # featureMt = np.delete(featureMt, duplicateColIdx, axis=1)
         # meanStdPar = [self.meanStdPar[0].to_numpy(), self.meanStdPar[1].to_numpy()]
-        # allFeatures = self.doZNormalise(allFeatures, useParameters=meanStdPar)
+        # allFeatures = doZNormalise(allFeatures, useParameters=meanStdPar)
         return featureMt
 
     def correlateFeatures(self, expectedFeatures, observedFeatures):

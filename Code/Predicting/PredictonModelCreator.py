@@ -2,6 +2,8 @@ import copy
 import numpy as np
 import pickle
 import sys
+
+sys.path.insert(0, "./Code/")
 sys.path.insert(0, "./Code/Classifiers/")
 
 from BalancedXFold import BalancedXFold
@@ -11,6 +13,7 @@ from MyScorer import MyScorer
 from NestedModelCreator import NestedModelCreator
 from pathlib import Path
 from sklearn.model_selection import KFold
+from utils import doZNormalise
 
 class PredictonModelCreator (object):
 
@@ -75,13 +78,13 @@ class PredictonModelCreator (object):
             print("test labels and counts", np.unique(self.y_test, return_counts=True))
             print("nr of features used:",self.X_train.shape[1])
         if normaliseOnTestData:
-            self.X_test = self.doZNormalise(self.X_test)
+            self.X_test = doZNormalise(self.X_test)
         elif self.normaliseTrainTestData:
-            self.X_train, normParameters = self.doZNormalise(self.X_train, returnParameter=True)
-            self.X_test = self.doZNormalise(self.X_test, useParameters=normParameters)
+            self.X_train, normParameters = doZNormalise(self.X_train, returnParameter=True)
+            self.X_test = doZNormalise(self.X_test, useParameters=normParameters)
         elif self.normaliseTrainValTestData:
             normParameters = [np.mean(self.X_train, axis=0), np.std(self.X_train, axis=0)]
-            self.X_test = self.doZNormalise(self.X_test, useParameters=normParameters)
+            self.X_test = doZNormalise(self.X_test, useParameters=normParameters)
         if self.runModelTraining:
             import time
             startTime = time.time()
@@ -131,19 +134,6 @@ class PredictonModelCreator (object):
         selectedIdx = np.where(isRowSelected)[0]
         assert len(selectedIdx) == 1, "For the cell (from label idx {}), more than one idx in the feature set is found to match {}. {} != 1".format(labelIdx, selectedIdx, len(selectedIdx))
         return selectedIdx[0]
-
-    def doZNormalise(self, X_train, useParameters=None, returnParameter=False):
-        if not useParameters is None:
-            mean = useParameters[0]
-            std = useParameters[1]
-        else:
-            mean = np.mean(X_train, axis=0)
-            std = np.std(X_train, axis=0)
-        X_train = (X_train-mean)/std
-        if returnParameter:
-            return [X_train, [mean, std]]
-        else:
-            return X_train
 
     def trainModel(self, X_train, y_train, nSplits=5, seed=42,
                    usePreviousTrainedModelsIfPossible=True):
@@ -198,8 +188,8 @@ class PredictonModelCreator (object):
         currentX_Train, validationX = X[trainIdx, :], X[validationIdx, :]
         currentY_Train, validationY = y[trainIdx], y[validationIdx]
         if not self.normaliseTrainTestData and self.normaliseTrainValTestData:
-            currentX_Train, normParameters = self.doZNormalise(currentX_Train, returnParameter=True)
-            validationX = self.doZNormalise(validationX, useParameters=normParameters)
+            currentX_Train, normParameters = doZNormalise(currentX_Train, returnParameter=True)
+            validationX = doZNormalise(validationX, useParameters=normParameters)
         if self.printLabelsAndCount:
             print("train", np.unique(currentY_Train, return_counts=True))
             print("val", np.unique(validationY, return_counts=True))

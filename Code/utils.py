@@ -3,6 +3,20 @@ import pandas as pd
 import re, sys
 from pathlib import Path
 
+def doZNormalise(array, useParameters=None, returnParameter=False):
+    # z-score normalise the array along each column
+    if not useParameters is None:
+        mean = useParameters[0]
+        std = useParameters[1]
+    else:
+        mean = np.mean(array, axis=0)
+        std = np.std(array, axis=0)
+    array = (array-mean)/std
+    if returnParameter:
+        return [array, [mean, std]]
+    else:
+        return array
+
 def convertParentLabelingTableToDict(parentLabelingTable):
     parentLabelingDict = {}
     nrOfLabels = parentLabelingTable.shape[0]
