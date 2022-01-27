@@ -54,18 +54,19 @@ class PredictonEvaluator (object):
     def doLearningCurveEstimation(self, useTestData=False, loadPerformances=False):
         allTrainPsFilename = self.saveToFolder + "allTrainPsStartingFrom{}.pkl".format(self.startRange)
         allValPsFilename = self.saveToFolder + "allValPsStartingFrom{}.pkl".format(self.startRange)
+        usedSmpleNumbersFilename = self.saveToFolder + "usedSmpleNumbersStartingFrom{}.pkl".format(self.startRange)
         allPsStartingFromExist = Path(allTrainPsFilename).is_file() and Path(allValPsFilename).is_file()
         if not loadPerformances or not allPsStartingFromExist:
-            allTrainPs, allValPs = self.calcTrainAndValPerformances(self.startRange)
+            allTrainPs, allValPs, usedSmpleNumbers = self.calcTrainAndValPerformances(self.startRange)
             pickle.dump(allTrainPs, open(allTrainPsFilename, "wb"))
             pickle.dump(allValPs, open(allValPsFilename, "wb"))
+            pickle.dump(usedSmpleNumbers, open(usedSmpleNumbersFilename, "wb"))
         else:
             allTrainPs = pickle.load(open(allTrainPsFilename, "rb"))
             allValPs = pickle.load(open(allValPsFilename, "rb"))
+            usedSmpleNumbers = pickle.load(open(usedSmpleNumbersFilename, "rb"))
         assert allValPs.shape[0] == 7 or allValPs.shape[0] == 4, "Assuming that there are 5 or 8 rows/performance measures, {} != 4 or != 7".format(allValPs.shape[0])
-        # doing this to ensure -4th row is accuracy which is used in the learning curve
-        sampleNrRange = np.arange(self.startRange, self.startRange + allTrainPs.shape[1])
-        LearningCurvePlotter(allValPs[1,:,:], allTrainPs[1,:,:], sampleNrRange,
+        LearningCurvePlotter(allValPs[1,:,:], allTrainPs[1,:,:], usedSmpleNumbers,
                              yLabel="Accuracy [%]",
                              showPlot=self.saveToFolder is None,
                              testLabel="Validation Score",
@@ -75,7 +76,7 @@ class PredictonEvaluator (object):
         else:
             plt.show()
 
-    def calcTrainAndValPerformances(self, startRange=50, stepSize=50):
+    def calcTrainAndValPerformances(self, startRange=50, stepSize=1):
         allTrainPs, allValPs = [], []
         allTrainLengths = []
         currentSplit = 0
@@ -92,7 +93,7 @@ class PredictonEvaluator (object):
         for trainIdx, validationIdx in xFold.split(self.X_train, self.y_train):
             if self.printLearningCurveSplit or self.verbosity >= 1:
                 if doPerPlantSplit:
-                    print("val plant {} with split {}/{} of learning curve calculation".format(uniquePlantNames[currentSplit], currentSplit+1, len(uniquePlantNames)+1))
+                    print("val plant {} with split {}/{} of learning curve calculation".format(uniquePlantNames[currentSplit], currentSplit+1, len(uniquePlantNames)))
                 else:
                     print("Split {}/{} of learning curve calculation".format(currentSplit+1, self.nSplits))
             X_train = self.X_train[trainIdx, :]
@@ -116,9 +117,11 @@ class PredictonEvaluator (object):
         if not self.areTrainLengthEqual(allTrainLengths):
             allTrainPs = self.trimInternalListLengthToFloor(allTrainPs)
             allValPs = self.trimInternalListLengthToFloor(allValPs)
+        max = startRange + stepSize*len(allTrainPs[0])
+        usedSmpleNumbers = np.arange(startRange, max, stepSize)
         allTrainPs = np.asarray(allTrainPs).T
         allValPs = np.asarray(allValPs).T
-        return allTrainPs, allValPs
+        return allTrainPs, allValPs, usedSmpleNumbers
 
     def normaliseFeatures(self, X_train, X_val):
         X_train, normParameters = doZNormalise(X_train, returnParameter=True)
