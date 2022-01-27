@@ -5,14 +5,13 @@ from PredictonManager import PredictonManager
 
 def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=None,
                        excludeDividingNeighboursProperties=[True, False],
+                       runModelTraining=True, runModelTesting=False
                        saveLearningCurve=False):
     dataFolder = "Data/WT/"
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
     usePreviousTrainedModelsIfPossible = False
-    runModelTraining = False
-    runModelTesting = False
     onlyTestModelWithoutTrainingData = False
     useManualCentres = True
     # print options:
@@ -122,6 +121,4 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=False, givenSets=["bio"], baseResultsFolder="Results/topoPredBroaderPar/",
-                           excludeDividingNeighboursProperties=[False])
-    mainTrainValTestWT(runDivEventPred=True, baseResultsFolder="Results/divEventBroaderPar/", saveLearningCurve=True)
+    mainTrainValTestWT(runDivEventPred=True, runModelTraining=False, saveLearningCurve=True)
