@@ -5,7 +5,7 @@ from PredictonManager import PredictonManager
 
 def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=None,
                        excludeDividingNeighboursProperties=[True, False],
-                       runModelTraining=True, runModelTesting=False
+                       runModelTraining=True, runModelTesting=False,
                        saveLearningCurve=False):
     dataFolder = "Data/WT/"
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
