@@ -40,6 +40,7 @@ class LearningCurvePlotter (object):
         return plt
 
     def plotPerformance(self, nrOfTrainingSamples, performanceMatrix, label, alpha=0.1, color="r"):
+        performanceMatrix = performanceMatrix.astype(float)
         performance_mean = np.mean(performanceMatrix, axis=1)
         if self.useConfidenceIntervall:
             confidenceIntervall = st.t.interval(0.95, len(performanceMatrix)-1, loc=np.mean(performanceMatrix, axis=1), scale=st.sem(performanceMatrix, axis=1))
