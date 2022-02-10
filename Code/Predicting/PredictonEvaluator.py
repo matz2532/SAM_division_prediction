@@ -76,7 +76,7 @@ class PredictonEvaluator (object):
         else:
             plt.show()
 
-    def calcTrainAndValPerformances(self, startRange=50, stepSize=1):
+    def calcTrainAndValPerformances(self, startRange=20, stepSize=5):
         allTrainPs, allValPs = [], []
         allTrainLengths = []
         currentSplit = 0
