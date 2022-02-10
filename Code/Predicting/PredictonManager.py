@@ -48,7 +48,7 @@ class PredictonManager (object):
                  nestedModelProp=False, modelEnsambleNumber=1, balanceData=False,
                  modelNameExtension="", folderToSaveVal=None, setFeatureAndLabelFolder=None,
                  useOnlyTwo=False, labelName="combinedLabelsChecked.csv",
-                 printPropertyName=False, printModelResults=False,
+                 printPropertyName=False, printUsedSampleNumbers=False, printModelResults=False,
                  printFeatureAndLabelFilenames=False, printBalancedLabelCount=False,
                  isSaveNormalizedFeatures=True):
         self.allFeatureProperties = ["topology", "topologyArea", "topologyWall", "topologyDist"]
@@ -77,6 +77,7 @@ class PredictonManager (object):
         self.saveDistributionsOfFeatures = False
         self.savePCA = False
         self.printPropertyName = printPropertyName
+        self.printUsedSampleNumbers = printUsedSampleNumbers
         self.printFeatureAndLabelFilenames = printFeatureAndLabelFilenames
         self.printModelResults = printModelResults
         self.printBalancedLabelCount = printBalancedLabelCount
@@ -291,6 +292,10 @@ class PredictonManager (object):
         print(self.features.shape[1])
         self.labels = self.labels.copy()
         self.preProcessFeatruesAndLabels()
+        if self.printUsedSampleNumbers:
+            groups = self.features.groupby(["plant", "time point"])
+            print(dict(zip([i[0] for i in groups], [len(i[1]) for i in groups])))
+            print(np.mean([len(i[1]) for i in groups]), "+-", np.std([len(i[1]) for i in groups]))
         self.hyperParameterRange = self.setHyperParameterRange()
         if not self.hyperParameterRange is None:
             from functools import reduce
