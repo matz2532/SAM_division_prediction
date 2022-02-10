@@ -76,15 +76,17 @@ class ModelCreator (object):
         if isinstance(self.parametersToAddOrOverwrite, dict):
             parameters = self.addOrOverwriteParameters(parameters)
         model = self.setDefaultModel()
-        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=100, verbose=0)
+        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=100, verbose=1)
         model.fit(X_train, y_train)
         return model, model.best_params_, model.cv_results_
 
     def calcDefaultHyperPar(self, X_train):
         if self.kernel == "rbf":
-            density = 50
-            gamma = self.equallySpacedValueSamplingOverScales([-3, 3], density)
-            C = self.equallySpacedValueSamplingOverScales([-3,3], density)
+            density = 100
+            # gamma = self.equallySpacedValueSamplingOverScales([-8, 3], density)
+            # C = self.equallySpacedValueSamplingOverScales([-3,4], density)
+            gamma = np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)])
+            C = np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])
             parameters = {'gamma' : gamma, 'C' : C}
         else:
             print("The kernel {} is not yet implemented.".format(self.kernel))
