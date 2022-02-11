@@ -11,6 +11,8 @@ from MyScorer import MyScorer
 
 class ModelCreator (object):
 
+    model=None
+    
     def __init__(self, X_train=False, y_train=False, X_test=False, y_test=False,
                 modelType="svm", kernel="linear", gamma="scale", C=1.0,
                 hyperParameters=None, performanceModus=None,
@@ -55,9 +57,10 @@ class ModelCreator (object):
         else:
             self.performance = self.TestModel(X_test, y_test)
 
-    def TrainModel(self, X_train, y_train, trainSetModel=False):
+    def TrainModel(self, X_train, y_train, trainAlreadyGivenModel=False):
         startingTime = time.time()
-        if trainSetModel:
+        if trainAlreadyGivenModel:
+            assert not self.model is None, "You want to train already given model, but the model is not yet set. self.model = {}".format(self.model)
             self.model.fit(X_train, y_train)
             model = self.model
         elif self.doHyperParameterisation:
