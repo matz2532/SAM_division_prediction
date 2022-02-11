@@ -121,4 +121,4 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=True, runModelTraining=False, saveLearningCurve=True)
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=True)
