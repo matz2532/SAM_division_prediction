@@ -43,19 +43,19 @@ class NestedModelCreator (ModelCreator):
         else:
             self.performance = self.TestModel(X_test, y_test)
 
-    def TrainModel(self, X_train, y_train, trainSetModel=False):
+    def TrainModel(self, X_train, y_train, trainAlreadyGivenModel=False):
         if self.nestedModelProp is False:
-            model, trainTime = super().TrainModel(X_train, y_train, trainSetModel=trainSetModel)
+            model, trainTime = super().TrainModel(X_train, y_train, trainAlreadyGivenModel=trainAlreadyGivenModel)
         elif self.nestedModelProp is True:
             print("nestedModelProp being True is not implemented in NestedModelCreator yet")
             sys.exit()
         elif type(self.nestedModelProp) == list:
-            model, trainTime = self.trainWithSpecificNestedProp(X_train, y_train, trainSetModel=trainSetModel)
+            model, trainTime = self.trainWithSpecificNestedProp(X_train, y_train, trainAlreadyGivenModel=trainAlreadyGivenModel)
         else:
             print("nestedModelProp needs to be False, True, or a nested list.")
         return model, trainTime
 
-    def trainWithSpecificNestedProp(self, X_train, y_train, trainSetModel=False):
+    def trainWithSpecificNestedProp(self, X_train, y_train, trainAlreadyGivenModel=False):
         startingTime = time.time()
         nestedModelProp = self.nestedModelProp
         models = []
@@ -73,7 +73,7 @@ class NestedModelCreator (ModelCreator):
         usedX_train = usedX_train[permutedIdx]
         usedX_train, usedY_train = self.balanceData(usedX_train, usedY_train)
         model, trainTime = self.trainModel(usedX_train, usedY_train,
-                                           trainSetModel=trainSetModel,
+                                           trainAlreadyGivenModel=trainAlreadyGivenModel,
                                            currentModel=currentModel)
         models.append(model)
         allTrainTime += trainTime
@@ -88,7 +88,7 @@ class NestedModelCreator (ModelCreator):
         usedY_train[isGroup2] = 1
         usedX_train, usedY_train = self.balanceData(usedX_train, usedY_train)
         model, trainTime = self.trainModel(usedX_train, usedY_train,
-                                           trainSetModel=trainSetModel,
+                                           trainAlreadyGivenModel=trainAlreadyGivenModel,
                                            currentModel=currentModel)
         models.append(model)
         allTrainTime += trainTime
@@ -107,9 +107,9 @@ class NestedModelCreator (ModelCreator):
         label, counts = np.unique(usedY_train, return_counts=True)
         return usedX_train, usedY_train
 
-    def trainModel(self, X_train, y_train, trainSetModel=False, currentModel=0):
+    def trainModel(self, X_train, y_train, trainAlreadyGivenModel=False, currentModel=0):
         startingTime = time.time()
-        if trainSetModel:
+        if trainAlreadyGivenModel:
             self.model[currentModel].fit(X_train, y_train)
             model = self.model
         elif self.doHyperParameterisation:

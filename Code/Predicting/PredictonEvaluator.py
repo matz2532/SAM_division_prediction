@@ -166,7 +166,7 @@ class PredictonEvaluator (object):
                 myModelCreator.SetModel(modelWithParamsSet)
                 myModelCreator.TrainModel(selectedX_train,
                                           selectedy_train,
-                                          trainSetModel=True)
+                                          trainAlreadyGivenModel=True)
             trainPerformance = myModelCreator.TestModel(selectedX_train,  selectedy_train)
             valPerformance = myModelCreator.TestModel(X_val, y_val)
             allTrainP.append(trainPerformance)
