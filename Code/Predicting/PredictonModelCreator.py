@@ -8,7 +8,6 @@ sys.path.insert(0, "./Code/Classifiers/")
 
 from BalancedXFold import BalancedXFold
 from DividingCellInTableIdentifier import DividingCellInTableIdentifier
-from ModelEnsambleUtiliser import ModelEnsambleUtiliser
 from MyScorer import MyScorer
 from NestedModelCreator import NestedModelCreator
 from pathlib import Path
