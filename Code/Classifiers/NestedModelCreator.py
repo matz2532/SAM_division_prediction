@@ -28,7 +28,7 @@ class NestedModelCreator (ModelCreator):
         self.seed = seed
         np.random.seed(self.seed)
         if isinstance(self.modelType, dict):
-            self.setModelTypeParameters()
+            self.createModelTypeParameters()
         self.nestedModelProp = nestedModelProp
         self.initData(X_train, y_train, X_test, y_test)
 
