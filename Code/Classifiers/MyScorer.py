@@ -19,6 +19,7 @@ class MyScorer (object):
     TPRate=np.NaN
     FPRate=np.NaN
     auc=np.NaN
+    sample_weight=np.NaN
 
     def __init__(self, y_true=None, y_pred=None, setAverage="not set", y_scores=None, nrOfClasses=2, weightLabelOccurence=True):
         self.y_true = y_true
@@ -36,11 +37,11 @@ class MyScorer (object):
             self.sample_weight = self.calcWeightLabelOccurence(y_true)
         else:
             self.sample_weight = None
-        self.f1Score = self.calcF1Score(y_true, y_pred, setAverage=setAverage)
-        self.accuracy = self.calcAccuracy(y_true, y_pred)
-        self.precision = self.calcPrecision(y_true, y_pred)
+        self.f1Score = self.calcF1Score(y_true, y_pred, setAverage=setAverage, checkSampleWeight=False)
+        self.accuracy = self.calcAccuracy(y_true, y_pred, checkSampleWeight=False)
+        self.precision = self.calcPrecision(y_true, y_pred, checkSampleWeight=False)
         if not y_scores is None:
-            self.auc = self.calcAUC(y_true, y_scores)
+            self.auc = self.calcAUC(y_true, y_scores, checkSampleWeight=False)
 
     def calcWeightLabelOccurence(self, y):
         n_samples = len(y)
@@ -53,7 +54,12 @@ class MyScorer (object):
             sample_weight[isLabel] = weightOfUniqueLabels[label]
         return sample_weight
 
-    def calcF1Score(self, y_true, y_pred, inPercent=True, setAverage="not set"):
+    def calcF1Score(self, y_true, y_pred, inPercent=True, setAverage="not set", checkSampleWeight=True):
+        if checkSampleWeight:
+            if self.weightLabelOccurence:
+                self.sample_weight = self.calcWeightLabelOccurence(y_true)
+            else:
+                self.sample_weight = None
         if setAverage == "not set":
             if self.nrOfClasses > 2:
                 average = None
@@ -67,13 +73,23 @@ class MyScorer (object):
         else:
             return f1Score
 
-    def calcAccuracy(self, y_true, y_pred, inPercent=True):
+    def calcAccuracy(self, y_true, y_pred, inPercent=True, checkSampleWeight=True):
+        if checkSampleWeight:
+            if self.weightLabelOccurence:
+                self.sample_weight = self.calcWeightLabelOccurence(y_true)
+            else:
+                self.sample_weight = None
         accuracy = metrics.accuracy_score(y_true, y_pred, sample_weight=self.sample_weight)
         if inPercent:
             return 100*accuracy
         return accuracy
 
-    def calcPrecision(self, y_true, y_pred, inPercent=True, setAverage="not set"):
+    def calcPrecision(self, y_true, y_pred, inPercent=True, setAverage="not set", checkSampleWeight=True):
+        if checkSampleWeight:
+            if self.weightLabelOccurence:
+                self.sample_weight = self.calcWeightLabelOccurence(y_true)
+            else:
+                self.sample_weight = None
         if setAverage == "not set":
             if self.nrOfClasses > 2:
                 average = None
@@ -157,7 +173,12 @@ class MyScorer (object):
         else:
             return truePositiveRate
 
-    def calcAUC(self, y_true, y_scores):
+    def calcAUC(self, y_true, y_scores, checkSampleWeight=True):
+        if checkSampleWeight:
+            if self.weightLabelOccurence:
+                self.sample_weight = self.calcWeightLabelOccurence(y_true)
+            else:
+                self.sample_weight = None
         if self.nrOfClasses == 3:
             binarized_y_true = label_binarize(y_true, classes=[0, 1, 2])
             sample_weight = self.calcWeightLabelOccurence(binarized_y_true.ravel())
@@ -196,7 +217,12 @@ class MyScorer (object):
         TNRate = 100*confusionMatrix[0,0]/(confusionMatrix[0,0]+confusionMatrix[0,1])
         return f1Score, accuracy, TPRate, TNRate
 
-    def CalculateRocCurve(self, y_true, y_prob):
+    def CalculateRocCurve(self, y_true, y_prob, checkSampleWeight=True):
+        if checkSampleWeight:
+            if self.weightLabelOccurence:
+                self.sample_weight = self.calcWeightLabelOccurence(y_true)
+            else:
+                self.sample_weight = None
         n_classes = len(np.unique(y_true))
         if n_classes == 2:
             fpr, tpr, thresholds = metrics.roc_curve(y_true, y_prob, sample_weight=self.sample_weight)
