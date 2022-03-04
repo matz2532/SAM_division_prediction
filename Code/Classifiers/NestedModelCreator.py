@@ -141,7 +141,15 @@ class NestedModelCreator (ModelCreator):
             return accuracy
         else:
             return1DList = self.performanceModus == "all performances 1D list"
-            y_scores = model.decision_function(X_test)
+            if self.modelType == "svm":
+                y_scores = model.decision_function(X_test)
+            elif self.modelType == "random forest":
+                if nrOfClasses == 2:
+                    y_scores = model.predict_proba(X_test)[:, 1]
+                else:
+                    raise NotImplementedError("Testing non-svm models with more than 2 classes is not yet implemented.")
+            else:
+                raise NotImplementedError(f"Testing for the model type {self.modelType} is not yet implemented, only 'svm' and 'random forest' are yet allowed.")
             Scorer = MyScorer(y_test, predictions, y_scores=y_scores,
                              nrOfClasses=self.nrOfClasses,
                              setAverage=None if self.nrOfClasses > 2 else "binary")
