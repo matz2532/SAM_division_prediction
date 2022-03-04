@@ -70,7 +70,7 @@ class ModelCreator (object):
             model = self.createModel(self.hyperParameters)
             model.fit(X_train, y_train)
         else:
-            raise NotImplementedError
+            raise NotImplementedError("This model training method is not yet implemented, set 'trainAlreadyGivenModel=True', 'doHyperParameterisation=True', or give specific 'hyperParameters'")
         return model, time.time()-startingTime
 
     def perfromeHyperParameterisation(self, X_train, y_train, parameters=None):
@@ -80,21 +80,26 @@ class ModelCreator (object):
         if isinstance(self.parametersToAddOrOverwrite, dict):
             parameters = self.addOrOverwriteParameters(parameters)
         model = self.createModel()
-        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=100, verbose=1)
+        model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=1, verbose=1.5)
         model.fit(X_train, y_train)
         return model, model.best_params_, model.cv_results_
 
     def calcDefaultHyperPar(self, X_train):
-        if self.kernel == "rbf":
+        if self.modelType == "svm" and self.kernel == "rbf":
             density = 100
             # gamma = self.equallySpacedValueSamplingOverScales([-8, 3], density)
             # C = self.equallySpacedValueSamplingOverScales([-3,4], density)
             gamma = np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)])
             C = np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])
             parameters = {'gamma' : gamma, 'C' : C}
+        elif self.modelType == "random forest":
+            n_estimators = np.arange(5, 251, 5)
+            max_depth = np.concatenate([[None], np.arange(1, 6), np.arange(8, 17)])
+            max_features = ["auto", "sqrt", "log2"]
+            max_samples = np.linspace(0, 1, 9)[1:]
+            parameters = {'n_estimators' : n_estimators, 'max_features' : max_features, "max_depth" : max_depth, "max_samples":max_samples}
         else:
-            print("The kernel {} is not yet implemented.".format(self.kernel))
-            sys.exit()
+            raise NotImplementedError("This default hyperparameter range is not yet implemented, self.modelType=='svm' and self.kernel == 'rbf' or modelType=='random forest'")
         return parameters
 
     def addOrOverwriteParameters(self, parameters):
@@ -130,7 +135,7 @@ class ModelCreator (object):
         elif self.modelType == "random forest":
             if hyperParameters is None:
                 hyperParameters = {}
-            model = RandomForestClassifier(class_weight="balanced", **hyperParameters)
+            model = RandomForestClassifier(class_weight="balanced", random_state=self.seed, **hyperParameters)
         else:
             print("The model type {} is not yet implemented.".format(self.modelType))
             sys.exit()
@@ -202,13 +207,11 @@ def main():
     labels = pd.read_csv(folder + "combinedLabels.csv").iloc[:, -1]
     nrOfTrainingSamples, testSamples = 150, 20
     X_train, X_simpleTest = features.iloc[:nrOfTrainingSamples, :].to_numpy(), features.iloc[nrOfTrainingSamples:nrOfTrainingSamples+testSamples, :].to_numpy()
-    y_train, y_simpleTest = labels.iloc[:nrOfTrainingSamples].to_numpy(), labels.iloc[nrOfTrainingSamples:nrOfTrainingSamples+testSamples].to_numpy()
-    y_train = np.expand_dims(y_train, -1)
-    y_simpleTest = np.expand_dims(y_simpleTest, -1)
+    y_train, y_simpleTest = labels.iloc[:nrOfTrainingSamples].to_numpy().flatten(), labels.iloc[nrOfTrainingSamples:nrOfTrainingSamples+testSamples].to_numpy().flatten()
     print("simple test shape", y_simpleTest.shape)
     hyperParameters = {"n_estimators":10, "max_depth": 6}
     myModelCreator = ModelCreator(X_train, y_train, X_simpleTest, y_simpleTest,
-                                  modelType="random forest", hyperParameters=hyperParameters,
+                                  modelType="random forest", doHyperParameterisation=True,
                                   performanceModus="all performances 1D list")
     print("dummy model performance", myModelCreator.GetPerfromance())
 
