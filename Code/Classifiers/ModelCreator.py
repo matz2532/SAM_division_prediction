@@ -12,7 +12,8 @@ from MyScorer import MyScorer
 class ModelCreator (object):
 
     model=None
-    
+    nrOfClasses=2
+
     def __init__(self, X_train=False, y_train=False, X_test=False, y_test=False,
                 modelType="svm", kernel="linear", gamma="scale", C=1.0,
                 hyperParameters=None, performanceModus=None,
@@ -28,7 +29,7 @@ class ModelCreator (object):
         self.parametersToAddOrOverwrite = parametersToAddOrOverwrite
         self.seed = seed
         if isinstance(self.modelType, dict):
-            self.setModelTypeParameters()
+            self.createModelTypeParameters()
         self.initData(X_train, y_train, X_test, y_test)
 
     def setDefaultModelParameters(self, kernel, gamma, C):
@@ -36,7 +37,7 @@ class ModelCreator (object):
         self.gamma = gamma
         self.C = C
 
-    def setModelTypeParameters(self):
+    def createModelTypeParameters(self):
         if "kernel" in self.modelType:
             self.kernel = self.modelType["kernel"]
         if "gamma" in self.modelType:
@@ -66,7 +67,7 @@ class ModelCreator (object):
         elif self.doHyperParameterisation:
             model, self.hyperParameters, self.allHyperparameterResults = self.perfromeHyperParameterisation(X_train, y_train, self.hyperParameterRange)
         elif self.hyperParameters:
-            model = self.trainModelWithParameters(self.hyperParameters)
+            model = self.createModel(self.hyperParameters)
             model.fit(X_train, y_train)
         else:
             raise NotImplementedError
@@ -78,7 +79,7 @@ class ModelCreator (object):
         assert self.parametersToAddOrOverwrite is None or isinstance(self.parametersToAddOrOverwrite, dict), "parametersToAddOrOverwrite needs to be either None or a dictionary, {} != dict. It looks like: {}".format(type(parametersToAddOrOverwrite), parametersToAddOrOverwrite)
         if isinstance(self.parametersToAddOrOverwrite, dict):
             parameters = self.addOrOverwriteParameters(parameters)
-        model = self.setDefaultModel()
+        model = self.createModel()
         model = GridSearchCV(model, parameters, scoring="accuracy", cv=5, n_jobs=100, verbose=1)
         model.fit(X_train, y_train)
         return model, model.best_params_, model.cv_results_
@@ -116,21 +117,20 @@ class ModelCreator (object):
         parameters = np.concatenate(parameters)
         return parameters
 
-    def setDefaultModel(self):
+    def createModel(self, hyperParameters=None):
         if self.modelType == "svm":
-            model = svm.SVC(class_weight="balanced", kernel=self.kernel, gamma=self.gamma, C=self.C)
-        else:
-            print("The model type {} is not yet implemented.".format(self.modelType))
-            sys.exit()
-        return model
-
-    def trainModelWithParameters(self, hyperParameters):
-        if self.modelType == "svm":
-            kernel = hyperParameters["kernel"] if "kernel" in hyperParameters else self.kernel
-            if "gamma" in hyperParameters:
-                model = svm.SVC(kernel=kernel, gamma=hyperParameters["gamma"], C=hyperParameters["C"])
+            if hyperParameters is None:
+                model = svm.SVC(class_weight="balanced", kernel=self.kernel, gamma=self.gamma, C=self.C)
             else:
-                model = svm.SVC(kernel=kernel, C=hyperParameters["C"])
+                kernel = hyperParameters["kernel"] if "kernel" in hyperParameters else self.kernel
+                if "gamma" in hyperParameters:
+                    model = svm.SVC(kernel=kernel, gamma=hyperParameters["gamma"], C=hyperParameters["C"])
+                else:
+                    model = svm.SVC(kernel=kernel, C=hyperParameters["C"])
+        elif self.modelType == "random forest":
+            if hyperParameters is None:
+                hyperParameters = {}
+            model = RandomForestClassifier(class_weight="balanced", **hyperParameters)
         else:
             print("The model type {} is not yet implemented.".format(self.modelType))
             sys.exit()
@@ -144,7 +144,10 @@ class ModelCreator (object):
             accuracy = MyScorer(nrOfClasses=self.nrOfClasses).calcAccuracy(y_test, predictions)
             return accuracy
         else:
-            y_scores = model.decision_function(X_test)
+            if self.modelType == "svm":
+                y_scores = model.decision_function(X_test)
+            else:
+                y_scores = model.predict_proba(X_test)[:, 1]
             f1Score, accuracy, precision, auc = MyScorer(y_test, predictions,
                                                          y_scores=y_scores,
                                                          nrOfClasses=self.nrOfClasses
@@ -193,8 +196,21 @@ class ModelCreator (object):
         self.model = newModel
 
 def main():
-    # add own gaussion kernel use code from stack overflow 26962159 "How to use a custom SVM kernel?"
-    myModelCreator = ModelCreator()
+    import pandas as pd
+    folder = "Data/WT/divEventData/manualCentres/allTopos/"
+    features = pd.read_csv(folder + "combinedFeatures_allTopos_notnormalised.csv").iloc[:, 3:]
+    labels = pd.read_csv(folder + "combinedLabels.csv").iloc[:, -1]
+    nrOfTrainingSamples, testSamples = 150, 20
+    X_train, X_simpleTest = features.iloc[:nrOfTrainingSamples, :].to_numpy(), features.iloc[nrOfTrainingSamples:nrOfTrainingSamples+testSamples, :].to_numpy()
+    y_train, y_simpleTest = labels.iloc[:nrOfTrainingSamples].to_numpy(), labels.iloc[nrOfTrainingSamples:nrOfTrainingSamples+testSamples].to_numpy()
+    y_train = np.expand_dims(y_train, -1)
+    y_simpleTest = np.expand_dims(y_simpleTest, -1)
+    print("simple test shape", y_simpleTest.shape)
+    hyperParameters = {"n_estimators":10, "max_depth": 6}
+    myModelCreator = ModelCreator(X_train, y_train, X_simpleTest, y_simpleTest,
+                                  modelType="random forest", hyperParameters=hyperParameters,
+                                  performanceModus="all performances 1D list")
+    print("dummy model performance", myModelCreator.GetPerfromance())
 
 if __name__ == '__main__':
     main()
