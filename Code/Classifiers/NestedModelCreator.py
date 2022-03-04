@@ -144,7 +144,7 @@ class NestedModelCreator (ModelCreator):
             if self.modelType == "svm":
                 y_scores = model.decision_function(X_test)
             elif self.modelType == "random forest":
-                if nrOfClasses == 2:
+                if self.nrOfClasses == 2:
                     y_scores = model.predict_proba(X_test)[:, 1]
                 else:
                     raise NotImplementedError("Testing non-svm models with more than 2 classes is not yet implemented.")
