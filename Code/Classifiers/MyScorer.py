@@ -51,7 +51,7 @@ class MyScorer (object):
         sample_weight = np.zeros(n_samples)
         for label in uniqueLabel:
             isLabel = np.isin(y, label)
-            sample_weight[isLabel] = weightOfUniqueLabels[label]
+            sample_weight[isLabel.flatten()] = weightOfUniqueLabels[label]
         return sample_weight
 
     def calcF1Score(self, y_true, y_pred, inPercent=True, setAverage="not set", checkSampleWeight=True):
