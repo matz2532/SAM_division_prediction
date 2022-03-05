@@ -94,7 +94,10 @@ class ModelCreator (object):
             parameters = {'gamma' : gamma, 'C' : C}
         elif self.modelType == "random forest":
             n_estimators = np.arange(5, 251, 5)
-            max_depth = np.concatenate([[None], np.arange(1, 6), np.arange(8, 17)])
+            max_depth_numbers = np.concatenate([np.arange(1, 6), np.arange(8, 17)])
+            max_depth = np.concatenate([[None], max_depth_numbers[max_depth_numbers <= X_train.shape[1]]])
+            print("self.modelType", self.modelType)
+            print("max_depth", max_depth)
             max_features = ["auto", "sqrt", "log2"]
             max_samples = np.linspace(0, 1, 9)[1:]
             parameters = {'n_estimators' : n_estimators, 'max_features' : max_features, "max_depth" : max_depth, "max_samples":max_samples}

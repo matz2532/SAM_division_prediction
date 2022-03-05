@@ -12,7 +12,7 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
     modelType =  {"modelType":"random forest"}
-    usePreviousTrainedModelsIfPossible = False
+    usePreviousTrainedModelsIfPossible = True
     onlyTestModelWithoutTrainingData = False
     useManualCentres = True
     # print options:
