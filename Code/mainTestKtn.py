@@ -22,7 +22,6 @@ def mainTestKtn(runDivEventPred=True):
     parametersToAddOrOverwrite = None
     hyperParameters = None
     modelNameExtension = ""
-    allModelTypes = [{"modelType":"svm","kernel":"rbf"}, {"modelType":"random forest"}, {"modelType":"svm","kernel":"sigmoid"}]
     centralCellsDict = {"ktnP1": [ [], [3839, 3959] ],
                         "ktnP2": [ [23], [424, 426, 50] ],
                         "ktnP3": [ [29, 199,527], [424, 28, 431] ] }
