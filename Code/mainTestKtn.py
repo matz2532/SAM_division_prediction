@@ -72,50 +72,50 @@ def mainTestKtn(runDivEventPred=True):
                                    labelName=labelName,
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
-        sys.exit()
-    for set in ["topoAndBio", "allTopos", "bio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
-        print("testing topo prediction with set ", set)
-        labelName = "combinedLabels.csv"
-        setFeatureAndLabelFolder = "{}topoPredData/diff/manualCentres/{}/".format(dataFolder, set)
-        resultsFolder = "Results/ktnTopoPredData/diff/manualCentres/{}/".format(set)
-        useSpecificTestModelFilename = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/testModel.pkl".format(set)
-        if useTemporaryResultsFolder:
-            resultsFolder = "Temporary/{}/".format(set)
-        newResultsFolder = resultsFolder
-        folderToSaveVal = newResultsFolder
-        givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
-        print("newResultsFolder: " + newResultsFolder)
-        modelType = {"modelType":"svm", "kernel":"rbf"}
-        manager = PredictonManager(plantNames=plantNames,
-                                   testPlants=testPlants,
-                                   featureProperty=featureProperty,
-                                   dataFolder=dataFolder,
-                                   timePointsPerPlant=timePointsPerPlant,
-                                   excludeDividingNeighbours=True, # in case you change excludeDividingNeighbours to False change ex1 to ex0 in the useSpecificTestModelFilename
-                                   featureAndLabelFolder=featureAndLabelFolder,
-                                   givenFeatureName=givenFeatureName,
-                                   resultsFolder=newResultsFolder,
-                                   nSplits=nSplits,
-                                   balanceData=balanceData,
-                                   modelType=modelType,
-                                   runModelTraining = runModelTraining,
-                                   runModelTesting = runModelTesting,
-                                   useSpecificTestModelFilename=useSpecificTestModelFilename,
-                                   normaliseOnTestData=True,
-                                   centralCellsDict=centralCellsDict,
-                                   normalisePerTissue=normalisePerTissue,
-                                   normaliseTrainTestData=normaliseTrainTestData,
-                                   normaliseTrainValTestData=normaliseTrainValTestData,
-                                   doHyperParameterisation=doHyperParameterisation,
-                                   hyperParameters=hyperParameters,
-                                   parametersToAddOrOverwrite=parametersToAddOrOverwrite,
-                                   specialParName=parName,
-                                   modelNameExtension=modelNameExtension,
-                                   folderToSaveVal=folderToSaveVal,
-                                   setFeatureAndLabelFolder=setFeatureAndLabelFolder,
-                                   labelName=labelName,
-                                   printBalancedLabelCount=printBalancedLabelCount)
+    else:
+        for set in ["topoAndBio", "allTopos", "bio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+            print("testing topo prediction with set ", set)
+            labelName = "combinedLabels.csv"
+            setFeatureAndLabelFolder = "{}topoPredData/diff/manualCentres/{}/".format(dataFolder, set)
+            resultsFolder = "Results/ktnTopoPredData/diff/manualCentres/{}/".format(set)
+            useSpecificTestModelFilename = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/testModel.pkl".format(set)
+            if useTemporaryResultsFolder:
+                resultsFolder = "Temporary/{}/".format(set)
+            newResultsFolder = resultsFolder
+            folderToSaveVal = newResultsFolder
+            givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
+            print("newResultsFolder: " + newResultsFolder)
+            modelType = {"modelType":"svm", "kernel":"rbf"}
+            manager = PredictonManager(plantNames=plantNames,
+                                       testPlants=testPlants,
+                                       featureProperty=featureProperty,
+                                       dataFolder=dataFolder,
+                                       timePointsPerPlant=timePointsPerPlant,
+                                       excludeDividingNeighbours=True, # in case you change excludeDividingNeighbours to False change ex1 to ex0 in the useSpecificTestModelFilename
+                                       featureAndLabelFolder=featureAndLabelFolder,
+                                       givenFeatureName=givenFeatureName,
+                                       resultsFolder=newResultsFolder,
+                                       nSplits=nSplits,
+                                       balanceData=balanceData,
+                                       modelType=modelType,
+                                       runModelTraining = runModelTraining,
+                                       runModelTesting = runModelTesting,
+                                       useSpecificTestModelFilename=useSpecificTestModelFilename,
+                                       normaliseOnTestData=True,
+                                       centralCellsDict=centralCellsDict,
+                                       normalisePerTissue=normalisePerTissue,
+                                       normaliseTrainTestData=normaliseTrainTestData,
+                                       normaliseTrainValTestData=normaliseTrainValTestData,
+                                       doHyperParameterisation=doHyperParameterisation,
+                                       hyperParameters=hyperParameters,
+                                       parametersToAddOrOverwrite=parametersToAddOrOverwrite,
+                                       specialParName=parName,
+                                       modelNameExtension=modelNameExtension,
+                                       folderToSaveVal=folderToSaveVal,
+                                       setFeatureAndLabelFolder=setFeatureAndLabelFolder,
+                                       labelName=labelName,
+                                       printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    mainTestKtn(runDivEventPred=True)
+    # mainTestKtn(runDivEventPred=True)
     mainTestKtn(runDivEventPred=False)
