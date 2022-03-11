@@ -118,5 +118,5 @@ def mainTestKtn(runDivEventPred=True):
                                    printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    mainTestKtn(runDivEventPred=False)
     mainTestKtn(runDivEventPred=True)
+    mainTestKtn(runDivEventPred=False)
