@@ -35,7 +35,8 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "estimateLabels": True,
                    "useManualCentres": True,
                    "timePointsPerPlant": 3,
-                   "takeCorrelationFromDifferentFolder":"Data/WT/divEventData/manualCentres/"}
+                   "takeCorrelationFromDifferentFolder":"Data/WT/divEventData/manualCentres/",
+                   "keepFromFolder":"Data/WT/divEventData/manualCentres/"}
     tktnTopoDataArgs = {"dataFolder":"Data/ktn/",
                    "folderToSave":"Data/ktn/topoPredData/diff/",
                    "plantNames":["ktnP1", "ktnP2", "ktnP3"],
@@ -44,8 +45,10 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "useManualCentres": True,
                    "timePointsPerPlant": 3,
                    "useTopoCreator": True,
-                   "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/"}
+                   "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/",
+                   "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]] # full task list
+    tasks = [ [False, False], [False, True]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
@@ -59,7 +62,7 @@ def mainConvertRawDataToFeaturesAndLabels():
                 dataArgs = ktnDivDataArgs
             else:
                 dataArgs = tktnTopoDataArgs
-        CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict, 
+        CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict,
                           **dataArgs)
 
 if __name__== "__main__":

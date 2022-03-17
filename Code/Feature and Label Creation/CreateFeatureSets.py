@@ -19,7 +19,7 @@ class CreateFeatureSets (object):
                  plantNames=["P1", "P2", "P5", "P6", "P8"], useTopoCreator=False,
                  timePointsPerPlant=5,
                  centralCellsDict=None, skipEmptyCentrals=False, set=None,
-                 takeCorrelationFromDifferentFolder=None):
+                 takeCorrelationFromDifferentFolder=None, keepFromFolder=None):
         self.dataFolder = dataFolder
         self.folderToSave = folderToSave
         self.plantNames = plantNames
@@ -30,6 +30,7 @@ class CreateFeatureSets (object):
         self.centralCellsDict = centralCellsDict
         self.skipEmptyCentrals = skipEmptyCentrals
         self.takeCorrelationFromDifferentFolder = takeCorrelationFromDifferentFolder
+        self.keepFromFolder = keepFromFolder
         if setRange is None:
             setRange = np.arange(8)
         for set in setRange:
@@ -40,12 +41,14 @@ class CreateFeatureSets (object):
                             useManualCentres=useManualCentres,
                             useTopoCreator=useTopoCreator,
                             centralCellsDict=self.centralCellsDict,
-                            takeCorrelationFromDifferentFolder=self.takeCorrelationFromDifferentFolder)
+                            takeCorrelationFromDifferentFolder=self.takeCorrelationFromDifferentFolder,
+                            keepFromFolder=self.keepFromFolder)
 
     def saveFeatureSets(self, set, dataFolder, plantNames, folderToSave,
                     estimateFeatures=True, estimateLabels=True,
                     useManualCentres=False, useTopoCreator=False,
-                    centralCellsDict=None, takeCorrelationFromDifferentFolder=None):
+                    centralCellsDict=None, takeCorrelationFromDifferentFolder=None,
+                    keepFromFolder=None):
         specialGraphProperties = None
         featureProperty = "topology"
         onlyAra = False
@@ -140,13 +143,17 @@ class CreateFeatureSets (object):
                 featureProperty = "lowCor{}".format(rThreshold)
                 print(featureProperty)
                 Path(folderToSave+"/"+featureProperty).mkdir(parents=True, exist_ok=True)
-                if useTopoCreator:
-                    self.saveLowCorrelationOf(folderToSave, featureProperty, featurePropertyToLoad,
-                            rThreshold, splitOfFormatInfo=4, propertyCorAgainst="bio", corAgainstIdx=np.arange(4,10),
-                            takeCorrelationFromDifferentFolder=takeCorrelationFromDifferentFolder)
+                if keepFromFolder:
+                    self.saveBasedOnOhterCorrelationFolder(folderToSave, featureProperty,
+                                                           featurePropertyToLoad, keepFromFolder)
                 else:
-                    self.saveLowCorrelationOf(folderToSave, featureProperty, featurePropertyToLoad, rThreshold,
-                            takeCorrelationFromDifferentFolder=takeCorrelationFromDifferentFolder)
+                    if useTopoCreator:
+                        self.saveLowCorrelationOf(folderToSave, featureProperty, featurePropertyToLoad,
+                                rThreshold, splitOfFormatInfo=4, propertyCorAgainst="bio", corAgainstIdx=np.arange(4,10),
+                                takeCorrelationFromDifferentFolder=takeCorrelationFromDifferentFolder)
+                    else:
+                        self.saveLowCorrelationOf(folderToSave, featureProperty, featurePropertyToLoad, rThreshold,
+                                takeCorrelationFromDifferentFolder=takeCorrelationFromDifferentFolder)
                 if estimateLabels:
                     shutil.copy2(labelsFilenameToCopy, folderToSave+"{}/combinedLabels.csv".format(featureProperty))
             return None
@@ -272,6 +279,20 @@ class CreateFeatureSets (object):
             allRs.append(r)
         return np.max(allRs)
 
+    def saveBasedOnOhterCorrelationFolder(self, folderToSave, featurePropertyName,
+                             featurePropertyToLoad, keepFromFolder):
+        print(keepFromFolder)
+        filenameKeepFrom = Path(keepFromFolder).joinpath(featurePropertyName, f"combinedFeatures_{featurePropertyName}_notnormalised.csv")
+        keepFromTable = pd.read_csv(filenameKeepFrom)
+        columnNamesToKeep = list(keepFromTable.columns)
+        print("columnNamesToKeep", columnNamesToKeep)
+        filenameToLoad = folderToSave + "{}/combinedFeatures_{}_notnormalised.csv".format(featurePropertyToLoad, featurePropertyToLoad)
+        table = pd.read_csv(filenameToLoad)
+        reducedTable = table.loc[:, columnNamesToKeep]
+        filenameToSave = folderToSave + "combinedFeatures_{}_notnormalised.csv".format(featurePropertyName)
+        reducedTable.to_csv(filenameToSave, index=False)
+        print("reducedTable columns", list(reducedTable.columns))
+
         # used by other code to create topo features
     def zNormalise(self, data):
         mean = np.mean(data, axis=0)
@@ -369,7 +390,8 @@ def ktnMain():
                    "estimateLabels": True,
                    "useManualCentres": True,
                    "timePointsPerPlant": 3,
-                   "takeCorrelationFromDifferentFolder":"Data/WT/divEventData/manualCentres/"}
+                   "takeCorrelationFromDifferentFolder":"Data/WT/divEventData/manualCentres/",
+                   "keepFromFolder":"Data/WT/divEventData/manualCentres/"}
     tktnTopoDataArgs = {"dataFolder":"Data/ktn/",
                    "folderToSave":"Data/ktn/topoPredData/diff/",
                    "plantNames":["ktnP1", "ktnP2", "ktnP3"],
@@ -378,7 +400,8 @@ def ktnMain():
                    "useManualCentres": True,
                    "timePointsPerPlant": 3,
                    "useTopoCreator": True,
-                   "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/"}
+                   "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/",
+                   "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     if createDivEventData:
         CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict,
                           **ktnDivDataArgs)
@@ -387,5 +410,5 @@ def ktnMain():
                           **tktnTopoDataArgs)
 
 if __name__ == '__main__':
-    # ktnMain()
-    main()
+    ktnMain()
+    # main()
