@@ -181,8 +181,8 @@ class FeatureLabelAndNameSelecor (object):
                                     "observedLabels":observedLabels,
                                     "predictedLabels":predictedLabels}
         else:
-            cellId = plantsDf.loc[isTissue, "parent neighbor"].to_numpy()
-            dividingCellId = plantsDf.loc[isTissue, "dividing parent cell"].to_numpy()
+            cellId = self.combinedLabelsDf.loc[isTissue, "parent neighbor"].to_numpy()
+            dividingCellId = self.combinedLabelsDf.loc[isTissue, "dividing parent cell"].to_numpy()
             cellObsAndPredLabels = {"cellId":cellId,
                                     "dividingCellId":dividingCellId,
                                     "observedLabels":observedLabels,
