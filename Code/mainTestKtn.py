@@ -33,7 +33,7 @@ def mainTestKtn(runDivEventPred=True):
     featureProperty = "combinedTable"
     parName = None
     if runDivEventPred:
-        for set in ["topoAndBio", "allTopos", "area", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        for set in ["lowCor0.3", "lowCor0.5", "lowCor0.7"]: # ["topoAndBio", "allTopos", "area", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}divEventData/manualCentres/{}/".format(dataFolder, set)
@@ -117,5 +117,5 @@ def mainTestKtn(runDivEventPred=True):
                                        printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    # mainTestKtn(runDivEventPred=True)
-    mainTestKtn(runDivEventPred=False)
+    mainTestKtn(runDivEventPred=True)
+    # mainTestKtn(runDivEventPred=False)
