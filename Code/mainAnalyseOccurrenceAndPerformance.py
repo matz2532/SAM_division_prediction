@@ -6,12 +6,18 @@ from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
 from FeatureDensityPlotting import FeatureDensityPlotting
 from GeneralDataAnalyser import GeneralDataAnalyser
 from pathlib import Path
+from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo="all"):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo="Fig. 2 A"):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
-        pass
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
+                    featureSetName="allTopos", saveUnderFolder=resultsFolder)
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
+                    featureSetName="area", saveUnderFolder=resultsFolder)
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
+                    featureSetName="topoAndBio", saveUnderFolder=resultsFolder)
     # Fig. 2 B - div prediction acc. results to further add text in power point
     if figuresToDo == "all" or "Fig. 2 B" in figuresToDo:
         mainDivPredRandomization(performance="Acc", doMainFig=True,

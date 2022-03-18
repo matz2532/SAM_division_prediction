@@ -148,32 +148,41 @@ class FeatureLabelAndNameSelecor (object):
     def __init__(self, featureArray, labelArray, combinedLabelsDf, model):
         self.featureArray = featureArray
         self.labelArray = labelArray
-        self.combinedLabelsDf = combinedLabelsDf
+        self.originalCombinedLabelsDf = combinedLabelsDf.copy()
         self.model = model
 
-    def extractAndPredictLabels(self, plantName, timePoint, onlyExtractCell=True):
+    def extractAndPredictLabels(self, plantName, timePoint, onlyExtractCell=True, reduceToTest=None):
+        if reduceToTest is None:
+            self.combinedLabelsDf = self.originalCombinedLabelsDf.copy()
+        else:
+            isCellSelected = self.originalCombinedLabelsDf.loc[:, "isCellTest"]
+            if not reduceToTest:
+                isCellSelected = np.invert(isCellSelected)
+            self.combinedLabelsDf = self.originalCombinedLabelsDf[isCellSelected].copy()
         allPlantNames = self.combinedLabelsDf.loc[:, "plant"].to_numpy()
         isPlantName = allPlantNames == plantName
+        assert np.sum(isPlantName) > 0, f"The plant name of the tissue plant name '{plantName}' / time point '{timePoint}' does not exist in the combinedLabelsDf, {plantName} not in {np.unique(allPlantNames)}"
         plantsDf = self.combinedLabelsDf.loc[isPlantName, :]
         allTimePoints = plantsDf.loc[:, "time point"].to_numpy()
         isTimePoint = allTimePoints == timePoint
-        selectedIdxs = np.where(isTimePoint)[0]
-        selectedFeatures = self.featureArray[isTimePoint, :]
-        observedLabels = self.labelArray[isTimePoint]
-        fullDfObservedLabels = plantsDf.loc[isTimePoint, "label"].to_numpy()
+        assert np.sum(isTimePoint) > 0, f"The time point of the tissue plant name '{plantName}' / time point '{timePoint}' does not exist in the combinedLabelsDf, {timePoint} not in {np.unique(allTimePoints)}"
+        allTimePoints = self.combinedLabelsDf.loc[:, "time point"].to_numpy()
+        isTimePoint = allTimePoints == timePoint
+        isTissue = isPlantName & isTimePoint
+        selectedFeatures = self.featureArray[isTissue, :]
+        observedLabels = self.labelArray[isTissue]
+        fullDfObservedLabels = self.combinedLabelsDf.loc[isTissue, "label"].to_numpy()
         assert len(fullDfObservedLabels) == len(observedLabels), "Observed label lengths is different."
         assert np.all(fullDfObservedLabels == observedLabels), "Observed labels are not all the same"
         predictedLabels = self.model.predict(selectedFeatures)
-        cellObsAndPredLabelsDf = {"observedLabels":observedLabels,
-                                  "predictedLabels":predictedLabels}
         if onlyExtractCell:
-            cellId = plantsDf.loc[isTimePoint, "cell"].to_numpy()
+            cellId = self.combinedLabelsDf.loc[isTissue, "cell"].to_numpy()
             cellObsAndPredLabels = {"cellId":cellId,
                                     "observedLabels":observedLabels,
                                     "predictedLabels":predictedLabels}
         else:
-            cellId = plantsDf.loc[isTimePoint, "parent neighbor"].to_numpy()
-            dividingCellId = plantsDf.loc[isTimePoint, "dividing parent cell"].to_numpy()
+            cellId = plantsDf.loc[isTissue, "parent neighbor"].to_numpy()
+            dividingCellId = plantsDf.loc[isTissue, "dividing parent cell"].to_numpy()
             cellObsAndPredLabels = {"cellId":cellId,
                                     "dividingCellId":dividingCellId,
                                     "observedLabels":observedLabels,
@@ -183,13 +192,11 @@ class FeatureLabelAndNameSelecor (object):
     def GetCellsObsAndPredDf(self):
         return self.cellObsAndPredLabelsDf
 
-def main():
-    doDivPredVisualisation = False
-    plantName = "P2"
-    timePoint = 0
-    featureSetIdx = 0
+def mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
+            plantName="P2", timePoint=0, featureSetName=None, featureSetIdx=0,
+            saveUnderFolder="", baseDataFolder="Data/WT/", colorSchemeIdx=-1):
     colorScheme = ["Confusion_Matrix_1", "Confusion_Matrix_2",
-                   "Confusion_Matrix_3", "True_False_1"][-1]
+                   "Confusion_Matrix_3", "True_False_1"][colorSchemeIdx]
     if colorScheme == "Confusion_Matrix_1":
         valueToColor = {"TP": 1, "TN": 2, "FP": 3, "FN": 0}
     elif colorScheme == "Confusion_Matrix_2":
@@ -202,49 +209,44 @@ def main():
         print("The color scheme {} does not exist use an exisiting color scheme or implement your own.")
         sys.exit()
     if doDivPredVisualisation:
-        baseResultsFolder = "Results/divEventData/manualCentres/adjusted div Pred/{}/svm_k2h_combinedTable_l3f0n1c0ex0/"
-        baseDataFolder = "Data/WT/divEventData/manualCentres/"
-        allFeatureSets = ["allTopos", "area","topoAndBio", "lowCor0.7", "lowCor0.5", "topology"]
+        baseResultsFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/"
+        allFeatureSets = ["allTopos", "area", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]
     else:
-        baseResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0ex1/"
-        baseDataFolder = "Data/WT/divEventData/manualCentres/"
-        allFeatureSets = ["allTopos", "bio","topoAndBio", "lowCor0.7", "lowCor0.5", "topology"]
-    featureSet = allFeatureSets[featureSetIdx]
-    dataFolder = baseDataFolder + featureSet + "/"
-    resultsFolder = baseResultsFolder.format(featureSet)
-    geometryTableFilename = "Data/WT/{}/area{}T{}.csv".format(plantName, plantName, timePoint)
-    filenameToSave = resultsFolder + "visualisingPredictionsOn_{}T{}_{}_with_{}.csv".format(plantName, timePoint, featureSet, colorScheme)
+        baseResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/"
+        allFeatureSets = ["allTopos", "bio", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]
+    if featureSetName is None:
+        featureSetName = allFeatureSets[featureSetIdx]
+    else:
+        featureSetName
+    resultsFolder = baseResultsFolder.format(featureSetName)
+    geometryTableFilename = "{}{}/area{}T{}.csv".format(baseDataFolder, plantName, plantName, timePoint)
+    filenameToSave = saveUnderFolder + "visualisingPredictionsOn_{}T{}_{}_with_{}.csv".format(plantName, timePoint, featureSetName, colorScheme)
     # read files
-    if doDivPredVisualisation:
-        combinedLabelsDf = pd.read_csv(dataFolder + "combinedLabels.csv")
-    else:
-        combinedLabelsDf = pd.read_csv(resultsFolder + "labelOverviewDf.csv")
-        toSavesuffix="_predictionVisualisation.csv"
+    combinedLabelsDf = pd.read_csv(resultsFolder + "labelOverviewDf.csv")
     featureArray = pd.read_csv(resultsFolder + "normalizedFeatures_test.csv").to_numpy()
     labelArray = pd.read_csv(resultsFolder + "labels_test.csv").to_numpy().flatten()
     model = pickle.load(open(resultsFolder + "testModel.pkl", "rb"))
     # combine cell id, observed and predicted labels
     selector = FeatureLabelAndNameSelecor(featureArray, labelArray,
                                           combinedLabelsDf, model)
-    selector.extractAndPredictLabels(plantName, timePoint, onlyExtractCell=doDivPredVisualisation)
+    selector.extractAndPredictLabels(plantName, timePoint, onlyExtractCell=doDivPredVisualisation,
+                                     reduceToTest=True)
     cellObsAndPredLabelsDf = selector.GetCellsObsAndPredDf()
     # visualise prediction results in geometry table
     if doDivPredVisualisation:
-        folder = None
         visualiser = VisualisePredictionsOnTissue(geometryTableFilename,
                                               cellObsAndPredLabelsDf,
                                               filenameToSave=filenameToSave,
                                               valueToColor=valueToColor)
         visualiser.savePredictionAsHeatMap()
     else:
-        folder = resultsFolder
-        toSavesuffix = "_predictionVisualisation_{}.csv".format(featureSet)
+        toSavesuffix = "_predictionVisualisation_{}.csv".format(featureSetName)
         visualiser = VisualiseTopologyPredictionsOnTissue(geometryTableFilename,
                                               cellObsAndPredLabelsDf,
                                               filenameToSave=filenameToSave,
                                               valueToColor=valueToColor,
                                               toSavesuffix=toSavesuffix)
-        visualiser.savePredictionAsHeatMap(folder)
+        visualiser.savePredictionAsHeatMap(saveUnderFolder)
 
 if __name__ == '__main__':
-    main()
+    mainCreateTissuePredictionColoringOf()
