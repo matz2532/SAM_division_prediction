@@ -400,7 +400,8 @@ class BarPlotPlotter (object):
 
 def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=True,
                              baseResultsFolder = "Results/divEventData/manualCentres/",
-                             addOtherTestWithBaseFolder=None, balanceData=False):
+                             addOtherTestWithBaseFolder=None, balanceData=False,
+                             savePlotFolder=None):
     performanceToIdxDict = {"F1":0, "Acc":1, "AUC":3}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
@@ -422,10 +423,12 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
         balanceTxt = ""
     furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
     setNames = ", ".join(divEventPred)
+    if savePlotFolder is None:
+        savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
-        filenameToSave = baseResultsFolder + "div pred random results{} {} {}.png".format(addition, performance, setNames)
+        filenameToSave = savePlotFolder + "div pred random results{} {} {}.png".format(addition, performance, setNames)
     else:
-        filenameToSave = baseResultsFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
+        filenameToSave = savePlotFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
