@@ -11,7 +11,6 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    modelType =  {"modelType":"random forest"}
     usePreviousTrainedModelsIfPossible = True
     onlyTestModelWithoutTrainingData = False
     useManualCentres = True
@@ -122,4 +121,5 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=True, runModelTraining=True, saveLearningCurve=False)
+    mainTrainValTestWT(runDivEventPred=True, runModelTraining=False, saveLearningCurve=False)
+    # mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False)

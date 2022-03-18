@@ -352,7 +352,7 @@ class PredictonManager (object):
             self.saveFeatures(y_test, name="labels_test.csv", columnNames=["label"])
             isCellTestDf = pd.DataFrame({"isCellTest":modelCreator.GetIsCellTest()})
             if self.useOnlyTwo:
-                columns = ["plant", "time point", "label"]
+                columns = ["plant", "time point", "cell", "label"]
             else:
                 columns = ["plant", "time point", "dividing parent cell", "parent neighbor", "label"]
             labelOverviewDf = self.labels.loc[:, columns].copy()
