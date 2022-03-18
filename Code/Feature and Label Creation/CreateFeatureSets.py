@@ -281,17 +281,14 @@ class CreateFeatureSets (object):
 
     def saveBasedOnOhterCorrelationFolder(self, folderToSave, featurePropertyName,
                              featurePropertyToLoad, keepFromFolder):
-        print(keepFromFolder)
         filenameKeepFrom = Path(keepFromFolder).joinpath(featurePropertyName, f"combinedFeatures_{featurePropertyName}_notnormalised.csv")
         keepFromTable = pd.read_csv(filenameKeepFrom)
         columnNamesToKeep = list(keepFromTable.columns)
-        print("columnNamesToKeep", columnNamesToKeep)
         filenameToLoad = folderToSave + "{}/combinedFeatures_{}_notnormalised.csv".format(featurePropertyToLoad, featurePropertyToLoad)
         table = pd.read_csv(filenameToLoad)
         reducedTable = table.loc[:, columnNamesToKeep]
-        filenameToSave = folderToSave + "combinedFeatures_{}_notnormalised.csv".format(featurePropertyName)
+        filenameToSave = folderToSave + "{}/combinedFeatures_{}_notnormalised.csv".format(featurePropertyName, featurePropertyName)
         reducedTable.to_csv(filenameToSave, index=False)
-        print("reducedTable columns", list(reducedTable.columns))
 
         # used by other code to create topo features
     def zNormalise(self, data):
