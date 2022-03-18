@@ -12,21 +12,26 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
+        fig2ResultFolder = resultsFolder + "Fig 2/"
+        Path(fig2ResultFolder).mkdir(parents=True, exist_ok=True)
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
-                    featureSetName="allTopos", saveUnderFolder=resultsFolder+"Fig 2/")
+                    featureSetName="allTopos", saveUnderFolder=fig2ResultFolder)
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
-                    featureSetName="area", saveUnderFolder=resultsFolder+"Fig 2/")
+                    featureSetName="area", saveUnderFolder=fig2ResultFolder)
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
-                    featureSetName="topoAndBio", saveUnderFolder=resultsFolder+"Fig 2/")
+                    featureSetName="topoAndBio", saveUnderFolder=fig2ResultFolder)
     # Fig. 2 B - div prediction acc. results to further add text in power point
     if figuresToDo == "all" or "Fig. 2 B" in figuresToDo:
+        fig2ResultFolder = resultsFolder + "Fig 2/"
+        Path(fig2ResultFolder).mkdir(parents=True, exist_ok=True)
         mainDivPredRandomization(performance="Acc", doMainFig=True,
                                  baseResultsFolder="Results/divEventData/manualCentres/",
                                  addOtherTestWithBaseFolder="Results/ktnDivEventData/manualCentres/",
-                                 savePlotFolder=resultsFolder+"Fig 2/")
+                                 savePlotFolder=fig2ResultFolder)
     # Fig. 3 A - .csv-file of correct and wrong topo predictions on example cell
     if figuresToDo == "all" or "Fig. 3 A" in figuresToDo:
-        fig3AResultFolder = resultsFolder+"Fig 3/single cell vis/"
+        fig3AResultFolder = resultsFolder + "Fig 3/single cell vis/"
+        Path(fig3AResultFolder).mkdir(parents=True, exist_ok=True)
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
                     featureSetName="allTopos", saveUnderFolder=fig3AResultFolder)
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
