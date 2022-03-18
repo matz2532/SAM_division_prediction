@@ -1,15 +1,23 @@
 import sys
 
 sys.path.insert(0, "./Code/Analysis Tools/")
-from BarPlotPlotter import BarPlotPlotter
+from BarPlotPlotter import mainDivPredRandomization
 from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
 from FeatureDensityPlotting import FeatureDensityPlotting
 from GeneralDataAnalyser import GeneralDataAnalyser
+from pathlib import Path
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/"):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo="all"):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
+    if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
+        pass
     # Fig. 2 B - div prediction acc. results to further add text in power point
+    if figuresToDo == "all" or "Fig. 2 B" in figuresToDo:
+        mainDivPredRandomization(performance="Acc", doMainFig=True,
+                                 baseResultsFolder="Results/divEventData/manualCentres/",
+                                 addOtherTestWithBaseFolder="Results/ktnDivEventData/manualCentres/",
+                                 savePlotFolder=resultsFolder)
     # Fig. 3 A - .csv-file of correct and wrong topo predictions on example cell
     # Fig. 3 B - topo prediction acc. results to further add text in power point
     # Fig. 3 C - topo prediction AUC results of different classes for WT test
@@ -30,4 +38,4 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/"):
     # Fig. 9 - density distributions of features
 
 if __name__== "__main__":
-    main()
+    plotAndPrepareMainFigures()
