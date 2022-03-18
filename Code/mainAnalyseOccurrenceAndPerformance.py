@@ -8,22 +8,22 @@ from GeneralDataAnalyser import GeneralDataAnalyser
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo="Fig. 2 A"):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo="Fig. 3 A"):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
-                    featureSetName="allTopos", saveUnderFolder=resultsFolder)
+                    featureSetName="allTopos", saveUnderFolder=resultsFolder+"Fig 2/")
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
-                    featureSetName="area", saveUnderFolder=resultsFolder)
+                    featureSetName="area", saveUnderFolder=resultsFolder+"Fig 2/")
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=True,
-                    featureSetName="topoAndBio", saveUnderFolder=resultsFolder)
+                    featureSetName="topoAndBio", saveUnderFolder=resultsFolder+"Fig 2/")
     # Fig. 2 B - div prediction acc. results to further add text in power point
     if figuresToDo == "all" or "Fig. 2 B" in figuresToDo:
         mainDivPredRandomization(performance="Acc", doMainFig=True,
                                  baseResultsFolder="Results/divEventData/manualCentres/",
                                  addOtherTestWithBaseFolder="Results/ktnDivEventData/manualCentres/",
-                                 savePlotFolder=resultsFolder)
+                                 savePlotFolder=resultsFolder+"Fig 2/")
     # Fig. 3 A - .csv-file of correct and wrong topo predictions on example cell
     # Fig. 3 B - topo prediction acc. results to further add text in power point
     # Fig. 3 C - topo prediction AUC results of different classes for WT test
