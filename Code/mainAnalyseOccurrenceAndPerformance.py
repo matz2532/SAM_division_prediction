@@ -25,6 +25,14 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                  addOtherTestWithBaseFolder="Results/ktnDivEventData/manualCentres/",
                                  savePlotFolder=resultsFolder+"Fig 2/")
     # Fig. 3 A - .csv-file of correct and wrong topo predictions on example cell
+    if figuresToDo == "all" or "Fig. 3 A" in figuresToDo:
+        fig3AResultFolder = resultsFolder+"Fig 3/single cell vis/"
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
+                    featureSetName="allTopos", saveUnderFolder=fig3AResultFolder)
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
+                    featureSetName="bio", saveUnderFolder=fig3AResultFolder)
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
+                    featureSetName="topoAndBio", saveUnderFolder=fig3AResultFolder)
     # Fig. 3 B - topo prediction acc. results to further add text in power point
     # Fig. 3 C - topo prediction AUC results of different classes for WT test
     # Fig. 3 C - topo prediction AUC results of different classes for ktn test
