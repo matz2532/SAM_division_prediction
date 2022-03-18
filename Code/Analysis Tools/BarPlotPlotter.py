@@ -445,7 +445,8 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                               balanceData=False,
                               excludeDivNeighbours=True, addOtherTestWithBaseFolder=None,
                               baseResultsFolder="Results/topoPredData/diff/manualCentres/",
-                              selectedDivEventPred=None):
+                              selectedDivEventPred=None,
+                              savePlotFolder=None):
     performanceToIdxDict = {"F1":0, "Acc":4, "AUC":9}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
@@ -476,11 +477,13 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
     else:
         addition = " sup low area"
     setNames = ", ".join(divEventPred)
+    if savePlotFolder is None:
+        savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
         randFilename = "combinedResultsWithTestingOf_1000_randomizedRuns_{}.csv".format(excludingTxt)
-        filenameToSave = baseResultsFolder + "topo random pred results {}{} {} {}.png".format(excludingTxt, addition, performance, setNames)
+        filenameToSave = savePlotFolder + "topo random pred results {}{} {} {}.png".format(excludingTxt, addition, performance, setNames)
     else:
-        filenameToSave = baseResultsFolder + "topo pred {} results {}{} {} {}.png".format(balanceTxt, excludingTxt, addition, performance, setNames)
+        filenameToSave = savePlotFolder + "topo pred {} results {}{} {} {}.png".format(balanceTxt, excludingTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
     if doSpecial:

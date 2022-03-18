@@ -1,14 +1,14 @@
 import sys
 
 sys.path.insert(0, "./Code/Analysis Tools/")
-from BarPlotPlotter import mainDivPredRandomization
+from BarPlotPlotter import mainDivPredRandomization, mainTopoPredRandomization
 from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
 from FeatureDensityPlotting import FeatureDensityPlotting
 from GeneralDataAnalyser import GeneralDataAnalyser
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo="Fig. 3 A"):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo="Fig. 3 B"):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -39,6 +39,14 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
                     featureSetName="topoAndBio", saveUnderFolder=fig3AResultFolder)
     # Fig. 3 B - topo prediction acc. results to further add text in power point
+    if figuresToDo == "all" or "Fig. 3 B" in figuresToDo:
+        fig3ResultFolder = resultsFolder + "Fig 3/"
+        Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainTopoPredRandomization(performance="Acc", doMainFig=True,
+                                 excludeDivNeighbours=True,
+                                 baseResultsFolder="Results/topoPredData/diff/manualCentres/",
+                                 addOtherTestWithBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
+                                 savePlotFolder=fig3ResultFolder)
     # Fig. 3 C - topo prediction AUC results of different classes for WT test
     # Fig. 3 C - topo prediction AUC results of different classes for ktn test
     # Fig. 4 B - example of predicted and observed topo prediction
