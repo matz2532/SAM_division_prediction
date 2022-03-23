@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import sys
 
 class FeatureDensityPlotting (object):
@@ -283,6 +284,7 @@ def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
             singlePlotName = Path(filenameToSave).parent.joinpath("singleFeatures", "{}_{}".format(currentFeature,Path(filenameToSave).name))
+            Path(singlePlotName.parent).mkdir(parents=True, exist_ok=True)
             plt.savefig(singlePlotName, dpi=200)
             plt.close()
     elif mode == "complex":
@@ -373,19 +375,21 @@ def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single
         # image.save(Path(filenameToSave).parent.joinpath(Path(filenameToSave).name+".pdf"),
         #             save_all=True, append_images=allImages)
 
-def mainSaveSameFeaturesOfDifferentHerkunftPerRow():
-    allFolder = ["Results/divEventData/manualCentres/adjusted div Pred/allTopos/svm_k2h_combinedTable_l3f0n1c0ex0/",
-                 "Results/divEventData/manualCentres/adjusted div Pred/allTopos/svm_k2h_combinedTable_l3f0n1c0ex0/",
-                 "Results/ktnDivEventData/manualCentres/adjusted div Pred/allTopos/svm_k2h_combinedTable_l3f0n1c0ex0/"]
-    plotOnlyTesting = [False, True, True]
-    filenameToSave = "Results/Visualising Feature Distributions/comparingFeatureDistribution_allTopos_WTtrain_WTtest_ktntest.png"
-    combinePlotsPerRow(allFolder, plotOnlyTesting, filenameToSave, mode="single")
-    allFolder = ["Results/topoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0ex1/",
-                 "Results/topoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0ex1/",
-                 "Results/ktnTopoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0ex1/"]
-    plotOnlyTesting = [False, True, True]
-    filenameToSave = allFolder[0] + "comparingFeatureDistribution_bio_WTtrain_WTtest_ktntest.png"
-    combinePlotsPerRow(allFolder, plotOnlyTesting, filenameToSave, mode="single")
+def mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=True, savePlotFolder=""):
+    if plotTopoFeatures:
+        allFolder = ["Results/divEventData/manualCentres/allTopos/svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                     "Results/divEventData/manualCentres/allTopos/svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                     "Results/ktnDivEventData/manualCentres/allTopos/svm_k2h_combinedTable_l3f0n1c0bal0ex0/"]
+        plotOnlyTesting = [False, True, True]
+        filenameToSave = savePlotFolder + "comparedFeatureDistribution_allTopos_WTtrain_WTtest_ktntest.png"
+        combinePlotsPerRow(allFolder, plotOnlyTesting, filenameToSave, mode="single")
+    else:
+        allFolder = ["Results/topoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0bal0ex1/",
+                     "Results/topoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0bal0ex1/",
+                     "Results/ktnTopoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0bal0ex1/"]
+        plotOnlyTesting = [False, True, True]
+        filenameToSave = savePlotFolder + "comparedFeatureDistribution_bio_WTtrain_WTtest_ktntest.png"
+        combinePlotsPerRow(allFolder, plotOnlyTesting, filenameToSave, mode="single")
 
 def mainSaveAllFeaturesTogetherFor(folder, extension, filenameToSave=None, doPlotAllFeaturesTogether=True):
     featureFilename = folder+"normalizedFeatures{}.csv".format(extension)
@@ -398,12 +402,12 @@ def mainSaveAllFeaturesTogetherFor(folder, extension, filenameToSave=None, doPlo
     return myFeatureDensityPlotting
 
 def main():
-    allFolder = ["Results/divEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0ex0/",
-                 "Results/ktnDivEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0ex0/",
-                 "Results/divEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0ex0/",
-                 "Results/ktnDivEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0ex0/",
-                 "Results/topoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0ex1/",
-                 "Results/ktnTopoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0ex1/"]
+    allFolder = ["Results/divEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                 "Results/ktnDivEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                 "Results/divEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                 "Results/ktnDivEventData/manualCentres/adjusted div Pred/topoAndBio/svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                 "Results/topoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0bal0ex1/",
+                 "Results/ktnTopoPredData/diff/manualCentres/bio/svm_k2h_combinedTable_l3f0n1c0bal0ex1/"]
     plotOnlyTesting = [False, True, False, True, False, True]
     allNamesToSave = ["topoAndBio_normalized_WT{}.png", "topoAndBio_normalized_ktn{}.png", "topoAndBio_normalized_WT{}.png", "topoAndBio_normalized_ktn{}.png", "bio_normalized_WT{}.png", "bio_normalized_ktn{}.png"]
     resultsFolder = "Results/Visualising Feature Distributions/"
@@ -417,5 +421,5 @@ def main():
         mainSaveAllFeaturesTogetherFor(folder, extension,)# filenameToSave)
 
 if __name__ == '__main__':
-    mainSaveSameFeaturesOfDifferentHerkunftPerRow()
+    mainSaveDensityPlotsOfFeaturesFromDiffScenarios()
     # main()

@@ -4,7 +4,7 @@ sys.path.insert(0, "./Code/Analysis Tools/")
 from BarPlotPlotter import mainDivPredRandomization, mainTopoPredRandomization
 from CorrelationHeatMapDisplayer import mainSaveCorrelation
 from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
-from FeatureDensityPlotting import FeatureDensityPlotting
+from FeatureDensityPlotting import mainSaveDensityPlotsOfFeaturesFromDiffScenarios
 from GeneralDataAnalyser import GeneralDataAnalyser
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
@@ -55,7 +55,7 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     # Fig. 4 D - concordance between the observed and predicted topologies
     # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo="Fig. 2"):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 9 A", "Fig. 9 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
@@ -65,7 +65,16 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
     # Fig. 6 A-C - topo prediction ROC curves results of different classes for WT test
     # Fig. 6 E-G - topo prediction ROC curves results of different classes for ktn test
     # Fig. 8 - comparison of obs. vs  pred. of all centrality applying div. and topo. prediction models
-    # Fig. 9 - density distributions of features
+    # Fig. 9 - density distributions of features - A topological and B biological features
+    if figuresToDo == "all" or "Fig. 9 A" in figuresToDo:
+        fig9AResultFolder = resultsFolder + "Fig 9A/"
+        Path(fig9AResultFolder).mkdir(parents=True, exist_ok=True)
+        mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=True, savePlotFolder=fig9AResultFolder)
+    if figuresToDo == "all" or "Fig. 9 B" in figuresToDo:
+        fig9BResultFolder = resultsFolder + "Fig 9B/"
+        Path(fig9BResultFolder).mkdir(parents=True, exist_ok=True)
+        mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=False, savePlotFolder=fig9BResultFolder)
+
 
 if __name__== "__main__":
     # plotAndPrepareMainFigures()
