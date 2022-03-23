@@ -121,10 +121,9 @@ class CorrelationHeatMapDisplayer (object):
             featureColTable.iloc[:, 0] = newFeatureNames
         argSortCor = np.argsort(featureColTable.iloc[featureIdxToSelect, 1])
         featureIdxToSelect = featureIdxToSelect[argSortCor[::-1]]
-        print(featureColTable.iloc[featureIdxToSelect, :].to_string())
         featureColTable.iloc[featureIdxToSelect, :].to_csv(filenameToSave, index=False)
 
-def analyseCorrelationMAtrix(correlationMatrixFilename):
+def analyseCorrelationMAtrix(correlationMatrixFilename="Results/divEventData/correlationMatrixWithArea.npy"):
     correlationMatrix = np.load(correlationMatrixFilename)
     rowsToExclude = [0, 9, 12, 13, 14, 15]
     singleCors = correlationMatrix[rowsToExclude[1:], 0]
@@ -139,33 +138,24 @@ def analyseCorrelationMAtrix(correlationMatrixFilename):
     #          kde_kws={'linewidth': 4})
     # plt.show()
 
-def main():
+def mainSaveCorrelation(baseFeatureFolder="Data/WT/divEventData/manualCentres/", savePlotFolder="",
+                        featureStartIdx=3, featureColIdxToCorrelateAgainst=0):
     sys.path.insert(0, "./Code/Classifiers/")
     from DuplicateDoubleRemover import DuplicateDoubleRemover
     from pathlib import Path
-    correlationMatrixFilename = "Results/divEventData/correlationMatrixWithArea.npy"
-    # analyseCorrelationMAtrix(correlationMatrixFilename)
-    # sys.exit()
-    featureFileName = "Data/WT/divEventData/manualCentres/topoAndBio/combinedFeatures_topoAndBio_notnormalised.csv"
-    filenameToSave = "Results/divEventData/manualCentres/correlationWithArea.png"
+    featureFileName = baseFeatureFolder + "topoAndBio/combinedFeatures_topoAndBio_notnormalised.csv"
+    filenameToSave = savePlotFolder + "topoFeatureCorrelationWithArea.png"
     features = pd.read_csv(featureFileName)
-    featureStartIdx = 3
     featureColumns = np.arange(featureStartIdx, len(features.columns))
-    featureColIdxToCorrelateAgainst = 0
     myDuplicateDoubleRemover = DuplicateDoubleRemover(features.iloc[:, featureColumns])
     duplicateColIdx = myDuplicateDoubleRemover.GetDuplicateColIdx()
     duplicateFeatureNames = np.asarray(list(features.iloc[:, featureColumns].columns))[duplicateColIdx]
-    print(duplicateColIdx)
-    print(duplicateFeatureNames)
-    print(myDuplicateDoubleRemover.GetDuplicateOfIdx())
     myHeatMapper = CorrelationHeatMapDisplayer(features, featureColumns, featureColIdxToCorrelateAgainst)
-    p = Path(featureFileName)
-    myHeatMapper.SaveFeatureCorrelationTable(p.parent.joinpath(p.stem+"_featureCorWithArea.csv"),
+    pathOfCorTableResults = Path(filenameToSave)
+    myHeatMapper.SaveFeatureCorrelationTable(pathOfCorTableResults.with_suffix(".csv"),
                                              featureNamesToIgnore=duplicateFeatureNames)
-    plt.show()
-    sys.exit()
     plt.savefig(filenameToSave, bbox_inches="tight", dpi=300)
     plt.close()
 
 if __name__ == '__main__':
-    main()
+    mainSaveCorrelation()

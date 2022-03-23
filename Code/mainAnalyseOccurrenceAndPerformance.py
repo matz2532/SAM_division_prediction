@@ -2,6 +2,7 @@ import sys
 
 sys.path.insert(0, "./Code/Analysis Tools/")
 from BarPlotPlotter import mainDivPredRandomization, mainTopoPredRandomization
+from CorrelationHeatMapDisplayer import mainSaveCorrelation
 from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
 from FeatureDensityPlotting import FeatureDensityPlotting
 from GeneralDataAnalyser import GeneralDataAnalyser
@@ -54,9 +55,11 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     # Fig. 4 D - concordance between the observed and predicted topologies
     # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/"):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo="Fig. 2"):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
+    if figuresToDo == "all" or "Fig. 2" in figuresToDo:
+        mainSaveCorrelation(baseFeatureFolder="Data/WT/divEventData/manualCentres/", savePlotFolder=resultsFolder)
     # Fig. 5 A - div prediction acc. randomisation results to further add text in power point
     # Fig. 5 B - topo prediction acc. randomisation results to further add text in power point
     # Fig. 6 A-C - topo prediction ROC curves results of different classes for WT test
@@ -65,4 +68,5 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/"):
     # Fig. 9 - density distributions of features
 
 if __name__== "__main__":
-    plotAndPrepareMainFigures()
+    # plotAndPrepareMainFigures()
+    plotAndPrepareSuppFigures()
