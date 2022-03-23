@@ -103,7 +103,6 @@ class ModelCreator (object):
             parameters = {'n_estimators' : n_estimators, 'max_features' : max_features, "max_depth" : max_depth, "max_samples":max_samples}
         else:
             raise NotImplementedError("This default hyperparameter range is not yet implemented, self.modelType=='svm' and self.kernel == 'rbf' or modelType=='random forest'")
-        print("hyper-parameters:", parameters)
         return parameters
 
     def addOrOverwriteParameters(self, parameters):
