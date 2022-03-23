@@ -86,7 +86,7 @@ class ModelCreator (object):
 
     def calcDefaultHyperPar(self, X_train):
         if self.modelType == "svm" and self.kernel == "rbf":
-            density = 200
+            density = 100
             gamma = self.equallySpacedValueSamplingOverScales([-8, 3], density)
             C = self.equallySpacedValueSamplingOverScales([-3,4], density)
             # gamma = np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)])
@@ -103,6 +103,7 @@ class ModelCreator (object):
             parameters = {'n_estimators' : n_estimators, 'max_features' : max_features, "max_depth" : max_depth, "max_samples":max_samples}
         else:
             raise NotImplementedError("This default hyperparameter range is not yet implemented, self.modelType=='svm' and self.kernel == 'rbf' or modelType=='random forest'")
+        print("hyper-parameters:", parameters)
         return parameters
 
     def addOrOverwriteParameters(self, parameters):

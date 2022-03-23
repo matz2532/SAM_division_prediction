@@ -124,6 +124,4 @@ if __name__ == '__main__':
     mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
                        baseResultsFolder="Results/topoPredDataExtendedParRange/",
                        excludeDividingNeighboursProperties=[True])
-    mainTrainValTestWT(runDivEventPred=True, runModelTraining=True, saveLearningCurve=False,
-                       baseResultsFolder="Results/divPredDataExtendedParRange/")
     # mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False)
