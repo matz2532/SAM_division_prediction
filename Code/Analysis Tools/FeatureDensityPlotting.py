@@ -247,7 +247,7 @@ def getAllDensityPlotter(plotOnlyTesting, allFolders):
         allDensityPlotter.append(densityPlotter)
     return allDensityPlotter
 
-def plotFeatureOfSets(currentFeature, scenariosDensityPlotter):
+def plotFeatureOfSets(ax, currentFeature, scenariosDensityPlotter):
     for j, denistyPlotter in enumerate(scenariosDensityPlotter):
         if j == 1:
             color = None#"#ff5800"
@@ -289,7 +289,7 @@ def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single
             else:
                 figsize = [3.15, 3.94]
             fig, ax = plt.subplots(figsize=figsize)
-            plotFeatureOfSets(currentFeature, scenariosDensityPlotter)
+            plotFeatureOfSets(ax, currentFeature, scenariosDensityPlotter)
             singlePlotName = Path(filenameToSave).parent.joinpath("singleFeatures", "{}_{}".format(currentFeature, Path(filenameToSave).name))
             Path(singlePlotName.parent).mkdir(parents=True, exist_ok=True)
             # plt.savefig(singlePlotName, dpi=200)
