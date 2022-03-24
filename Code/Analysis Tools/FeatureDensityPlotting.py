@@ -247,25 +247,41 @@ def getAllDensityPlotter(plotOnlyTesting, allFolders):
         allDensityPlotter.append(densityPlotter)
     return allDensityPlotter
 
+def plotFeatureOfSets(currentFeature, scenariosDensityPlotter):
+    for j, denistyPlotter in enumerate(scenariosDensityPlotter):
+        if j == 1:
+            color = None#"#ff5800"
+        if j == 2:
+            color = None#"#d1008f"
+        else:
+            color = None
+        denistyPlotter.PlotPooledData(currentFeature, color=color)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
 def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single"):
     from pathlib import Path
-    allDensityPlotter = getAllDensityPlotter(plotOnlyTesting, allFolders)
-    allSelectedFeatures = [densityPlotter.GetSelectedFeatures() for densityPlotter in allDensityPlotter]
+    scenariosDensityPlotter = getAllDensityPlotter(plotOnlyTesting, allFolders)
+    allSelectedFeatures = [densityPlotter.GetSelectedFeatures() for densityPlotter in scenariosDensityPlotter]
     lenOfSelectedFeatures = [len(selectedFeatures) for selectedFeatures in allSelectedFeatures]
     assert len(np.unique(lenOfSelectedFeatures)) == 1, "The number of selected features is different between the denisty plotter."
     selectedFeatures = allSelectedFeatures[0]
     nrOfSelectedFeatures = lenOfSelectedFeatures[0]
-    print(filenameToSave)
     if mode == "simple":
         nrOfRows = np.ceil(np.sqrt(nrOfSelectedFeatures))
         plt.subplots_adjust(hspace=0.7, wspace=0.7)
         for i, currentFeature in enumerate(selectedFeatures):
             plt.subplot(nrOfRows, nrOfRows, i+1)
-            for denistyPlotter in allDensityPlotter:
+            for denistyPlotter in scenariosDensityPlotter:
                 denistyPlotter.PlotPooledData(currentFeature)
             plt.ylabel("density", fontsize = 15)
             plt.xlabel(currentFeature, fontsize = 15)
         # plt.legend(np.unique(self.labels))
+        if filenameToSave is None:
+            plt.show()
+        else:
+            plt.savefig(filenameToSave, bbox_inches="tight", dpi=200, figsize=[78.7, 17.7])
+            plt.close()
     elif mode == "single":
         for i, currentFeature in enumerate(selectedFeatures):
             if i % 3 == 0:
@@ -273,20 +289,11 @@ def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single
             else:
                 figsize = [3.15, 3.94]
             fig, ax = plt.subplots(figsize=figsize)
-            for j, denistyPlotter in enumerate(allDensityPlotter):
-                if j == 1:
-                    color = None#"#ff5800"
-                if j == 2:
-                    color = None#"#d1008f"
-                else:
-                    color = None
-                denistyPlotter.PlotPooledData(currentFeature, color=color)
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
-            singlePlotName = Path(filenameToSave).parent.joinpath("singleFeatures", "{}_{}".format(currentFeature,Path(filenameToSave).name))
+            plotFeatureOfSets(currentFeature, scenariosDensityPlotter)
+            singlePlotName = Path(filenameToSave).parent.joinpath("singleFeatures", "{}_{}".format(currentFeature, Path(filenameToSave).name))
             Path(singlePlotName.parent).mkdir(parents=True, exist_ok=True)
-            plt.savefig(singlePlotName, dpi=200)
-            plt.close()
+            # plt.savefig(singlePlotName, dpi=200)
+            # plt.close()
     elif mode == "complex":
         nrOfRows = 2
         nrOfFeaturesPerWeighting = np.zeros(nrOfRows)
@@ -310,17 +317,17 @@ def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single
             plotIdx = int(1 + nrOfPlotsPerWeight[idxToOfWeight] + idxToOfWeight*nrOfCols)
             featureNameplotIdxAssociation[currentFeature] = plotIdx
             plt.subplot(nrOfRows, nrOfCols, plotIdx)
-            for denistyPlotter in allDensityPlotter:
+            for denistyPlotter in scenariosDensityPlotter:
                 denistyPlotter.PlotPooledData(currentFeature)
             if nrOfPlotsPerWeight[idxToOfWeight] == 0:
                 plt.ylabel("density", fontsize = 15)
             plt.xlabel(currentFeature, fontsize = 15)
             nrOfPlotsPerWeight[idxToOfWeight] += 1
-    if filenameToSave is None:
-        plt.show()
-    else:
-        plt.savefig(filenameToSave, bbox_inches="tight", dpi=200, figsize=[78.7, 17.7])
-        plt.close()
+        if filenameToSave is None:
+            plt.show()
+        else:
+            plt.savefig(filenameToSave, bbox_inches="tight", dpi=200, figsize=[78.7, 17.7])
+            plt.close()
     if mode == "complex":
         pass
         # for i, currentFeature in enumerate(selectedFeatures):
@@ -329,7 +336,7 @@ def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single
         #     else:
         #         figsize = [3.15, 3.94]
         #     plt.figure(figsize=figsize)
-        #     for denistyPlotter in allDensityPlotter:
+        #     for denistyPlotter in scenariosDensityPlotter:
         #         denistyPlotter.PlotPooledData(currentFeature)
         #     if "degree" in currentFeature:
         #         plt.ylabel("density", fontsize = 15)
@@ -421,5 +428,5 @@ def main():
         mainSaveAllFeaturesTogetherFor(folder, extension,)# filenameToSave)
 
 if __name__ == '__main__':
-    mainSaveDensityPlotsOfFeaturesFromDiffScenarios()
+    mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=True, savePlotFolder="Results/SuppFigures/Fig 9A/")
     # main()
