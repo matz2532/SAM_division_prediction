@@ -122,9 +122,7 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 if __name__ == '__main__':
     mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
-                       baseResultsFolder="Results/topoPredDataExtendedParRange/",
                        excludeDividingNeighboursProperties=[True])
     mainTrainValTestWT(runDivEventPred=False, runModelTraining=False, saveLearningCurve=True,
-                       baseResultsFolder="Results/topoPredDataExtendedParRange/",
                        excludeDividingNeighboursProperties=[True])
     # mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False)
