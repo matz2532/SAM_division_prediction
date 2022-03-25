@@ -1,0 +1,6 @@
+,group1,group2,WT vs ktn1-2 p-values,WT vs ktn1-2 T-stat,statistical method
+WT vs ktn1-2 allTopos,WT allTopos,ktn1-2 allTopos,0.058099152328155546,3.021725667182877,independent t-test
+WT vs ktn1-2 area,WT area,ktn1-2 area,0.2686793830239866,1.5021585450671908,independent t-test
+WT vs ktn1-2 topoAndBio,WT topoAndBio,ktn1-2 topoAndBio,0.2686793830239866,1.658143911225183,independent t-test
+WT vs ktn1-2 lowCor0.3,WT lowCor0.3,ktn1-2 lowCor0.3,0.5574043024674614,0.790536804476099,independent t-test
+WT vs ktn1-2 topology,WT topology,ktn1-2 topology,0.9055463918378883,0.12142212098362655,independent t-test

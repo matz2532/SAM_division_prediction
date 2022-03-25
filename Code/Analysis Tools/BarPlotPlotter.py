@@ -372,27 +372,49 @@ class BarPlotPlotter (object):
         performancesPerSet1 = self.selectPerformancesFromTableList(performanceTables1, performanceIdx, indexName)
         performancesPerSet2 = self.selectPerformancesFromTableList(performanceTables2, performanceIdx, indexName)
         assert len(performancesPerSet1) == len(performancesPerSet2), f"The number of performance sets need to be equal between {firstScenarioName} and {secondScenarioName}"
-        allPValues, allTStats, testCases, group1, group2 = [], [], [], [], []
+        allPValues, allTStats, testCases, group1, group2, usedStatisticalMethod = [], [], [], [], [], []
         setNames = self.selectedFolders
         nrOfConditions = len(performancesPerSet1)
+        normalityAlpha = 0.05
+        varianceAlpha = 0.05
         for i in range(nrOfConditions):
-            TStat, pValue = st.ttest_ind(performancesPerSet1[i], performancesPerSet2[i])
+            x, y = performancesPerSet1[i], performancesPerSet2[i]
+            _, spairoPValueOfX = st.shapiro(x)
+            _, spairoPValueOfY = st.shapiro(y)
+            isNormalDistributed = spairoPValueOfX > normalityAlpha and spairoPValueOfY > normalityAlpha
+            if isNormalDistributed:
+                _, sameVariancePValue = st.levene(x, y)
+            else:
+                _, sameVariancePValue = st.bartlett(x, y)
+            isVarianceEqual = sameVariancePValue > varianceAlpha
+            if isNormalDistributed:
+                stat, pValue = st.ttest_ind(performancesPerSet1[i], performancesPerSet2[i], equal_var=isVarianceEqual)
+                if isVarianceEqual:
+                    statsMethod = "independent t-test"
+                else:
+                    statsMethod = "Welch's-test"
+            else:
+                print("The stats method of non normal distibutions is not yet implemented.")
+                sys.exit()
             if np.isnan(pValue):
                 pValue = 1
             allPValues.append(pValue)
-            allTStats.append(TStat)
+            allTStats.append(stat)
             testCases.append(f"{firstScenarioName} vs {secondScenarioName} {setNames[i]}")
             group1.append(f"{firstScenarioName} {setNames[i]}")
-            group2.append(f"{firstScenarioName} {setNames[i]}")
+            group2.append(f"{secondScenarioName} {setNames[i]}")
+            usedStatisticalMethod.append(statsMethod)
         if correctPValues:
             allPValues = list(multipletests(allPValues, method='fdr_bh')[1])
         if addGroupColumns:
             pValueTable = {"group1" : group1, "group2" : group2,
                            pValueColumnName : allPValues,
-                           tStatsColumnName : allTStats}
+                           tStatsColumnName : allTStats,
+                           "statistical method" : usedStatisticalMethod}
         else:
             pValueTable = {pValueColumnName : allPValues,
-                           tStatsColumnName : allTStats}
+                           tStatsColumnName : allTStats,
+                           "statistical method" : usedStatisticalMethod}
         pValueTable = pd.DataFrame(pValueTable, index=testCases)
         if printPValues:
             print(pValueTable.to_string())
@@ -409,7 +431,7 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
     else:
         minY = 0.5
     if doMainFig:
-        divEventPred = ["allTopos", "area", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]
+        divEventPred = ["allTopos", "area", "topoAndBio", "lowCor0.3", "topology"]
         addition = " main fig"
     else:
         divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "area"]
