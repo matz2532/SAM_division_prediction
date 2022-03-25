@@ -121,8 +121,6 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
-                       excludeDividingNeighboursProperties=[True])
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=False, saveLearningCurve=True,
-                       excludeDividingNeighboursProperties=[True])
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=False, saveLearningCurve=False,
+                       excludeDividingNeighboursProperties=[True], runModelTesting=True)
     # mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False)
