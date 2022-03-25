@@ -11,7 +11,7 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
     modelType =  {"modelType":"svm","kernel":"rbf"}
-    usePreviousTrainedModelsIfPossible = True
+    usePreviousTrainedModelsIfPossible = False
     onlyTestModelWithoutTrainingData = False
     useManualCentres = True
     # print options:
