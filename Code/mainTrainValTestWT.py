@@ -86,7 +86,7 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
                     labelName = "combinedLabels.csv"
                     if useManualCentres:
                         setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
-                        resultsFolder = "diff/manualCentres/{}/".format(baseResultsFolder, set)
+                        resultsFolder = "{}diff/manualCentres/{}/".format(baseResultsFolder, set)
                     else:
                         setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
                         resultsFolder = "{}diff/{}/".format(baseResultsFolder, set)
