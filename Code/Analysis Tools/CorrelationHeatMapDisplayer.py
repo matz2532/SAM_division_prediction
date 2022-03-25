@@ -6,6 +6,7 @@ import seaborn as sns
 import sys
 
 from matplotlib import gridspec
+from statsmodels.stats.multitest import multipletests
 
 class CorrelationHeatMapDisplayer (object):
 
@@ -29,6 +30,7 @@ class CorrelationHeatMapDisplayer (object):
             r, p = scipy.stats.pearsonr(self.corFeature, self.selectedFeatures[:, i])
             correlations [i] = r
             pValues[i] = p
+        pValues = list(multipletests(pValues, method='fdr_bh')[1])
         return correlations, pValues
 
     def plotHeatMap(self, values, splits=4, printHighestCor=False, simpleHeatmap=False):
