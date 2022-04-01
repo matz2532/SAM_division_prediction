@@ -388,15 +388,17 @@ class BarPlotPlotter (object):
             else:
                 _, sameVariancePValue = st.bartlett(x, y)
             isVarianceEqual = sameVariancePValue > varianceAlpha
-            if isNormalDistributed:
-                stat, pValue = st.ttest_ind(performancesPerSet1[i], performancesPerSet2[i], equal_var=isVarianceEqual)
-                if isVarianceEqual:
-                    statsMethod = "independent t-test"
-                else:
-                    statsMethod = "Welch's-test"
+            # if isNormalDistributed:
+            stat, pValue = st.ttest_ind(performancesPerSet1[i], performancesPerSet2[i], equal_var=isVarianceEqual)
+            if isVarianceEqual:
+                statsMethod = "independent t-test"
             else:
-                print("The stats method of non normal distibutions is not yet implemented.")
-                sys.exit()
+                statsMethod = "Welch's-test"
+            # else:
+            if not isNormalDistributed:
+                print(f"The stats method of non normal distibutions is not yet implemented.\nWhen comparing in set {setNames[i]}")
+                print(spairoPValueOfX > normalityAlpha, spairoPValueOfY > normalityAlpha)
+                # sys.exit()
             if np.isnan(pValue):
                 pValue = 1
             allPValues.append(pValue)
