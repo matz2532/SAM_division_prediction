@@ -524,7 +524,6 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         filenameToSave = baseResultsFolder + "topo pred results detailed auc allTopos, bio, topoAndBio.png"
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
                                       compareRandAndNorm=False,
-                                      resultsTestFilename=None,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder,
                                       plotOnlyRandom=plotOnlyRandom,
                                       furtherFolder=furtherFolder,
