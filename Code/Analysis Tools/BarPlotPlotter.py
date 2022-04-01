@@ -51,7 +51,8 @@ class BarPlotPlotter (object):
                 self.testResultTables = self.loadTables(self.baseResultsFolder, addFurtherFolder=True,
                                                  addSpecificNameSuffix=self.resultsTestFilename)
         if not self.addOtherTestWithBaseFolder is None:
-            self.furtherTestResults = self.loadTables(self.addOtherTestWithBaseFolder, addFurtherFolder=True,
+            if not self.resultsTestFilename is None:
+                self.furtherTestResults = self.loadTables(self.addOtherTestWithBaseFolder, addFurtherFolder=True,
                                              addSpecificNameSuffix=self.resultsTestFilename)
 
     def loadTables(self, baseFolder, addFurtherFolder=True, addSpecificNameSuffix=None):
