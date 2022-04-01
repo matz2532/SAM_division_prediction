@@ -6,10 +6,11 @@ from CorrelationHeatMapDisplayer import mainSaveCorrelation
 from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
 from FeatureDensityPlotting import mainSaveDensityPlotsOfFeaturesFromDiffScenarios
 from GeneralDataAnalyser import GeneralDataAnalyser
+from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 A"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 C WT", "Fig. 3 C ktn"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -49,7 +50,20 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                  addOtherTestWithBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
                                  savePlotFolder=fig3ResultFolder)
     # Fig. 3 C - topo prediction AUC results of different classes for WT test
+    # Sup. Fig. 6 A-C - topo prediction ROC curves results of different classes for WT test
+    if figuresToDo == "all" or "Fig. 3 C WT" in figuresToDo:
+        fig3ResultFolder = resultsFolder + "Fig 3/"
+        Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/topoPredData/diff/manualCentres/",
+                                            saveUnderFolder=fig3ResultFolder)
     # Fig. 3 C - topo prediction AUC results of different classes for ktn test
+    # Sup. Fig. 6 E-G - topo prediction ROC curves results of different classes for ktn test
+    if figuresToDo == "all" or "Fig. 3 C ktn" in figuresToDo:
+        fig3ResultFolder = resultsFolder + "Fig 3/"
+        Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
+                                            modelBaseFolder="Results/topoPredData/diff/manualCentres/",
+                                            saveUnderFolder=fig3ResultFolder)
     # Fig. 4 B - example of predicted and observed topo prediction
     # Fig. 4 C - percentage of of correctly estimated neighbours per local topology
     # Fig. 4 D - concordance between the observed and predicted topologies
@@ -62,8 +76,6 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
         mainSaveCorrelation(baseFeatureFolder="Data/WT/divEventData/manualCentres/", savePlotFolder=resultsFolder)
     # Fig. 5 A - div prediction acc. randomisation results to further add text in power point
     # Fig. 5 B - topo prediction acc. randomisation results to further add text in power point
-    # Fig. 6 A-C - topo prediction ROC curves results of different classes for WT test
-    # Fig. 6 E-G - topo prediction ROC curves results of different classes for ktn test
     # Fig. 8 - comparison of obs. vs  pred. of all centrality applying div. and topo. prediction models
     # Fig. 9 - density distributions of features - A topological and B biological features
     if figuresToDo == "all" or "Fig. 9 A" in figuresToDo:

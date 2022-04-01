@@ -490,14 +490,17 @@ def plotPrecisionRecallCurve(y_true, y_scores, n_classes=3, plotShow=True, split
 def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/manualCentres/",
                                  modelBaseFolder="Results/topoPredData/diff/manualCentres/",
                                  excludeDivNeighbours=True, saveFig=True, useValidationData=True,
-                                 featureSets=["allTopos", "bio", "topoAndBio"]):
+                                 featureSets=["allTopos", "bio", "topoAndBio"],
+                                 saveUnderFolder=None):
+    if saveUnderFolder is None:
+        saveUnderFolder = resultsBaseFolder
     allMeans, allStds = [], []
     if excludeDivNeighbours:
         excludingTxt = "ex1"
     else:
         excludingTxt = "ex0"
     for i, set in enumerate(featureSets):
-        folderExtension = "svm_k2h_combinedTable_l3f0n1c0{}/".format(excludingTxt)
+        folderExtension = "svm_k2h_combinedTable_l3f0n1c0bal0{}/".format(excludingTxt)
         resultsFolder = resultsBaseFolder + "{}/{}".format(set, folderExtension)
         modelFolder = modelBaseFolder + "{}/{}".format(set, folderExtension)
         title = ""
@@ -516,7 +519,7 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
                            plotLegend=plotLegend)
         allMeans.extend(list(means))
         allStds.extend(list(stds))
-        filenameToSave = resultsBaseFolder + "Roc-Curves/"
+        filenameToSave = saveUnderFolder + "Roc-Curves/"
         Path(filenameToSave).mkdir(parents=True, exist_ok=True)
         filenameToSave += "roc curve {} {}.png".format(excludingTxt, set)
         if saveFig:
@@ -526,25 +529,26 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
     print("allStds", allStds)
     return allMeans, allStds
 
-def main():
-    plotRocCurvesAndSummaryForWT = False
-    wtBaseFolder = "Results/topoPredData/diff/manualCentres/"
-    modelBaseFolder = wtBaseFolder
-    if plotRocCurvesAndSummaryForWT:
-        resultsBaseFolder = wtBaseFolder
-        useValidationData = True
-    else:
-        resultsBaseFolder = "Results/ktnTopoPredData/diff/manualCentres/"
-        useValidationData = False
+def mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="",
+                modelBaseFolder=None, useValidationData=False,
+                saveUnderFolder=None):
+    if modelBaseFolder is None:
+        modelBaseFolder = resultsBaseFolder
     means, stds = plotGivenFeatureSetRocCurves(saveFig=True, resultsBaseFolder=resultsBaseFolder,
                                                modelBaseFolder=modelBaseFolder,
-                                               useValidationData=useValidationData)
+                                               useValidationData=useValidationData,
+                                               saveUnderFolder=saveUnderFolder)
     import sys
     sys.path.insert(0, "./Code/Analysis Tools/")
     from BarPlotPlotter import mainTopoPredRandomization
     doSpecial = [means, stds]
     mainTopoPredRandomization(performance="AUC", doSpecial=doSpecial, doMainFig=False,
-                              baseResultsFolder=resultsBaseFolder)
+                              baseResultsFolder=resultsBaseFolder, savePlotFolder=saveUnderFolder)
+
+def main():
+    mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/topoPredData/diff/manualCentres/")
+    mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
+                                        modelBaseFolder="Results/topoPredData/diff/manualCentres/")
     sys.exit()
     # folder = "Results/divEventData/area/svm_k2h_combinedTable_l3f0n1c0ex0/"
     # folder = "Results/Tissue mapping/reducedFeatures_d26/onlyTopoDistWithParent/svm_k2h_combinedTable_l3f0n1c0ex0/"

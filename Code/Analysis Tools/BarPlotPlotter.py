@@ -76,6 +76,8 @@ class BarPlotPlotter (object):
                                                   nrOfReplicates=self.nrOfReplicates,
                                                   useTesting=not self.testResultTables is None)
         statisticsLetters = ""
+        pValueTable = None
+        print("self.resultsTestFilename", self.resultsTestFilename)
         statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
         if not np.all(np.asarray(std) == 0):
             pValueTable = self.calcTrainAndValDifferences(performanceIdx, compareRandAndNorm,
@@ -105,9 +107,11 @@ class BarPlotPlotter (object):
                 betweenTestScenariosTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_betweenTestScenariosPValues.csv")
                 differencesBetweenTestScenariosDf.to_csv(betweenTestScenariosTableName)
         if printPValues:
-            print(pValueTable.to_string())
-        with open(statisticsLettersFilename, "w") as file:
-            file.write(statisticsLetters)
+            if pValueTable:
+                print(pValueTable.to_string())
+        if statisticsLetters:
+            with open(statisticsLettersFilename, "w") as file:
+                file.write(statisticsLetters)
         yLabel = self.setYLabel(performanceIdx)
         # Build the plot
         plt.rcParams.update({'font.size': 18})
@@ -528,6 +532,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
                                       compareRandAndNorm=False,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder,
+                                      resultsTestFilename=None if doSpecial else "resultsWithOnlyTesting.csv",
                                       plotOnlyRandom=plotOnlyRandom,
                                       furtherFolder=furtherFolder,
                                       performanceIdx=performanceIdx,
