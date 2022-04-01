@@ -477,7 +477,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         minY = 0.5
     if selectedDivEventPred is None:
         if doMainFig:
-            divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]# ["allTopos", "bio", "topoAndBio"]
+            divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.3", "topology"]# ["allTopos", "bio", "topoAndBio"]
         else:
             divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "bio"]
     else:
