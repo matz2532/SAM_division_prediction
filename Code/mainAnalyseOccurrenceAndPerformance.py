@@ -89,5 +89,5 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
 
 
 if __name__== "__main__":
-    # plotAndPrepareMainFigures()
-    plotAndPrepareSuppFigures()
+    plotAndPrepareMainFigures()
+    # plotAndPrepareSuppFigures()

@@ -2,6 +2,7 @@ import copy
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
+import pandas as pd
 import pickle, sys, sklearn
 
 from itertools import cycle
@@ -491,7 +492,7 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
                                  modelBaseFolder="Results/topoPredData/diff/manualCentres/",
                                  excludeDivNeighbours=True, saveFig=True, useValidationData=True,
                                  featureSets=["allTopos", "bio", "topoAndBio"],
-                                 saveUnderFolder=None):
+                                 saveUnderFolder=None, doStdOnTestTissues=True):
     if saveUnderFolder is None:
         saveUnderFolder = resultsBaseFolder
     allMeans, allStds = [], []
@@ -514,6 +515,24 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
             modelsOfSplit = [pickle.load(open(modelFolder + modelName, "rb"))]
         dataXs = pickle.load(open(resultsFolder + "{}Xs.pkl".format(dataName), "rb"))
         labelYs = pickle.load(open(resultsFolder + "{}Ys.pkl".format(dataName), "rb"))
+        if not useValidationData and doStdOnTestTissues:
+            import pandas as pd
+            labelOverviewDf = pd.read_csv(resultsFolder+"labelOverviewDf.csv")
+            labelOverviewDf = labelOverviewDf.loc[labelOverviewDf["isCellTest"], :]
+            groups = labelOverviewDf.groupby(["plant", "time point"])
+            nrOfTissues = 0
+            newDataXs, newLabelYs = [], []
+            startIdx = 0
+            for tissueId, tissueOverview in groups:
+                nrOfSamples = len(tissueOverview)
+                endIdx = startIdx + nrOfSamples
+                newDataXs.append(dataXs[0][startIdx:endIdx, :])
+                newLabelYs.append(labelYs[0][startIdx:endIdx])
+                nrOfTissues += 1
+                startIdx = endIdx
+            modelsOfSplit = nrOfTissues * [modelsOfSplit[0]]
+            dataXs = newDataXs
+            labelYs = newLabelYs
         plotLegend = i == 0
         means, stds = plotRocCurveWithCv(modelsOfSplit, dataXs, labelYs, title=title, plotShow=False,
                            plotLegend=plotLegend)
