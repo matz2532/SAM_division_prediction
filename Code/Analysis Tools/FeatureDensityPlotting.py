@@ -292,8 +292,8 @@ def combinePlotsPerRow(allFolders, plotOnlyTesting, filenameToSave, mode="single
             plotFeatureOfSets(ax, currentFeature, scenariosDensityPlotter)
             singlePlotName = Path(filenameToSave).parent.joinpath("singleFeatures", "{}_{}".format(currentFeature, Path(filenameToSave).name))
             Path(singlePlotName.parent).mkdir(parents=True, exist_ok=True)
-            # plt.savefig(singlePlotName, dpi=200)
-            # plt.close()
+            plt.savefig(singlePlotName, dpi=200)
+            plt.close()
     elif mode == "complex":
         nrOfRows = 2
         nrOfFeaturesPerWeighting = np.zeros(nrOfRows)

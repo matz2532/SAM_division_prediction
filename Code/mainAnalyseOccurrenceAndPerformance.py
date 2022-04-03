@@ -69,7 +69,7 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     # Fig. 4 D - concordance between the observed and predicted topologies
     # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 2"]):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 9 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
@@ -89,5 +89,5 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
 
 
 if __name__== "__main__":
-    plotAndPrepareMainFigures()
-    # plotAndPrepareSuppFigures()
+    # plotAndPrepareMainFigures()
+    plotAndPrepareSuppFigures()
