@@ -42,7 +42,10 @@ class BarPlotPlotter (object):
         self.randTable = []
         self.testResultTables = None
         self.furtherTestResults = None
-        self.resultsTable = self.loadTables(self.baseResultsFolder) # add check for number of replicates
+        if not self.doSpecial:
+            self.resultsTable = self.loadTables(self.baseResultsFolder) # add check for number of replicates
+        else:
+            self.resultsTable = None
         if (self.plotOnlyRandom or self.compareRandAndNorm) and not self.doSpecial:
             self.randTable = self.loadTables(self.baseResultsFolder, addFurtherFolder=False,
                                              addSpecificNameSuffix=self.randFilename)
@@ -77,9 +80,8 @@ class BarPlotPlotter (object):
                                                   useTesting=not self.testResultTables is None)
         statisticsLetters = ""
         pValueTable = None
-        print("self.resultsTestFilename", self.resultsTestFilename)
         statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
-        if not np.all(np.asarray(std) == 0):
+        if not np.all(np.asarray(std) == 0) and not self.resultsTable is None:
             pValueTable = self.calcTrainAndValDifferences(performanceIdx, compareRandAndNorm,
                                                nrOfReplicates=self.nrOfReplicates,
                                                correctPValues=True, printPValues=printPValues)
@@ -107,12 +109,18 @@ class BarPlotPlotter (object):
                 betweenTestScenariosTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_betweenTestScenariosPValues.csv")
                 differencesBetweenTestScenariosDf.to_csv(betweenTestScenariosTableName)
         if printPValues:
-            if pValueTable:
+            if not pValueTable is None:
                 print(pValueTable.to_string())
         if statisticsLetters:
             with open(statisticsLettersFilename, "w") as file:
                 file.write(statisticsLetters)
-        yLabel = self.setYLabel(performanceIdx)
+        if not self.resultsTable is None:
+            yLabel = self.setYLabel(performanceIdx)
+        else:
+            if minY == 0.5:
+                yLabel = "AUC"
+            else:
+                yLabel = "Accuracy [%]"
         # Build the plot
         plt.rcParams.update({'font.size': 18})
         if len(self.selectedFolders) != 3:
@@ -190,23 +198,6 @@ class BarPlotPlotter (object):
             if self.furtherTestResults:
                 colors[[i%idx==3 for i in range(len(mean))]] = coloryByHtml[2+useTesting]
         return x_pos, mean, std, colors
-
-    def extractMeanAndStdForRandAndNorm(self, performanceIdx=1, nrOfReplicates=5):
-        mean = np.zeros(4*len(self.selectedFolders))
-        std = np.zeros(4*len(self.selectedFolders))
-        startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
-        for i in range(len(self.selectedFolders)):
-            table = self.randTable[i]
-            mean[i*4] = table.iloc[nrOfReplicates, performanceIdx]
-            mean[i*4+1] = table.iloc[nrOfReplicates, performanceIdx+startPerformanceValIdx]
-            std[i*4] = table.iloc[nrOfReplicates+1, performanceIdx]
-            std[i*4+1] = table.iloc[nrOfReplicates+1, performanceIdx+startPerformanceValIdx]
-            table = self.resultsTable[i]
-            mean[i*4+2] = table.iloc[nrOfReplicates, performanceIdx]
-            mean[i*4+3] = table.iloc[nrOfReplicates, performanceIdx+startPerformanceValIdx]
-            std[i*4+2] = table.iloc[nrOfReplicates+1, performanceIdx]
-            std[i*4+3] = table.iloc[nrOfReplicates+1, performanceIdx+startPerformanceValIdx]
-        return mean, std
 
     def extractMeanAndStd(self, performanceIdx=1, nrOfReplicates=5, plotOnlyRandom=False):
         mean = np.zeros(2*len(self.selectedFolders))
@@ -528,7 +519,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         coloryByHtml = ["#5288EA", "#2EF8F9", "#F59C24", "#E550AB"] # ["#00ff00", "#91e3e3", "#F59C24", "#da76b3"] # ["#5288EA", "#2EF8F9", "#E550AB"] last class 0, 1, 2
         idx = 4
         doSpecial = {"mean":mean, "std":std, "coloryByHtml":coloryByHtml, "idx":idx}
-        filenameToSave = baseResultsFolder + "topo pred results detailed auc allTopos, bio, topoAndBio.png"
+        filenameToSave = savePlotFolder + "topo pred results detailed auc allTopos, bio, topoAndBio.png"
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
                                       compareRandAndNorm=False,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder,

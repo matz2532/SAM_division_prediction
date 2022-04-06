@@ -266,6 +266,7 @@ def plotRocCurveWithCv(modelsOfSplit, valXs, valYs, n_classes=3, plotShow=True,
     mean_fpr = np.linspace(0, 1, 1000)
     lineColors = ['aqua', 'darkorange', 'deeppink']
 
+    plt.rcParams.update({'font.size': 16})
     fig, ax = plt.subplots()
     classAucs, classTprs = calcAucAndTprForEachClass(modelsOfSplit, valXs, valYs, n_classes, mean_fpr)
 
@@ -542,6 +543,7 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
         Path(filenameToSave).mkdir(parents=True, exist_ok=True)
         filenameToSave += "roc curve {} {}.png".format(excludingTxt, set)
         if saveFig:
+            plt.tight_layout()
             plt.savefig(filenameToSave)
         plt.close()
     print("allMeans", allMeans)

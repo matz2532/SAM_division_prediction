@@ -52,14 +52,14 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     # Fig. 3 C - topo prediction AUC results of different classes for WT test
     # Sup. Fig. 6 A-C - topo prediction ROC curves results of different classes for WT test
     if figuresToDo == "all" or "Fig. 3 C WT" in figuresToDo:
-        fig3ResultFolder = resultsFolder + "Fig 3/"
+        fig3ResultFolder = resultsFolder + "Fig 3/AUC details WT/"
         Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
         mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/topoPredData/diff/manualCentres/",
                                             saveUnderFolder=fig3ResultFolder)
     # Fig. 3 C - topo prediction AUC results of different classes for ktn test
     # Sup. Fig. 6 E-G - topo prediction ROC curves results of different classes for ktn test
     if figuresToDo == "all" or "Fig. 3 C ktn" in figuresToDo:
-        fig3ResultFolder = resultsFolder + "Fig 3/"
+        fig3ResultFolder = resultsFolder + "Fig 3/AUC details ktn/"
         Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
         mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
                                             modelBaseFolder="Results/topoPredData/diff/manualCentres/",
