@@ -48,7 +48,7 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/",
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]] # full task list
-    tasks = [ [False, False], [False, True]]
+    tasks = [ [True, False], [False, False]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict

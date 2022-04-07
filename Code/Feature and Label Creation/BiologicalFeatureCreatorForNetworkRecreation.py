@@ -30,8 +30,8 @@ class BiologicalFeatureCreatorForNetworkRecreation (object):
 
     def CreateBiologicalFeatures(self):
         allCellFeatures = []
-        plantNames = np.unique(self.oldFeatureTable.iloc[:, self.plantNameIdx])
-        timePoints = np.unique(self.oldFeatureTable.iloc[:, self.timePointIdx])
+        plantNames = pd.unique(self.oldFeatureTable.iloc[:, self.plantNameIdx])
+        timePoints = pd.unique(self.oldFeatureTable.iloc[:, self.timePointIdx])
         for self.plant in plantNames:
             for self.time in timePoints:
                 cellFeatures = self.selectBiologicalFeaturesOfTissue(self.plant, self.time)

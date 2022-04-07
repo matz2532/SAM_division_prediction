@@ -14,7 +14,7 @@ from TopologyPredictonDataCreator import TopologyPredictonDataCreator
 
 class CreateFeatureSets (object):
 
-    def __init__(self, dataFolder, folderToSave, setRange=None,
+    def __init__(self, dataFolder, folderToSave, setRange=[4, 6, 7],
                  useManualCentres=True, estimateFeatures=True, estimateLabels=True,
                  plantNames=["P1", "P2", "P5", "P6", "P8"], useTopoCreator=False,
                  timePointsPerPlant=5,
