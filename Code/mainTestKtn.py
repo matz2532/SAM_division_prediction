@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, "./Code/Predicting/")
 from PredictonManager import PredictonManager
 
-def mainTestKtn(runDivEventPred=True):
+def mainTestKtn(runDivEventPred=True, givenSets=None):
     dataFolder = "Data/ktn/"
     featureAndLabelFolder = "Data/ktn/topoPredData/"
     folderToSaveVal = None
@@ -33,7 +33,9 @@ def mainTestKtn(runDivEventPred=True):
     featureProperty = "combinedTable"
     parName = None
     if runDivEventPred:
-        for set in ["lowCor0.3", "lowCor0.5", "lowCor0.7"]: # ["topoAndBio", "allTopos", "area", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        if givenSets is None:
+            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+        for set in givenSets:
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}divEventData/manualCentres/{}/".format(dataFolder, set)
@@ -73,7 +75,9 @@ def mainTestKtn(runDivEventPred=True):
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
     else:
-        for set in ["topoAndBio", "allTopos", "bio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]:
+        if givenSets is None:
+            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+        for set in givenSets:
             print("testing topo prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}topoPredData/diff/manualCentres/{}/".format(dataFolder, set)
@@ -117,5 +121,5 @@ def mainTestKtn(runDivEventPred=True):
                                        printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    mainTestKtn(runDivEventPred=False)
+    mainTestKtn(runDivEventPred=False, givenSets=["bio", "topoAndBio", "lowCor0.3", "lowCor0.5", "lowCor0.7"])
     # mainTestKtn(runDivEventPred=False)
