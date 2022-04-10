@@ -10,7 +10,7 @@ from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 C WT", "Fig. 3 C ktn"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 A", "Fig. 3 B", "Fig. 3 C WT", "Fig. 3 C ktn"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
