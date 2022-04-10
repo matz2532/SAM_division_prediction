@@ -40,7 +40,7 @@ class PredictonManager (object):
                  useAbsDifferenceInFeatures=False,
                  concatParentFeatures=False, givenFeatureName=None,
                  doHyperParameterisation=False, parametersToAddOrOverwrite=None,
-                 hyperParameters=None, specialParName=None,
+                 hyperParameters=None, useGivenHyperParForTesting=False, specialParName=None,
                  normalisePerTissue=False, normaliseTrainTestData=False,
                  normaliseTrainValTestData=False,
                  maxNormEdgeWeightPerGraph=False,
@@ -97,6 +97,7 @@ class PredictonManager (object):
         self.hyperParameterRange = None
         self.parametersToAddOrOverwrite = parametersToAddOrOverwrite
         self.hyperParameters = hyperParameters
+        self.useGivenHyperParForTesting = useGivenHyperParForTesting
         self.specialParName = specialParName
         self.nestedModelProp = nestedModelProp
         self.modelEnsambleNumber = modelEnsambleNumber
@@ -654,9 +655,16 @@ class PredictonManager (object):
         if Path(testModelFilename).is_file() and not redoModel:
             self.testModelCreator = pickle.load(open(testModelFilename, "rb"))
         else:
+            if self.useGivenHyperParForTesting and not self.hyperParameters is None:
+                testHyperParameters = self.hyperParameters
+                doTestHyperParameterisation = False
+            else:
+                testHyperParameters = None
+                doTestHyperParameterisation = True
             self.testModelCreator = NestedModelCreator(X_train, y_train,
                                                 performanceModus="all performances 1D list",
-                                                doHyperParameterisation=True,
+                                                doHyperParameterisation=doTestHyperParameterisation,
+                                                hyperParameters=testHyperParameters,
                                                 modelType=self.modelType,
                                                 nrOfClasses=2 if self.useOnlyTwo is True else 3)
             pickle.dump(self.testModelCreator, open(testModelFilename, "wb"))
