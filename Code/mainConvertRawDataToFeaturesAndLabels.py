@@ -105,7 +105,7 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
                    "takeCorrelationFromDifferentFolder":"Data/floral meristems/WT/topoPredData/diff/manualCentres/",
                    "keepFromFolder":"Data/floral meristems/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
-    tasks = [[True, True]]
+    tasks = [[True, False]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
