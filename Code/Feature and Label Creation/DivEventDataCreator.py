@@ -98,7 +98,7 @@ class DivEventDataCreator (object):
         for i, nodesList in enumerate(nestedNodesList):
             networkNodes = list(networks[i].GetGraph().nodes())
             isNodeInNetwork = np.isin(nodesList, networkNodes)
-            assert np.all(isNodeInNetwork), "In plant {} time {} the nodes {} of {} are not present in the network".format(plantName, i, np.asarray(nodesList)[np.invert(isNodeInNetwork)], nodesList)
+            assert np.all(isNodeInNetwork), "In plant {} time {} the nodes {} of {} are not present in the network of nodes named: {}".format(plantName, i, np.asarray(nodesList)[np.invert(isNodeInNetwork)], nodesList, np.sort(networkNodes))
 
     def calcCentralCellsFor(self, geometryTableFilenames):
         centralCellsPerTimePoint = []
