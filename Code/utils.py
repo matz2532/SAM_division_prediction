@@ -231,4 +231,4 @@ if __name__ == '__main__':
     # reduce full parent labeling (including all parent labels with their next time points cell) to "normal" parent labeling files
     # by excluding non-dividing parent cells
     convertFullToNormalParentLabelingForFolder(baseDataFolder="Data/floral meristems/WT/", plantNames=["p4 FM1", "p4 FM2"])
-    main()
+    # main()
