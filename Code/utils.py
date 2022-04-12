@@ -170,6 +170,29 @@ Only the first number was added.""".format(i+1, foundString)
             labels = np.unique(labels)
         return labels
 
+def reduceFullParentLabelDf(fullParentLabelingDf):
+    parentLabels = fullParentLabelingDf.iloc[:, 1]
+    uniqueParentLabels, counts = np.unique(parentLabels, return_counts=True)
+    dividingParentLabels = uniqueParentLabels[np.where(counts > 1)[0]]
+    indicesOfDividingParents = np.where(np.isin(parentLabels, dividingParentLabels))[0]
+    reducedParentLabelDf = fullParentLabelingDf.iloc[indicesOfDividingParents, :]
+    return reducedParentLabelDf
+
+def convertFullToNormalParentLabelingForFolder(baseDataFolder="Data/floral meristems/WT/", plantNames=["p4 FM1", "p4 FM2"],
+                                         fullParentLabelingName="fullParentLabeling", replaceToParentLabelingName="parentLabeling"):
+    from pathlib import Path
+    baseDataPath = Path(baseDataFolder)
+    for plantName in plantNames:
+        plantDataPath = baseDataPath.joinpath(plantName)
+        fullParentLabelingFilenames = plantDataPath.glob(fullParentLabelingName + "*")
+        for f in fullParentLabelingFilenames:
+            fullParentLabelingDf = pd.read_csv(f)
+            reducedParentLabelDf = reduceFullParentLabelDf(fullParentLabelingDf)
+            reducedParentLabelFilename = f.with_name(f.name.replace(fullParentLabelingName, replaceToParentLabelingName))
+            if len(reducedParentLabelDf) == 0:
+                print(f"The time step of {reducedParentLabelFilename.name} did not have any dividing cells. Is this correct?")
+            reducedParentLabelDf.to_csv(reducedParentLabelFilename, index=False)
+
 def main():
     plantNames = ["P2", "P5"]
     usePlantNamesAsFolder = True
@@ -205,4 +228,7 @@ def main():
     labels.to_csv(labelFilename[:-4]+"_adjusted.csv", sep=",", index=False)
 
 if __name__ == '__main__':
+    # reduce full parent labeling (including all parent labels with their next time points cell) to "normal" parent labeling files
+    # by excluding non-dividing parent cells
+    convertFullToNormalParentLabelingForFolder(baseDataFolder="Data/floral meristems/WT/", plantNames=["p4 FM1", "p4 FM2"])
     main()
