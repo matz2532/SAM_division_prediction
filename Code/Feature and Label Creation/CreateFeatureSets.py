@@ -14,10 +14,10 @@ from TopologyPredictonDataCreator import TopologyPredictonDataCreator
 
 class CreateFeatureSets (object):
 
-    def __init__(self, dataFolder, folderToSave, setRange=[4, 6, 7],
+    def __init__(self, dataFolder, folderToSave, setRange=None,
                  useManualCentres=True, estimateFeatures=True, estimateLabels=True,
                  plantNames=["P1", "P2", "P5", "P6", "P8"], useTopoCreator=False,
-                 timePointsPerPlant=5,
+                 timePointsPerPlant=5, centerRadius=30,
                  centralCellsDict=None, skipEmptyCentrals=False, set=None,
                  takeCorrelationFromDifferentFolder=None, keepFromFolder=None):
         self.dataFolder = dataFolder
@@ -27,6 +27,7 @@ class CreateFeatureSets (object):
         self.estimateLabels = estimateLabels
         self.useManualCentres = useManualCentres
         self.timePointsPerPlant = timePointsPerPlant
+        self.centerRadius = centerRadius
         self.centralCellsDict = centralCellsDict
         self.skipEmptyCentrals = skipEmptyCentrals
         self.takeCorrelationFromDifferentFolder = takeCorrelationFromDifferentFolder
@@ -169,6 +170,7 @@ class CreateFeatureSets (object):
         else:
             dataCreator = DivEventDataCreator(dataFolder, self.timePointsPerPlant,
                                               plantNames,
+                                              centerRadius=self.centerRadius,
                                               specialGraphProperties=specialGraphProperties,
                                               centralCellsDict=centralCellsDict,
                                               onlyAra=onlyAra)
