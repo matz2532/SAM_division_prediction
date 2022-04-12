@@ -47,8 +47,65 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "useTopoCreator": True,
                    "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/",
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
-    tasks = [[True, False], [True, True], [False, False], [False, True]] # full task list
-    tasks = [ [True, False], [False, False]]
+    tasks = [[True, False], [True, True], [False, False], [False, True]]
+    for usingWT, createDivData in tasks:
+        if usingWT:
+            centralCellsDict = WtCentralCellsDict
+            if createDivData:
+                dataArgs = wtDivDataArgs
+            else:
+                dataArgs = wtTopoDataArgs
+        else:
+            centralCellsDict = ktnCentralCellsDict
+            if createDivData:
+                dataArgs = ktnDivDataArgs
+            else:
+                dataArgs = tktnTopoDataArgs
+        CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict,
+                          **dataArgs)
+
+def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
+    WtCentralCellsDict = {"p4 FM1" : [[21523], [21962, 21944], [22124, 22343, 22329], [22970, 22645, 22961], [24041, 24232]],
+                          "p4 FM2" : [[164], [29886, 29856], [30336], [31576, 31129, 30829], [32691, 32822, 32823 ]]}
+    wtDivDataArgs = {"dataFolder":"Data/floral meristems/WT/",
+                   "folderToSave":"Data/floral meristems/WT/divEventData/",
+                   "plantNames":["p4 FM1", "p4 FM2"],
+                   "centerRadius":20,
+                   "estimateFeatures":True,
+                   "estimateLabels":True,
+                   "useManualCentres":True}
+    wtTopoDataArgs = {"dataFolder":"Data/floral meristems/WT/",
+                   "folderToSave":"Data/floral meristems/WT/topoPredData/diff/",
+                   "plantNames":["p4 FM1", "p4 FM2"],
+                   "centerRadius":20,
+                   "estimateFeatures":True,
+                   "estimateLabels":True,
+                   "useManualCentres":True,
+                   "useTopoCreator":True}
+    ktnCentralCellsDict = {}
+    ktnDivDataArgs = {"dataFolder": "Data/ktn/",
+                   "folderToSave": "Data/ktn/divEventData/",
+                   "plantNames": [],
+                   "centerRadius":20,
+                   "estimateFeatures": True,
+                   "estimateLabels": True,
+                   "useManualCentres": True,
+                   "timePointsPerPlant": 3,
+                   "takeCorrelationFromDifferentFolder":"Data/floral meristems/WT/divEventData/manualCentres/",
+                   "keepFromFolder":"Data/floral meristems/WT/divEventData/manualCentres/"}
+    tktnTopoDataArgs = {"dataFolder":"Data/ktn/",
+                   "folderToSave":"Data/ktn/topoPredData/diff/",
+                   "plantNames":[],
+                   "centerRadius":20,
+                   "estimateFeatures": True,
+                   "estimateLabels": True,
+                   "useManualCentres": True,
+                   "timePointsPerPlant": 3,
+                   "useTopoCreator": True,
+                   "takeCorrelationFromDifferentFolder":"Data/floral meristems/WT/topoPredData/diff/manualCentres/",
+                   "keepFromFolder":"Data/floral meristems/WT/topoPredData/diff/manualCentres/"}
+    tasks = [[True, False], [True, True], [False, False], [False, True]]
+    tasks = [[True, True]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
@@ -66,4 +123,5 @@ def mainConvertRawDataToFeaturesAndLabels():
                           **dataArgs)
 
 if __name__== "__main__":
-    mainConvertRawDataToFeaturesAndLabels()
+    # mainConvertRawDataToFeaturesAndLabels()
+    mainConvertFloralMeristemRawDataToFeaturesAndLabels()
