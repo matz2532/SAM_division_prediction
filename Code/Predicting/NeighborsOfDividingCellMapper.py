@@ -60,7 +60,7 @@ class NeighborsOfDividingCellMapper (object):
             dividedDaughterCells = np.concatenate(list(self.dividingParentDaughterLabeling.values()))
         allDaughterCells = self.daughterConnectivityNetwork.nodes()
         isDividedDaughterNotIn = np.isin(dividedDaughterCells, allDaughterCells, invert=True)
-        assert np.sum(isDividedDaughterNotIn) == 0, "The divided daughter cell/s {} is/are not exisiting in the network. {}".format(dividedDaughterCells[isDividedDaughterNotIn], self.origin)
+        assert np.sum(isDividedDaughterNotIn) == 0, "The divided daughter cells {} do not exisiting in the daughter network. {} Valid cells of the daughter network: {}".format(dividedDaughterCells[isDividedDaughterNotIn], self.origin, np.sort(allDaughterCells))
 
     def calcParentNeighboursToExclude(self, dontIncludePeripheralNeighbours):
         parentNeighboursToExclude = []
