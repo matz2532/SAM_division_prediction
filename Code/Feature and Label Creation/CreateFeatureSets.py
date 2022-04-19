@@ -114,7 +114,8 @@ class CreateFeatureSets (object):
                 filenameToSave = folderToSave+"{}/combinedFeatures_{}_notnormalised.csv".format(featureProperty, featureProperty)
                 BiologicalFeatureCreatorForNetworkRecreation(baseFolder=dataFolder,
                         featureFilenameToSaveTo=filenameToSave,
-                        oldFeatureTable=labelTable).CreateBiologicalFeatures()
+                        oldFeatureTable=labelTable,
+                        centralCellsDict=centralCellsDict).CreateBiologicalFeatures()
                 return None
             estimateLabels = False
             onlyAra = True

@@ -11,7 +11,7 @@ class BiologicalFeatureCreatorForNetworkRecreation (object):
                  geometryTableBaseName="area{}T{}.csv",
                  sharedWallBaseName="cellularConnectivityNetwork{}T{}.csv",
                  skipFooterOfGeometryFile=4,
-                 oldFeatureTable=None):
+                 oldFeatureTable=None, centralCellsDict=None):
         self.baseFolder = baseFolder
         self.networkRecreationFeatureTableFilename = networkRecreationFeatureTableFilename
         self.featureFilenameToSaveTo = featureFilenameToSaveTo
@@ -22,6 +22,7 @@ class BiologicalFeatureCreatorForNetworkRecreation (object):
         self.geometryTableBaseName = geometryTableBaseName
         self.sharedWallBaseName = sharedWallBaseName
         self.skipFooterOfGeometryFile = skipFooterOfGeometryFile
+        self.centralCellsDict = centralCellsDict
         assert self.networkRecreationFeatureTableFilename is None or oldFeatureTable is None, "either networkRecreationFeatureTableFilename or oldFeatureTable need to be given to know which plants and time points to use."
         if not self.networkRecreationFeatureTableFilename is None:
             self.oldFeatureTable = pd.read_csv(self.networkRecreationFeatureTableFilename)
@@ -34,6 +35,10 @@ class BiologicalFeatureCreatorForNetworkRecreation (object):
         timePoints = pd.unique(self.oldFeatureTable.iloc[:, self.timePointIdx])
         for self.plant in plantNames:
             for self.time in timePoints:
+                if not self.centralCellsDict is None:
+                    if self.plant in self.centralCellsDict:
+                        if len(self.centralCellsDict[self.plant][self.time]) == 0:
+                            continue
                 cellFeatures = self.selectBiologicalFeaturesOfTissue(self.plant, self.time)
                 if len(cellFeatures) > 0:
                     allCellFeatures.append(cellFeatures)
