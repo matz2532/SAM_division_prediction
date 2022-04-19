@@ -42,7 +42,7 @@ class NeighborsOfDividingCellMapper (object):
         dividingParentCells = np.asarray(list(self.dividingParentDaughterLabeling.keys()))
         allParentCells = self.parentConnectivityNetwork.nodes()
         isDividingParentNotIn = np.isin(dividingParentCells, allParentCells, invert=True)
-        assert np.sum(isDividingParentNotIn) == 0, "The dividing cell/s {} is/are not exisiting in the network. {}".format(dividingParentCells[isDividingParentNotIn], self.origin)
+        assert np.sum(isDividingParentNotIn) == 0, "The dividing parent cell/s {} is/are not exisiting in the network. {}".format(dividingParentCells[isDividingParentNotIn], self.origin)
 
     def expectAllCellsToHaveCoordinates(self, graph, name):
         allCellsAndData = np.asarray(list(graph.nodes(data=True)))
@@ -51,7 +51,7 @@ class NeighborsOfDividingCellMapper (object):
         for i in range(nrOfCells):
             if not "coordinates" in allCellsAndData[i][1]:
                 doesntContainCoordinates[i] = True
-        assert np.sum(doesntContainCoordinates) == 0, "The {} cell/s {} have no coordinates. There is problem with either the network or the geometry file. {}".format(name, allCellsAndData[doesntContainCoordinates], self.origin)
+        assert np.sum(doesntContainCoordinates) == 0, "The {} cells {} have no coordinates. There is problem with either the network or the geometry file. {}".format(name, allCellsAndData[doesntContainCoordinates], self.origin)
 
     def checkExistenceOfDividedDaughterCellsInNetwork(self):
         if len(list(self.dividingParentDaughterLabeling.values())) == 0:
