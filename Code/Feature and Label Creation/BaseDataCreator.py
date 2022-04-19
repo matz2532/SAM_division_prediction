@@ -55,8 +55,7 @@ class BaseDataCreator (object):
     def setupData(self, centralCellsDict=None):
         self.testForCorrectNumberOfFilenames()
         self.data = {}
-        for plantIdx in range(len(self.plantNames)):
-            plantName = self.plantNames[plantIdx]
+        for plantIdx, plantName in enumerate(self.plantNames):
             plantData = {}
             filenameIdxOfPlant = np.arange(start=plantIdx, stop=self.totalNrOfSamples,
                                            step=len(self.plantNames))
