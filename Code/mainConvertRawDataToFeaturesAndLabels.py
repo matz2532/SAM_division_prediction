@@ -82,30 +82,33 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
                    "estimateLabels":True,
                    "useManualCentres":True,
                    "useTopoCreator":True}
-    ktnCentralCellsDict = {}
-    ktnDivDataArgs = {"dataFolder": "Data/ktn/",
-                   "folderToSave": "Data/ktn/divEventData/",
-                   "plantNames": [],
+    ktnCentralCellsDict = {"p3 FM6 flower 1" : [[13707, 13331], [12893, 12892], [14326, 14335, 14079], [], []],
+                           "p3 FM6 flower 2" : [[43790, 44025], [43596, 43597], [19672, 19286], [], []],
+                           "p3 FM6 flower 3" : [[], [20610], [20654, 20652, 20716], [21902, 22115, 22567], [40529, 39982]]}
+    ktnDivDataArgs = {"dataFolder": "Data/floral meristems/ktn/",
+                   "folderToSave": "Data/floral meristems/ktn/divEventData/",
+                   "plantNames": ["p3 FM6 flower 1", "p3 FM6 flower 2", "p3 FM6 flower 3"],
                    "centerRadius":20,
                    "estimateFeatures": True,
                    "estimateLabels": True,
                    "useManualCentres": True,
-                   "timePointsPerPlant": 3,
+                   "timePointsPerPlant": 5,
                    "takeCorrelationFromDifferentFolder":"Data/floral meristems/WT/divEventData/manualCentres/",
                    "keepFromFolder":"Data/floral meristems/WT/divEventData/manualCentres/"}
-    tktnTopoDataArgs = {"dataFolder":"Data/ktn/",
-                   "folderToSave":"Data/ktn/topoPredData/diff/",
-                   "plantNames":[],
+    tktnTopoDataArgs = {"dataFolder":"Data/floral meristems/ktn/",
+                   "folderToSave":"Data/floral meristems/ktn/topoPredData/diff/",
+                   "plantNames":["p3 FM6 flower 1", "p3 FM6 flower 2", "p3 FM6 flower 3"],
                    "centerRadius":20,
                    "estimateFeatures": True,
                    "estimateLabels": True,
                    "useManualCentres": True,
-                   "timePointsPerPlant": 3,
+                   "timePointsPerPlant": 5,
                    "useTopoCreator": True,
                    "takeCorrelationFromDifferentFolder":"Data/floral meristems/WT/topoPredData/diff/manualCentres/",
                    "keepFromFolder":"Data/floral meristems/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
-    tasks = [[True, False]]
+    tasks = [[False, False], [False, True]]
+    tasks = [[False, True]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
@@ -119,7 +122,7 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
                 dataArgs = ktnDivDataArgs
             else:
                 dataArgs = tktnTopoDataArgs
-        CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict,
+        CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict, setRange=None,
                           **dataArgs)
 
 if __name__== "__main__":
