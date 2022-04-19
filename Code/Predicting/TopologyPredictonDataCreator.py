@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, "./Code/Feature and Label Creation/")
 sys.path.insert(0, "./Code/")
 
+from BaseDataCreator import BaseDataCreator
 from CentralPositionFinder import CentralPositionFinder
 from FeatureVectorCreator import FeatureVectorCreator
 from FilenameCreator import FilenameCreator
@@ -17,7 +18,7 @@ from utils import convertParentLabelingTableToDict
 from pathlib import Path
 from StandardTableFormater import StandardTableFormater
 
-class TopologyPredictonDataCreator (object):
+class TopologyPredictonDataCreator (BaseDataCreator):
 
     def __init__(self, dataFolder=None, timePointsPerPlant=None, plantNames=None,
                 folderToSave=None, sep=",", skipFooterOfGeometryFile=4,
@@ -30,6 +31,7 @@ class TopologyPredictonDataCreator (object):
         self.plantNames = plantNames
         self.sep = sep
         self.specialGraphProperties = specialGraphProperties
+        self.centralCellsDict = centralCellsDict
         self.myStandardTableFormater = StandardTableFormater(self.plantNames)
         self.skipFooterOfGeometryFile = skipFooterOfGeometryFile
         self.useRatio = useRatio
@@ -42,70 +44,33 @@ class TopologyPredictonDataCreator (object):
             self.nrOfPlantNames = len(self.plantNames)
             self.totalNrOfSamples = self.nrOfPlantNames * self.timePointsPerPlant
             self.setFilenames(self.dataFolder, self.timePointsPerPlant, self.plantNames)
+            self.setFullParentLabelingFilenames(self.dataFolder, self.timePointsPerPlant, self.plantNames)
             self.setupData(centralCellsDict)
+            self.addParentLabelingData(centralCellsDict)
 
-    def setFilenames(self, dataFolder, timePointsPerPlant, plantNames,
-                     lengthOfTimeStep=1, usePlantNamesAsFolder=True):
+    def setFullParentLabelingFilenames(self, dataFolder, timePointsPerPlant, plantNames,
+                 lengthOfTimeStep=1, usePlantNamesAsFolder=True):
         myFilenameCreator = FilenameCreator(dataFolder, timePointsPerPlant,
-                    plantNames, usePlantNamesAsFolder=usePlantNamesAsFolder,
-                    addlastTimePoint=True, lengthOfTimeStep=lengthOfTimeStep,
-                    connectivityText="cellularConnectivityNetwork",
-                    parentLabelingText="parentLabeling", geometryText="area",
-                    peripheralLabelText="periphery labels ")
-        self.connectivityNetworkFilenames = np.asarray(myFilenameCreator.GetConnectivityNetworkFilenames())
-        self.areaFilenames = np.asarray(myFilenameCreator.GetAreaFilenames())
-        self.peripheralLabelsFilename = myFilenameCreator.GetPeripheralLabelsFilenames()
-        self.parentLabelingFilenames = myFilenameCreator.GetPartentLabellingFilenames()
-        myFilenameCreator = FilenameCreator(dataFolder, timePointsPerPlant,
-                    plantNames, usePlantNamesAsFolder=usePlantNamesAsFolder,
-                    addlastTimePoint=True, lengthOfTimeStep=lengthOfTimeStep,
-                    parentLabelingText="fullParentLabeling")
+            plantNames, usePlantNamesAsFolder=usePlantNamesAsFolder,
+            addlastTimePoint=True, lengthOfTimeStep=lengthOfTimeStep,
+            parentLabelingText="fullParentLabeling")
         self.fullParentLabelingFilenames = myFilenameCreator.GetPartentLabellingFilenames()
 
-    def setupData(self, centralCellsDict=None):
-        self.testForCorrectNumberOfFilenames()
-        self.data = {}
-        for plantIdx in range(len(self.plantNames)):
-            plantData = {}
+    def addParentLabelingData(self, centralCellsDict=None):
+        for plantIdx, plantName in enumerate(self.plantNames):
+            plantData = self.data[plantName]
             filenameIdxOfPlant = np.arange(start=plantIdx, stop=self.totalNrOfSamples,
                                            step=len(self.plantNames))
-            graphCreators = self.calcCellNetworksOf(filenameIdxOfPlant)
-            plantData["graphCreators"] = graphCreators
-            parentDaugherCellLabeling = self.calcParentDaughterMappingOfDividingCells(filenameIdxOfPlant[:-1])
+            graphCreators = plantData["graphCreators"]
+            plantData["parentDaugherCellLabelingFilenames"] = plantData["parentDaugherCellLabeling"].copy()
+            plantData["fullParentDaugherCellLabelingFilenames"] = np.asarray(self.fullParentLabelingFilenames)[filenameIdxOfPlant]
+            parentDaugherCellLabeling = self.calcParentDaughterMappingOfDividingCells(filenameIdxOfPlant[:-1], graphCreators)
             plantData["parentDaugherCellLabeling"] = parentDaugherCellLabeling
             plantData["fullParentLabeling"] = self.calcParentDaughterMappingOfDividingCells(filenameIdxOfPlant[:-1],
+                                                        graphCreators,
                                                         useFullParentLabeling=True)
-            plantData["geometryFilename"] = self.areaFilenames[filenameIdxOfPlant]
-            plantData["graphFilename"] = self.connectivityNetworkFilenames[filenameIdxOfPlant]
-            plantName = self.plantNames[plantIdx]
-            if not centralCellsDict is None:
-                plantData["centralCells"] = centralCellsDict[plantName]
-                self.checkExistenceOfNodesInNetworks(centralCellsDict[plantName],
-                        graphCreators,
-                        plantName)
-            else:
-                plantData["centralCells"] = self.calcCentralCellsFor(plantData["geometryFilename"])
-            self.data[plantName] = plantData
 
-    def testForCorrectNumberOfFilenames(self):
-        expectedNumberOfFilenames = self.timePointsPerPlant * len(self.plantNames)
-        assert expectedNumberOfFilenames == len(self.connectivityNetworkFilenames), "There are cellular connectivity networkx filenames missing in self.connectivityNetworkFilenames, {} != {}".format(expectedNumberOfFilenames, len(self.connectivityNetworkFilenames))
-        assert expectedNumberOfFilenames == len(self.areaFilenames), "There are area filenames missing in self.connectivityNetworkFilenames, {} != {}".format(expectedNumberOfFilenames, len(self.areaFilenames))
-        assert expectedNumberOfFilenames == len(self.peripheralLabelsFilename), "There are peripheral label filenames missing in self.connectivityNetworkFilenames, {} != {}".format(expectedNumberOfFilenames, len(self.peripheralLabelsFilename))
-        assert expectedNumberOfFilenames == len(self.parentLabelingFilenames), "There are parent labeling filenames missing in self.connectivityNetworkFilenames, {} != {}".format(expectedNumberOfFilenames, len(self.parentLabelingFilenames))
-
-    def calcCellNetworksOf(self, filenameIdxOfPlant):
-        graphCreators = []
-        for filenameIdx in filenameIdxOfPlant:
-            filenameCellNetwork = self.connectivityNetworkFilenames[filenameIdx]
-            graphCreator = GraphCreatorFromAdjacencyList(filenameCellNetwork,
-                                        skipFooter=self.skipFooterOfGeometryFile)
-            geometryFilename = self.areaFilenames[filenameIdx]
-            graphCreator.AddCoordinatesPropertyToGraphFrom(geometryFilename)
-            graphCreators.append(graphCreator)
-        return graphCreators
-
-    def calcParentDaughterMappingOfDividingCells(self, filenameIdxOfPlant, useFullParentLabeling=False):
+    def calcParentDaughterMappingOfDividingCells(self, filenameIdxOfPlant, graphCreators, useFullParentLabeling=False):
         parentDaugherCellLabeling = []
         for filenameIdx in filenameIdxOfPlant:
             parentDaughterDict = {}
@@ -113,26 +78,11 @@ class TopologyPredictonDataCreator (object):
                 filename = self.fullParentLabelingFilenames[filenameIdx]
             else:
                 filename = self.parentLabelingFilenames[filenameIdx]
-            parentLabelingTable = pd.read_csv(filename, sep=self.sep)
-            parentDaughterDict = convertParentLabelingTableToDict(parentLabelingTable)
+            if Path(filename).is_file():
+                parentLabelingTable = pd.read_csv(filename, sep=self.sep)
+                parentDaughterDict = convertParentLabelingTableToDict(parentLabelingTable)
             parentDaugherCellLabeling.append(parentDaughterDict)
         return parentDaugherCellLabeling
-
-    def checkExistenceOfNodesInNetworks(self, nestedNodesList, networks, plantName):
-        for i, nodesList in enumerate(nestedNodesList):
-            networkNodes = list(networks[i].GetGraph().nodes())
-            isNodeInNetwork = np.isin(nodesList, networkNodes)
-            assert np.all(isNodeInNetwork), "In plant {} time {} the nodes {} of {} are not present in the network".format(plantName, i, np.asarray(nodesList)[np.invert(isNodeInNetwork)], nodesList)
-
-    def calcCentralCellsFor(self, geometryTableFilenames):
-        centralCellsPerTimePoint = []
-        for filename in geometryTableFilenames:
-            table = pd.read_csv(filename, sep=self.sep, engine="python",
-                                skipfooter=self.skipFooterOfGeometryFile)
-            centrumFinder = CentralPositionFinder(table)
-            centralCell = centrumFinder.GetCentralCell()
-            centralCellsPerTimePoint.append(centralCell)
-        return centralCellsPerTimePoint
 
     def MakeTrainingData(self, folderToSave=None, estimateLabels=True,
                          estimateFeatures=True, skipEmptyCentrals=False):
@@ -148,19 +98,28 @@ class TopologyPredictonDataCreator (object):
             self.calcFeaturesOfMappedParentCells()
 
     def addMappedCellsToData(self):
-        for plantIdx in range(len(self.plantNames)):
+        for plantIdx, plantName in enumerate(self.plantNames):
             plantName = self.plantNames[plantIdx]
             self.data[plantName]["mappedCells"] = []
             for timeIdx in range(self.timePointsPerPlant-1):
-                parentConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx)
-                daughterConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx+1)
+                mappedCells = []
                 fullParentLabeling = self.GetValuesFrom("fullParentLabeling", plantIdx, timeIdx)
                 parentDaughterLabeling = self.GetValuesFrom("parentDaugherCellLabeling", plantIdx, timeIdx)
-                myMapper = NeighborsOfDividingCellMapper(parentConnectivityNetwork,
-                                daughterConnectivityNetwork,
-                                parentDaughterLabeling, fullParentLabeling,
-                                plant=plantName, timePoint=timeIdx)
-                mappedCells = myMapper.GetMappedCells()
+                centralCellIsGiven = len(self.centralCellsDict[plantName][timeIdx]) > 0
+                if bool(fullParentLabeling) and bool(parentDaughterLabeling) and centralCellIsGiven: # if both dicts are not empty and central cell is given continue
+                    parentConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx)
+                    daughterConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx+1)
+                    myMapper = NeighborsOfDividingCellMapper(parentConnectivityNetwork,
+                                    daughterConnectivityNetwork,
+                                    parentDaughterLabeling, fullParentLabeling,
+                                    plant=plantName, timePoint=timeIdx)
+                    mappedCells = myMapper.GetMappedCells()
+                else:
+                    graphCreators = self.data[plantName]["graphCreators"]
+                    centralCells = self.centralCellsDict[plantName][timeIdx]
+                    if not graphCreators[timeIdx] is None and graphCreators[timeIdx+1] is None and len(centralCells) > 0:
+                        print(f"""WARNING: The parent labeling files should have been present for the time step of {plantName} T{timeIdx}T{timeIdx+1} with the given central cells {centralCells} and therefore was ignored.
+                                          The expected filenames are '{self.data[plantName]["fullParentDaugherCellLabelingFilenames"][timeIdx]}' and '{self.data[plantName]["parentDaugherCellLabelingFilenames"][timeIdx]}'""")
                 self.data[plantName]["mappedCells"].append(mappedCells)
 
     def GetValuesFrom(self, value, plantIdx, timeIdx, isPlantIdxPlantName=False):
@@ -198,6 +157,8 @@ class TopologyPredictonDataCreator (object):
         self.myStandardTableFormater.SetPlantNameByIdx(plantIdx)
         self.myStandardTableFormater.SetTimePoint(timeIdx)
         mappedCells = self.GetValuesFrom("mappedCells", plantIdx, timeIdx)
+        if len(mappedCells) == 0:
+            return []
         self.parentConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx)# do I really need this?
         self.daughterConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx+1)
         self.parentDaugherCellLabeling = self.GetValuesFrom("fullParentLabeling", plantIdx, timeIdx)
