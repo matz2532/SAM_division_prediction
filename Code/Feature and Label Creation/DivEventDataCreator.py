@@ -58,6 +58,7 @@ class DivEventDataCreator (object):
         self.testForCorrectNumberOfFilenames()
         self.data = {}
         for plantIdx in range(len(self.plantNames)):
+            plantName = self.plantNames[plantIdx]
             plantData = {}
             filenameIdxOfPlant = np.arange(start=plantIdx, stop=self.totalNrOfSamples,
                                            step=len(self.plantNames))
@@ -66,10 +67,10 @@ class DivEventDataCreator (object):
             plantData["geometryFilename"] = self.areaFilenames[filenameIdxOfPlant]
             plantData["graphFilename"] = self.connectivityNetworkFilenames[filenameIdxOfPlant]
             plantData["parentDaugherCellLabeling"] = self.parentLabelingFilenames[filenameIdxOfPlant]
-            plantName = self.plantNames[plantIdx]
+            self.data[plantName] = plantData
             if not centralCellsDict is None:
                 plantData["centralCells"] = centralCellsDict[plantName]
-                self.checkExistenceOfNodesInNetworks(centralCellsDict[plantName],
+                self.checkExistenceOfCentralCellsInNetwork(centralCellsDict[plantName],
                         graphCreators,
                         plantName)
             else:
@@ -87,18 +88,24 @@ class DivEventDataCreator (object):
         graphCreators = []
         for filenameIdx in filenameIdxOfPlant:
             filenameCellNetwork = self.connectivityNetworkFilenames[filenameIdx]
-            graphCreator = GraphCreatorFromAdjacencyList(filenameCellNetwork,
-                                        skipFooter=self.skipFooterOfGeometryFile)
-            geometryFilename = self.areaFilenames[filenameIdx]
-            graphCreator.AddCoordinatesPropertyToGraphFrom(geometryFilename)
+            if Path(filenameCellNetwork).is_file():
+                graphCreator = GraphCreatorFromAdjacencyList(filenameCellNetwork,
+                                            skipFooter=self.skipFooterOfGeometryFile)
+                geometryFilename = self.areaFilenames[filenameIdx]
+                graphCreator.AddCoordinatesPropertyToGraphFrom(geometryFilename)
+            else:
+                graphCreator = None
             graphCreators.append(graphCreator)
         return graphCreators
 
-    def checkExistenceOfNodesInNetworks(self, nestedNodesList, networks, plantName):
-        for i, nodesList in enumerate(nestedNodesList):
-            networkNodes = list(networks[i].GetGraph().nodes())
-            isNodeInNetwork = np.isin(nodesList, networkNodes)
-            assert np.all(isNodeInNetwork), "In plant {} time {} the nodes {} of {} are not present in the network of nodes named: {}".format(plantName, i, np.asarray(nodesList)[np.invert(isNodeInNetwork)], nodesList, np.sort(networkNodes))
+    def checkExistenceOfCentralCellsInNetwork(self, nestedCentralNodesList, networks, plantName):
+        for i, nodesList in enumerate(nestedCentralNodesList):
+            if not networks[i] is None:
+                networkNodes = list(networks[i].GetGraph().nodes())
+                isNodeInNetwork = np.isin(nodesList, networkNodes)
+                assert np.all(isNodeInNetwork), "In plant {} time {} the nodes {} of {} are not present in the network from '{}' with nodes named: {}".format(plantName, i, np.asarray(nodesList)[np.invert(isNodeInNetwork)], nodesList, self.data[plantName]["graphFilename"][i], np.sort(networkNodes))
+            else:
+                assert len(nodesList) == 0, f"The f{i}th network of {plantName} does not exist, but it got the central cells {nodesList} given."
 
     def calcCentralCellsFor(self, geometryTableFilenames):
         centralCellsPerTimePoint = []
