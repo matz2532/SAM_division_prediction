@@ -28,6 +28,7 @@ class PredictonManager (object):
                  nSplits=5,
                  runModelTraining=True, runModelTesting=False,
                  useSpecificTestModelFilename=None,
+                 useGivenFeatureColumns=None,
                  normaliseOnTestData=False,
                  usePreviouslyTrainedModels=False,
                  usePreviousTrainedModelsIfPossible=False,
@@ -87,6 +88,7 @@ class PredictonManager (object):
         self.runModelTraining = runModelTraining
         self.runModelTesting = runModelTesting
         self.useSpecificTestModelFilename = useSpecificTestModelFilename
+        self.useGivenFeatureColumns = useGivenFeatureColumns
         self.normaliseOnTestData = normaliseOnTestData
         self.usePreviouslyTrainedModels = usePreviouslyTrainedModels
         self.usePreviousTrainedModelsIfPossible = usePreviousTrainedModelsIfPossible
@@ -417,15 +419,28 @@ class PredictonManager (object):
         return isFeatureFile and isLabelFile
 
     def preProcessFeatruesAndLabels(self):
-        self.removeDuplicateFeatures()
         columnsToIgnore = ["plant", "time point", "dividing parent cell", "parent neighbor"]
-        colIdxToCheck = np.where(np.isin(self.features.columns, columnsToIgnore, invert=True))[0]
-        featuresToCheck = self.features.iloc[:, colIdxToCheck]
-        if np.any(np.nan == featuresToCheck): # do the same with nas
-            columnsContainingZero = np.unique(np.where(np.nan==featuresToCheck)[1])
-            columns = np.asarray(list(featuresToCheck.columns))
-            self.features.drop(columns[columnsContainingZero], axis=1)
-            print("Dropping {} features containing nan".format(columns[columnsContainingZero]))
+        if self.useGivenFeatureColumns is None:
+            self.removeDuplicateFeatures()
+            colIdxToCheck = np.where(np.isin(self.features.columns, columnsToIgnore, invert=True))[0]
+            featuresToCheck = self.features.iloc[:, colIdxToCheck]
+            if np.any(np.nan == featuresToCheck): # do the same with nas
+                columnsContainingZero = np.unique(np.where(np.nan==featuresToCheck)[1])
+                columns = np.asarray(list(featuresToCheck.columns))
+                self.features.drop(columns[columnsContainingZero], axis=1)
+                print("Dropping {} features containing nan".format(columns[columnsContainingZero]))
+        else:
+            columns = list(self.features.columns)
+            for i, featureName in enumerate(columns):
+                if ".1" in featureName:
+                    columns[i] = featureName.replace(".1", " "+self.allFeatureProperties[1])
+                elif ".2" in featureName:
+                    columns[i] = featureName.replace(".2", " "+self.allFeatureProperties[2])
+                elif ".3" in featureName:
+                    columns[i] = featureName.replace(".3", " "+self.allFeatureProperties[3])
+            originalColumns = list(self.features.columns)
+            self.features.rename(columns=dict(zip(originalColumns, columns)), inplace=True)
+            self.removeNotGivenFeatures(self.useGivenFeatureColumns, additionalColumnsToKeep=np.concatenate([columnsToIgnore, ["cell"]]))
         columns = np.asarray(list(self.features.columns))
         self.usedFeatures = columns[np.isin(columns, columnsToIgnore, invert=True)]
         self.usedFeatures = list(self.usedFeatures)
@@ -470,6 +485,19 @@ class PredictonManager (object):
 
     def areColumnsTheSame(self, column1, column2):
         return np.all(column1 == column2)
+
+    def removeNotGivenFeatures(self, useGivenFeatureColumns, additionalColumnsToKeep=[],
+                               printMissingColumnNames=True,
+                               ignoreMissingNames=["dividing parent cell", "parent neighbor", "cell"]):
+        useGivenFeatureColumns = np.concatenate([additionalColumnsToKeep, useGivenFeatureColumns])
+        columnNames = list(self.features.columns)
+        isFeaturePresent = np.isin(useGivenFeatureColumns, columnNames)
+        if printMissingColumnNames:
+            missingColumnNames = useGivenFeatureColumns[np.invert(isFeaturePresent)]
+            if len(missingColumnNames) != np.sum(np.isin(missingColumnNames, ignoreMissingNames)):
+                print(f"The given columns {missingColumnNames} could not be removed as they are not present in the feature table with columns {columnNames} and the columns {ignoreMissingNames} are normaly ignored.")
+        useGivenFeatureColumns = useGivenFeatureColumns[isFeaturePresent]
+        self.features = self.features.loc[:, useGivenFeatureColumns]
 
     def removeDividingCells(self):
         identifier = DividingCellInTableIdentifier(self.features,
