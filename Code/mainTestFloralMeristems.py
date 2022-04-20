@@ -54,7 +54,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}manualCentres/{}/".format(featureAndLabelFolder, set)
-            resultsFolder = "Results/{}manualCentres/{}/".format(dataExtension, set)
+            resultsFolder = "Results/{}manualCentres/{}/".format(featureAndLabelFolder, set)
             previousModelFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(set)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
@@ -96,7 +96,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
             print("testing topo prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}diff/manualCentres/{}/".format(featureAndLabelFolder, set)
-            resultsFolder = "Results/{}diff/manualCentres/{}/".format(dataExtension, set)
+            resultsFolder = "Results/{}diff/manualCentres/{}/".format(featureAndLabelFolder, set)
             previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(set)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
@@ -137,7 +137,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
                                        printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__== "__main__":
-    mainTestFloralMeristems(runDivEventPred=True, useWT=True)
-    mainTestFloralMeristems(runDivEventPred=True, useWT=False)
-    # mainTestFloralMeristems(runDivEventPred=False, useWT=True)
-    # mainTestFloralMeristems(runDivEventPred=False, useWT=False)
+    # mainTestFloralMeristems(runDivEventPred=True, useWT=True)
+    # mainTestFloralMeristems(runDivEventPred=True, useWT=False)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=True)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=False)
