@@ -475,9 +475,9 @@ class PredictonManager (object):
 
     def createExcludeDividingNeighboursDict(self):
         excludeDividingNeighboursDict = {}
-        for plantName in self.plantNames:
+        for plantName, plantFeatures in self.features.groupby("plant"):
             dividingCellsPerTimePoint = {}
-            for timePoint in np.arange(self.timePointsPerPlant-1):
+            for timePoint, _ in plantFeatures.groupby("time point"):
                 parentDaughterLabellingDict = pd.read_csv("{}{}/parentLabeling{}T{}T{}.csv".format(self.dataFolder, plantName, plantName, timePoint, timePoint+1))
                 dividingCellsPerTimePoint[timePoint] = parentDaughterLabellingDict
             excludeDividingNeighboursDict[plantName] = dividingCellsPerTimePoint
