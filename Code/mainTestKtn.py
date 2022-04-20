@@ -1,3 +1,4 @@
+import pandas as pd
 import sys
 
 sys.path.insert(0, "./Code/Predicting/")
@@ -40,7 +41,9 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}divEventData/manualCentres/{}/".format(dataFolder, set)
             resultsFolder = "Results/ktnDivEventData/manualCentres/{}/".format(set)
-            useSpecificTestModelFilename = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/testModel.pkl".format(set)
+            previousModelFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(set)
+            useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
+            useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
@@ -58,6 +61,7 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
                                    runModelTraining=runModelTraining,
                                    runModelTesting = runModelTesting,
                                    useSpecificTestModelFilename=useSpecificTestModelFilename,
+                                   useGivenFeatureColumns=useGivenFeatureColumns,
                                    normaliseOnTestData=True,
                                    centralCellsDict=centralCellsDict,
                                    normalisePerTissue=normalisePerTissue,
@@ -82,14 +86,15 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}topoPredData/diff/manualCentres/{}/".format(dataFolder, set)
             resultsFolder = "Results/ktnTopoPredData/diff/manualCentres/{}/".format(set)
-            useSpecificTestModelFilename = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/testModel.pkl".format(set)
+            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(set)
+            useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
+            useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             if useTemporaryResultsFolder:
                 resultsFolder = "Temporary/{}/".format(set)
             newResultsFolder = resultsFolder
             folderToSaveVal = newResultsFolder
             givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
             print("newResultsFolder: " + newResultsFolder)
-            modelType = {"modelType":"svm", "kernel":"rbf"}
             manager = PredictonManager(plantNames=plantNames,
                                        testPlants=testPlants,
                                        featureProperty=featureProperty,
@@ -105,6 +110,7 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
                                        runModelTraining = runModelTraining,
                                        runModelTesting = runModelTesting,
                                        useSpecificTestModelFilename=useSpecificTestModelFilename,
+                                       useGivenFeatureColumns=useGivenFeatureColumns,
                                        normaliseOnTestData=True,
                                        centralCellsDict=centralCellsDict,
                                        normalisePerTissue=normalisePerTissue,
@@ -121,5 +127,5 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
                                        printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    mainTestKtn(runDivEventPred=False, givenSets=["bio", "topoAndBio", "lowCor0.3", "lowCor0.5", "lowCor0.7"])
-    # mainTestKtn(runDivEventPred=False)
+    mainTestKtn(runDivEventPred=True, givenSets=None)
+    mainTestKtn(runDivEventPred=False, givenSets=None)
