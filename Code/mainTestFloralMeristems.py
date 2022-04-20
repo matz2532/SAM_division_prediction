@@ -137,7 +137,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
                                        printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__== "__main__":
-    mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=["lowCor0.3", "lowCor0.5", "lowCor0.7"])
-    mainTestFloralMeristems(runDivEventPred=True, useWT=False, givenSets=["lowCor0.3", "lowCor0.5", "lowCor0.7"])
-    mainTestFloralMeristems(runDivEventPred=False, useWT=True, givenSets=["lowCor0.3", "lowCor0.5", "lowCor0.7"])
-    mainTestFloralMeristems(runDivEventPred=False, useWT=False, givenSets=["lowCor0.3", "lowCor0.5", "lowCor0.7"])
+    mainTestFloralMeristems(runDivEventPred=True, useWT=True)
+    mainTestFloralMeristems(runDivEventPred=True, useWT=False)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=True)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=False)
