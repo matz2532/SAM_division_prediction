@@ -114,52 +114,7 @@ class BarPlotPlotter (object):
         if statisticsLetters:
             with open(statisticsLettersFilename, "w") as file:
                 file.write(statisticsLetters)
-        if not self.resultsTable is None:
-            yLabel = self.setYLabel(performanceIdx)
-        else:
-            if minY == 0.5:
-                yLabel = "AUC"
-            else:
-                yLabel = "Accuracy [%]"
-        # Build the plot
-        plt.rcParams.update({'font.size': 18})
-        if len(self.selectedFolders) != 3:
-            xFigSize = 6.4 * len(self.selectedFolders) / 3
-        else:
-            xFigSize = 6.4
-        fig, ax = plt.subplots(figsize=(xFigSize, 4.8))
-        ax.bar(x_pos, mean, yerr=std, align='center', ecolor='black',
-               color=colors, capsize=10, edgecolor ="black")
-        if self.plotOnlyRandom:
-            minY = 0
-        if "%" in yLabel:
-            maxY = 100
-            yTicksAndLabels = np.arange(minY, 101, 10)
-        else:
-            maxY = 1
-            yTicksAndLabels = np.arange(minY, 1.1, 0.1)
-            yTicksAndLabels = np.round(yTicksAndLabels, 2)
-        ax.set_yticks(yTicksAndLabels)
-        ax.set_yticklabels(yTicksAndLabels)
-        ax.set_ylim((minY, maxY))
-        ax.set_ylabel(yLabel)
-        ax.set_xticks(x_pos)
-        ax.set_xticklabels("")
-        # ax.set_title('Coefficent of Thermal Expansion (CTE) of Three Metals')
-        ax.yaxis.grid(False)
-
-        #remove  top and right box line
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.get_xaxis().set_ticks([])
-
-        # Save the figure and show
-        plt.tight_layout()
-        if self.filenameToSave:
-            plt.savefig(self.filenameToSave)
-            plt.close()
-        else:
-            plt.show()
+        self.plotFigure(self, x_pos, mean, std, colors, minY)
 
     def setupData(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5, useTesting=True):
         if self.doSpecial:
@@ -227,6 +182,54 @@ class BarPlotPlotter (object):
             std.insert((idx+1)*i+idx, stdTestP)
         mean, std = np.asarray(mean), np.asarray(std)
         return mean, std
+
+    def plotFigure(self, x_pos, mean, std, colors, minY=0):
+        if not self.resultsTable is None:
+            yLabel = self.setYLabel(performanceIdx)
+        else:
+            if minY == 0.5:
+                yLabel = "AUC"
+            else:
+                yLabel = "Accuracy [%]"
+        # Build the plot
+        plt.rcParams.update({'font.size': 18})
+        if len(self.selectedFolders) != 3:
+            xFigSize = 6.4 * len(self.selectedFolders) / 3
+        else:
+            xFigSize = 6.4
+        fig, ax = plt.subplots(figsize=(xFigSize, 4.8))
+        ax.bar(x_pos, mean, yerr=std, align='center', ecolor='black',
+               color=colors, capsize=10, edgecolor ="black")
+        if self.plotOnlyRandom:
+            minY = 0
+        if "%" in yLabel:
+            maxY = 100
+            yTicksAndLabels = np.arange(minY, 101, 10)
+        else:
+            maxY = 1
+            yTicksAndLabels = np.arange(minY, 1.1, 0.1)
+            yTicksAndLabels = np.round(yTicksAndLabels, 2)
+        ax.set_yticks(yTicksAndLabels)
+        ax.set_yticklabels(yTicksAndLabels)
+        ax.set_ylim((minY, maxY))
+        ax.set_ylabel(yLabel)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels("")
+        # ax.set_title('Coefficent of Thermal Expansion (CTE) of Three Metals')
+        ax.yaxis.grid(False)
+
+        #remove  top and right box line
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.get_xaxis().set_ticks([])
+
+        # Save the figure and show
+        plt.tight_layout()
+        if self.filenameToSave:
+            plt.savefig(self.filenameToSave)
+            plt.close()
+        else:
+            plt.show()
 
     def setYLabel(self, performanceIdx):
         performance = list(self.resultsTable[0].columns)[performanceIdx][6:]
@@ -421,7 +424,7 @@ class BarPlotPlotter (object):
 def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=True,
                              baseResultsFolder = "Results/divEventData/manualCentres/",
                              addOtherTestWithBaseFolder=None, balanceData=False,
-                             savePlotFolder=None):
+                             savePlotFolder=None, resultsTestFilename="resultsWithOnlyTesting.csv"):
     performanceToIdxDict = {"F1":0, "Acc":1, "AUC":3}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
@@ -458,7 +461,8 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
                                       performanceIdx=performanceIdx,
                                       minY=minY,
                                       furtherFolder=furtherFolder,
-                                      filenameToSave=filenameToSave)
+                                      filenameToSave=filenameToSave,
+                                      resultsTestFilename=resultsTestFilename)
 
 def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                               plotOnlyRandom=False, doMainFig=True,
@@ -466,7 +470,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                               excludeDivNeighbours=True, addOtherTestWithBaseFolder=None,
                               baseResultsFolder="Results/topoPredData/diff/manualCentres/",
                               selectedDivEventPred=None,
-                              savePlotFolder=None):
+                              savePlotFolder=None, resultsTestFilename="resultsWithOnlyTesting.csv"):
     performanceToIdxDict = {"F1":0, "Acc":4, "AUC":9}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
@@ -500,7 +504,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
     if savePlotFolder is None:
         savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
-        randFilename = "combinedResultsWithTestingOf_1000_randomizedRuns_{}.csv".format(excludingTxt)
+        randFilename = "combinedResultsWithTestingOf_5_randomizedRuns_{}.csv".format(excludingTxt)
         filenameToSave = savePlotFolder + "topo random pred results {}{} {} {}.png".format(excludingTxt, addition, performance, setNames)
     else:
         filenameToSave = savePlotFolder + "topo pred {} results {}{} {} {}.png".format(balanceTxt, excludingTxt, addition, performance, setNames)
@@ -520,10 +524,12 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         idx = 4
         doSpecial = {"mean":mean, "std":std, "coloryByHtml":coloryByHtml, "idx":idx}
         filenameToSave = savePlotFolder + "topo pred results detailed auc allTopos, bio, topoAndBio.png"
+    if doSpecial:
+        resultsTestFilename = None
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
                                       compareRandAndNorm=False,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder,
-                                      resultsTestFilename=None if doSpecial else "resultsWithOnlyTesting.csv",
+                                      resultsTestFilename=resultsTestFilename,
                                       plotOnlyRandom=plotOnlyRandom,
                                       furtherFolder=furtherFolder,
                                       performanceIdx=performanceIdx,
@@ -532,7 +538,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
 
 def main():
     doDivPredPlots = True
-    plotRandomResults = False
+    plotRandomResults = True
     addOtherTestWithBaseFolder = True # set True to include _WithKtnTest
     if plotRandomResults:
         if doDivPredPlots:
