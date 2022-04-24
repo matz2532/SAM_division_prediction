@@ -13,7 +13,7 @@ from statsmodels.stats.multitest import multipletests
 class BarPlotPlotter (object):
 
     # plot bar plots of all bar result figures
-    def __init__(self, baseResultsFolder, selectedFolders,
+    def __init__(self, baseResultsFolder, selectedFeatureSetFolders,
                  addOtherTestWithBaseFolder=None,
                  furtherFolder="svm_k2h_combinedTable_l3f0n1c0bal1ex0/",
                  randFilename="combinedResultsWithTestingOf_1000_randomizedRuns_ex1.csv",
@@ -21,7 +21,7 @@ class BarPlotPlotter (object):
                  plotOnlyRandom=False, filenameToSave="",
                  compareRandAndNorm=True, minY=0, doSpecial=False, nrOfReplicates=6):
         self.baseResultsFolder = baseResultsFolder
-        self.selectedFolders = selectedFolders
+        self.selectedFeatureSetFolders = selectedFeatureSetFolders
         self.addOtherTestWithBaseFolder = addOtherTestWithBaseFolder
         self.furtherFolder = furtherFolder
         self.randFilename = randFilename
@@ -60,7 +60,7 @@ class BarPlotPlotter (object):
 
     def loadTables(self, baseFolder, addFurtherFolder=True, addSpecificNameSuffix=None):
         resultsTables = []
-        for resultsFolder in self.selectedFolders:
+        for resultsFolder in self.selectedFeatureSetFolders:
             currentResultsFolder = baseFolder + resultsFolder + "/"
             resultsFilename = currentResultsFolder
             if addFurtherFolder:
@@ -155,10 +155,10 @@ class BarPlotPlotter (object):
         return x_pos, mean, std, colors
 
     def extractMeanAndStd(self, performanceIdx=1, nrOfReplicates=5, plotOnlyRandom=False):
-        mean = np.zeros(2*len(self.selectedFolders))
-        std = np.zeros(2*len(self.selectedFolders))
+        mean = np.zeros(2*len(self.selectedFeatureSetFolders))
+        std = np.zeros(2*len(self.selectedFeatureSetFolders))
         startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
-        for i in range(len(self.selectedFolders)):
+        for i in range(len(self.selectedFeatureSetFolders)):
             if plotOnlyRandom:
                 table = self.randTable[i]
             else:
@@ -193,8 +193,8 @@ class BarPlotPlotter (object):
                 yLabel = "Accuracy [%]"
         # Build the plot
         plt.rcParams.update({'font.size': 18})
-        if len(self.selectedFolders) != 3:
-            xFigSize = 6.4 * len(self.selectedFolders) / 3
+        if len(self.selectedFeatureSetFolders) != 3:
+            xFigSize = 6.4 * len(self.selectedFeatureSetFolders) / 3
         else:
             xFigSize = 6.4
         fig, ax = plt.subplots(figsize=(xFigSize, 4.8))
@@ -284,9 +284,9 @@ class BarPlotPlotter (object):
                 pValues = 1
             valPValues.append(pValues)
             valTStat.append(TStat)
-            testCases.append(self.selectedFolders[i]+" vs "+ self.selectedFolders[j])
-            group1.append(self.selectedFolders[i])
-            group2.append(self.selectedFolders[j])
+            testCases.append(self.selectedFeatureSetFolders[i]+" vs "+ self.selectedFeatureSetFolders[j])
+            group1.append(self.selectedFeatureSetFolders[i])
+            group2.append(self.selectedFeatureSetFolders[j])
         if correctPValues:
             trainPValues = list(multipletests(trainPValues, method='fdr_bh')[1])
             valPValues = list(multipletests(valPValues, method='fdr_bh')[1])
@@ -310,7 +310,7 @@ class BarPlotPlotter (object):
         else:
             print("more than 6 groups is not yet implemented, {} != 2, 3, 4, 5, 6".format(len(values)))
             sys.exit()
-        groupName = [[g]*len(v) for g, v in zip(self.selectedFolders, values)]
+        groupName = [[g]*len(v) for g, v in zip(self.selectedFeatureSetFolders, values)]
         values = np.concatenate(values)
         groupName = np.concatenate(groupName)
         m_comp = pairwise_tukeyhsd(endog=values, groups=groupName, alpha=0.05)
@@ -322,8 +322,8 @@ class BarPlotPlotter (object):
                     tStatsColumnName="test T-stat", correctPValues=True):
         testPerformancesPerSet = self.selectPerformancesFromTableList(self.testResultTables, performanceIdx, indexName)
         numberOfTissuesPerSet = np.asarray([len(i) for i in testPerformancesPerSet])
-        assert np.all(numberOfTissuesPerSet[0] == numberOfTissuesPerSet), f"The number of selected test tissues should be the same for all sets, number of tissues per set {numberOfTissuesPerSet} of sets {self.selectedFolders}"
-        pValueTable = self.createPValueTable(testPerformancesPerSet, setNames=self.selectedFolders,
+        assert np.all(numberOfTissuesPerSet[0] == numberOfTissuesPerSet), f"The number of selected test tissues should be the same for all sets, number of tissues per set {numberOfTissuesPerSet} of sets {self.selectedFeatureSetFolders}"
+        pValueTable = self.createPValueTable(testPerformancesPerSet, setNames=self.selectedFeatureSetFolders,
                                correctPValues=correctPValues,
                                addGroupColumns=existingPValueTable is None,
                                pValueColumnName=pValueColumnName,
@@ -372,7 +372,7 @@ class BarPlotPlotter (object):
         performancesPerSet2 = self.selectPerformancesFromTableList(performanceTables2, performanceIdx, indexName)
         assert len(performancesPerSet1) == len(performancesPerSet2), f"The number of performance sets need to be equal between {firstScenarioName} and {secondScenarioName}"
         allPValues, allTStats, testCases, group1, group2, usedStatisticalMethod = [], [], [], [], [], []
-        setNames = self.selectedFolders
+        setNames = self.selectedFeatureSetFolders
         nrOfConditions = len(performancesPerSet1)
         normalityAlpha = 0.05
         varianceAlpha = 0.05
