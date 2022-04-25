@@ -1,0 +1,16 @@
+,group1,group2,p-values,T-stat,statistical method
+WT SAM vs ktn1-2 SAM allTopos,WT SAM allTopos,ktn1-2 SAM allTopos,0.020358642533964206,2.832917977397572,independent t-test
+WT SAM vs ktn1-2 SAM bio,WT SAM bio,ktn1-2 SAM bio,0.020358642533964206,2.9320801998964017,independent t-test
+WT SAM vs ktn1-2 SAM topoAndBio,WT SAM topoAndBio,ktn1-2 SAM topoAndBio,0.0020775330313807126,4.979897801754617,independent t-test
+WT SAM vs ktn1-2 SAM lowCor0.3,WT SAM lowCor0.3,ktn1-2 SAM lowCor0.3,0.022037210547635893,2.6637859835830318,independent t-test
+WT SAM vs ktn1-2 SAM topology,WT SAM topology,ktn1-2 SAM topology,0.020358642533964206,2.9188105670989146,independent t-test
+WT SAM vs WT floral meristem allTopos,WT SAM allTopos,WT floral meristem allTopos,0.2221388840900289,1.4709496006532774,independent t-test
+WT SAM vs WT floral meristem bio,WT SAM bio,WT floral meristem bio,0.2221388840900289,-1.4192339245814896,independent t-test
+WT SAM vs WT floral meristem topoAndBio,WT SAM topoAndBio,WT floral meristem topoAndBio,0.38683233358028846,0.8932275630921593,independent t-test
+WT SAM vs WT floral meristem lowCor0.3,WT SAM lowCor0.3,WT floral meristem lowCor0.3,0.2221388840900289,1.808336803898739,independent t-test
+WT SAM vs WT floral meristem topology,WT SAM topology,WT floral meristem topology,0.2221388840900289,2.007859021438332,independent t-test
+WT SAM vs ktn floral meristem allTopos,WT SAM allTopos,ktn floral meristem allTopos,0.16252818582243028,1.990806073032533,independent t-test
+WT SAM vs ktn floral meristem bio,WT SAM bio,ktn floral meristem bio,0.18173107814714534,-1.5359006876903127,independent t-test
+WT SAM vs ktn floral meristem topoAndBio,WT SAM topoAndBio,ktn floral meristem topoAndBio,0.40947377644905003,0.848541923979095,independent t-test
+WT SAM vs ktn floral meristem lowCor0.3,WT SAM lowCor0.3,ktn floral meristem lowCor0.3,0.16252818582243028,1.7672612503197058,independent t-test
+WT SAM vs ktn floral meristem topology,WT SAM topology,ktn floral meristem topology,0.16252818582243028,1.934925950149129,independent t-test

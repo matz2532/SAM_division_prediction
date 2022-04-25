@@ -2,6 +2,7 @@ import sys
 
 sys.path.insert(0, "./Code/Analysis Tools/")
 from BarPlotPlotter import mainDivPredRandomization, mainTopoPredRandomization
+from BarPlotPlotterExtended import mainDivPredTestComparisons, mainTopoPredTestComparisons
 from CorrelationHeatMapDisplayer import mainSaveCorrelation
 from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
 from FeatureDensityPlotting import mainSaveDensityPlotsOfFeaturesFromDiffScenarios
@@ -10,7 +11,7 @@ from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 A", "Fig. 3 B", "Fig. 3 C WT", "Fig. 3 C ktn"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 2 B alternative", "Fig. 3 B alternative"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -30,6 +31,17 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                  baseResultsFolder="Results/divEventData/manualCentres/",
                                  addOtherTestWithBaseFolder="Results/ktnDivEventData/manualCentres/",
                                  savePlotFolder=fig2ResultFolder)
+    # Fig. 2 B alternative - div prediction acc. results to further add text in power point
+    if figuresToDo == "all" or "Fig. 2 B alternative" in figuresToDo:
+        fontSize = 24
+        fig2ResultFolder = resultsFolder + "Fig 2 alternative/"
+        Path(fig2ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainDivPredRandomization(performance="Acc", doMainFig=True,
+                                 baseResultsFolder="Results/divEventData/manualCentres/",
+                                 resultsTestFilename=None,
+                                 savePlotFolder=fig2ResultFolder,
+                                 fontSize=fontSize)
+        mainDivPredTestComparisons(savePlotFolder=fig2ResultFolder, fontSize=fontSize)
     # Fig. 3 A - .csv-file of correct and wrong topo predictions on example cell
     if figuresToDo == "all" or "Fig. 3 A" in figuresToDo:
         fig3AResultFolder = resultsFolder + "Fig 3/single cell vis/"
@@ -49,6 +61,18 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                  baseResultsFolder="Results/topoPredData/diff/manualCentres/",
                                  addOtherTestWithBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
                                  savePlotFolder=fig3ResultFolder)
+    # Fig. 3 B - topo prediction acc. results to further add text in power point
+    if figuresToDo == "all" or "Fig. 3 B alternative" in figuresToDo:
+        fontSize = 24
+        fig3ResultFolder = resultsFolder + "Fig 3 alternative/"
+        Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainTopoPredRandomization(performance="Acc", doMainFig=True,
+                                 excludeDivNeighbours=True,
+                                 baseResultsFolder="Results/topoPredData/diff/manualCentres/",
+                                 resultsTestFilename=None,
+                                 savePlotFolder=fig3ResultFolder,
+                                 fontSize=fontSize)
+        mainTopoPredTestComparisons(savePlotFolder=fig3ResultFolder, fontSize=fontSize)
     # Fig. 3 C - topo prediction AUC results of different classes for WT test
     # Sup. Fig. 6 A-C - topo prediction ROC curves results of different classes for WT test
     if figuresToDo == "all" or "Fig. 3 C WT" in figuresToDo:
