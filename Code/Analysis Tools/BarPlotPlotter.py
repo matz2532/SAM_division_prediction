@@ -18,7 +18,7 @@ class BarPlotPlotter (object):
                  furtherFolder="svm_k2h_combinedTable_l3f0n1c0bal1ex0/",
                  randFilename="combinedResultsWithTestingOf_1000_randomizedRuns_ex1.csv",
                  resultFilename="results.csv", resultsTestFilename="resultsWithOnlyTesting.csv", performanceIdx=1,
-                 plotOnlyRandom=False, filenameToSave="",
+                 plotOnlyRandom=False, filenameToSave="", fontSize=18,
                  compareRandAndNorm=True, minY=0, doSpecial=False, nrOfReplicates=6):
         self.baseResultsFolder = baseResultsFolder
         self.selectedFeatureSetFolders = selectedFeatureSetFolders
@@ -33,6 +33,7 @@ class BarPlotPlotter (object):
         self.minY = minY
         self.doSpecial = doSpecial
         self.filenameToSave = filenameToSave
+        self.fontSize = fontSize
         self.nrOfReplicates = nrOfReplicates
         self.loadFiles()
         self.createFigures(self.performanceIdx, self.compareRandAndNorm,
@@ -74,7 +75,7 @@ class BarPlotPlotter (object):
         return resultsTables
 
     def createFigures(self, performanceIdx=1, compareRandAndNorm=True, minY=0,
-                      printPValues=True):
+                      printPValues=False):
         x_pos, mean, std, colors = self.setupData(performanceIdx, compareRandAndNorm,
                                                   nrOfReplicates=self.nrOfReplicates,
                                                   useTesting=not self.testResultTables is None)
@@ -114,7 +115,7 @@ class BarPlotPlotter (object):
         if statisticsLetters:
             with open(statisticsLettersFilename, "w") as file:
                 file.write(statisticsLetters)
-        self.plotFigure(self, x_pos, mean, std, colors, minY)
+        self.plotFigure(x_pos, mean, std, colors, performanceIdx, minY, fontSize=self.fontSize)
 
     def setupData(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5, useTesting=True):
         if self.doSpecial:
@@ -183,7 +184,7 @@ class BarPlotPlotter (object):
         mean, std = np.asarray(mean), np.asarray(std)
         return mean, std
 
-    def plotFigure(self, x_pos, mean, std, colors, minY=0):
+    def plotFigure(self, x_pos, mean, std, colors, performanceIdx, minY=0, fontSize=18):
         if not self.resultsTable is None:
             yLabel = self.setYLabel(performanceIdx)
         else:
@@ -192,7 +193,7 @@ class BarPlotPlotter (object):
             else:
                 yLabel = "Accuracy [%]"
         # Build the plot
-        plt.rcParams.update({'font.size': 18})
+        plt.rcParams.update({'font.size': fontSize})
         if len(self.selectedFeatureSetFolders) != 3:
             xFigSize = 6.4 * len(self.selectedFeatureSetFolders) / 3
         else:
@@ -365,7 +366,7 @@ class BarPlotPlotter (object):
         return pValueTable
 
     def comparePerformancesBetween(self, performanceTables1, performanceTables2,
-                    performanceIdx, indexName="test tissue", correctPValues=True, printPValues=True,
+                    performanceIdx, indexName="test tissue", correctPValues=True, printPValues=False,
                     firstScenarioName="first Scenario", secondScenarioName="second scenario",
                     pValueColumnName="p-values", tStatsColumnName="T-stat", addGroupColumns=True):
         performancesPerSet1 = self.selectPerformancesFromTableList(performanceTables1, performanceIdx, indexName)
@@ -424,7 +425,8 @@ class BarPlotPlotter (object):
 def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=True,
                              baseResultsFolder = "Results/divEventData/manualCentres/",
                              addOtherTestWithBaseFolder=None, balanceData=False,
-                             savePlotFolder=None, resultsTestFilename="resultsWithOnlyTesting.csv"):
+                             savePlotFolder=None, resultsTestFilename="resultsWithOnlyTesting.csv",
+                             fontSize=18):
     performanceToIdxDict = {"F1":0, "Acc":1, "AUC":3}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
@@ -462,6 +464,7 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
                                       minY=minY,
                                       furtherFolder=furtherFolder,
                                       filenameToSave=filenameToSave,
+                                      fontSize=fontSize,
                                       resultsTestFilename=resultsTestFilename)
 
 def mainTopoPredRandomization(performance="Acc", doSpecial=False,
@@ -470,7 +473,8 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                               excludeDivNeighbours=True, addOtherTestWithBaseFolder=None,
                               baseResultsFolder="Results/topoPredData/diff/manualCentres/",
                               selectedDivEventPred=None,
-                              savePlotFolder=None, resultsTestFilename="resultsWithOnlyTesting.csv"):
+                              savePlotFolder=None, resultsTestFilename="resultsWithOnlyTesting.csv",
+                              fontSize=18):
     performanceToIdxDict = {"F1":0, "Acc":4, "AUC":9}
     performanceIdx = performanceToIdxDict[performance]
     if performance != "AUC":
@@ -533,6 +537,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
                                       plotOnlyRandom=plotOnlyRandom,
                                       furtherFolder=furtherFolder,
                                       performanceIdx=performanceIdx,
+                                      fontSize=fontSize,
                                       minY=minY, doSpecial=doSpecial,
                                       filenameToSave=filenameToSave)
 
