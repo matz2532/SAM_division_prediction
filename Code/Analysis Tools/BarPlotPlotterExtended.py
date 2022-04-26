@@ -6,6 +6,7 @@ import sys
 from BarPlotPlotter import BarPlotPlotter
 from pathlib import Path
 from PValueToLetterConverter import PValueToLetterConverter
+from statsmodels.stats.multitest import multipletests
 
 class BarPlotPlotterExtended (BarPlotPlotter):
 
@@ -82,29 +83,53 @@ class BarPlotPlotterExtended (BarPlotPlotter):
         return meanTestP[0], stdTestP[0]
 
     def doStatistics(self, performanceIdx, baseScenarioIdx):
-        baseScenarioName = self.scenarioIdxToNameDict[baseScenarioIdx]
         setsPerofmancesOfBaseScenario = self.testResultTables[baseScenarioIdx]
         differencesBetweenTestScenariosDf = []
         statisticsLetters = ""
-        for versusScenarioIdx in range(len(self.testResultTables)):
-            if versusScenarioIdx != baseScenarioIdx:
-                versusScenarioName = self.scenarioIdxToNameDict[versusScenarioIdx]
-                setsPerofmancesOfVersusScenario = self.testResultTables[versusScenarioIdx]
-                pValueColumnName = f"{baseScenarioName} vs {versusScenarioName} p-values"
-                tStatsColumnName = f"{baseScenarioName} vs {versusScenarioName} T-stat"
-                statisticsOfComparison = self.comparePerformancesBetween(setsPerofmancesOfBaseScenario,
-                            setsPerofmancesOfVersusScenario, performanceIdx,
-                            firstScenarioName=baseScenarioName, secondScenarioName=versusScenarioName,
-                            correctPValues=True)
-                differencesBetweenTestScenariosDf.append(statisticsOfComparison)
-                currentStatisticsLetters = PValueToLetterConverter(statisticsOfComparison.rename(columns={"p-values":"p-value"})).GetGroupNameLetters()
-                statisticsLetters += f"{baseScenarioIdx} vs {versusScenarioName}: {currentStatisticsLetters}\n"
+        for featureSetIdx, featureSetName in enumerate(self.selectedFeatureSetFolders):
+            scenarioResultTables = self.selectTestScenarioResultsOfFeature(featureSetIdx)
+            statisticsOfComparison = self.testAllPerformancesVsIdx(scenarioResultTables, baseScenarioIdx, performanceIdx, featureSetName)
+            differencesBetweenTestScenariosDf.append(statisticsOfComparison)
+            currentStatisticsLetters = PValueToLetterConverter(statisticsOfComparison.rename(columns={"p-values":"p-value"})).GetGroupNameLetters()
+            statisticsLetters += f"{featureSetName}: {currentStatisticsLetters}\n"
         betweenTestScenariosTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_betweenTestScenariosPValues.csv")
         differencesBetweenTestScenariosDf = pd.concat(differencesBetweenTestScenariosDf)
         differencesBetweenTestScenariosDf.to_csv(betweenTestScenariosTableName)
         statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
         with open(statisticsLettersFilename, "w") as file:
             file.write(statisticsLetters)
+
+    def selectTestScenarioResultsOfFeature(self, featureSetIdx):
+        scenarioResultTables = []
+        for allFeaturesResultsOfScenario in self.testResultTables:
+            scenarioResultTables.append(allFeaturesResultsOfScenario[featureSetIdx])
+        return scenarioResultTables
+
+    def testAllPerformancesVsIdx(self, scenarioResultTables, baseScenarioIdx, performanceIdx,
+                                 featureSetName="", correctPValues=True, indexName="test tissue",
+                                 pValueColumnName="p-values", tStatsColumnName="T-stat"):
+        allPValues, allTStats, testCases, group1, group2, usedStatisticalMethod = [], [], [], [], [], []
+        baseScenarioName = self.scenarioIdxToNameDict[baseScenarioIdx]
+        baseScenarioPerformances = self.selectPerformancesFromTableList([scenarioResultTables[baseScenarioIdx]], performanceIdx, indexName)[0]
+        for versusScenarioIdx in range(len(self.testResultTables)):
+            if versusScenarioIdx != baseScenarioIdx:
+                versusScenarioName = self.scenarioIdxToNameDict[versusScenarioIdx]
+                versusScenarioPerformances = self.selectPerformancesFromTableList([scenarioResultTables[versusScenarioIdx]], performanceIdx, indexName)[0]
+                pValue, stat, statsMethod = self.pairwiseComparisonTest(baseScenarioPerformances, versusScenarioPerformances)
+                allPValues.append(pValue)
+                allTStats.append(stat)
+                testCases.append(f"{baseScenarioName} vs {versusScenarioName} {featureSetName}")
+                group1.append(f"{baseScenarioName} {featureSetName}")
+                group2.append(f"{versusScenarioName} {featureSetName}")
+                usedStatisticalMethod.append(statsMethod)
+        if correctPValues:
+            allPValues = list(multipletests(allPValues, method='fdr_bh')[1])
+        pValueTable = {"group1" : group1, "group2" : group2,
+                       pValueColumnName : allPValues,
+                       tStatsColumnName : allTStats,
+                       "statistical method" : usedStatisticalMethod}
+        pValueTable = pd.DataFrame(pValueTable, index=testCases)
+        return pValueTable
 
 def mainDivPredTestComparisons(performance="Acc", doMainFig=True,
                              scenarioResultsFolders = ["Results/divEventData/manualCentres/",
