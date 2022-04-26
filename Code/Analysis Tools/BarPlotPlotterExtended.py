@@ -213,8 +213,8 @@ def mainTopoPredTestComparisons(performance="Acc", doMainFig=True,
                                       filenameToSave=filenameToSave)
 
 def main():
-    mainDivPredTestComparisons(savePlotFolder="Results/MainFigures/Fig 2 alternative/")
-    mainTopoPredTestComparisons(savePlotFolder="Results/MainFigures/Fig 3 alternative/")
+    mainDivPredTestComparisons(savePlotFolder="Results/MainFigures/Fig 2 alternative/", fontSize=24)
+    mainTopoPredTestComparisons(savePlotFolder="Results/MainFigures/Fig 3 alternative/", fontSize=24)
 
 if __name__ == '__main__':
     main()
