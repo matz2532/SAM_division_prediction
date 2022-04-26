@@ -375,31 +375,8 @@ class BarPlotPlotter (object):
         allPValues, allTStats, testCases, group1, group2, usedStatisticalMethod = [], [], [], [], [], []
         setNames = self.selectedFeatureSetFolders
         nrOfConditions = len(performancesPerSet1)
-        normalityAlpha = 0.05
-        varianceAlpha = 0.05
         for i in range(nrOfConditions):
-            x, y = performancesPerSet1[i], performancesPerSet2[i]
-            _, spairoPValueOfX = st.shapiro(x)
-            _, spairoPValueOfY = st.shapiro(y)
-            isNormalDistributed = spairoPValueOfX > normalityAlpha and spairoPValueOfY > normalityAlpha
-            if isNormalDistributed:
-                _, sameVariancePValue = st.levene(x, y)
-            else:
-                _, sameVariancePValue = st.bartlett(x, y)
-            isVarianceEqual = sameVariancePValue > varianceAlpha
-            # if isNormalDistributed:
-            stat, pValue = st.ttest_ind(performancesPerSet1[i], performancesPerSet2[i], equal_var=isVarianceEqual)
-            if isVarianceEqual:
-                statsMethod = "independent t-test"
-            else:
-                statsMethod = "Welch's-test"
-            # else:
-            if not isNormalDistributed:
-                print(f"The stats method of non normal distibutions is not yet implemented.\nWhen comparing in set {setNames[i]}")
-                print(spairoPValueOfX > normalityAlpha, spairoPValueOfY > normalityAlpha)
-                # sys.exit()
-            if np.isnan(pValue):
-                pValue = 1
+            pValue, stat, statsMethod = pairwiseComparisonTest(performancesPerSet1[i], performancesPerSet2[i])
             allPValues.append(pValue)
             allTStats.append(stat)
             testCases.append(f"{firstScenarioName} vs {secondScenarioName} {setNames[i]}")
@@ -421,6 +398,24 @@ class BarPlotPlotter (object):
         if printPValues:
             print(pValueTable.to_string())
         return pValueTable
+
+    def pairwiseComparisonTest(self, x, y, normalityAlpha=0.05, varianceAlpha=0.05):
+        _, spairoPValueOfX = st.shapiro(x)
+        _, spairoPValueOfY = st.shapiro(y)
+        isNormalDistributed = spairoPValueOfX > normalityAlpha and spairoPValueOfY > normalityAlpha
+        if isNormalDistributed:
+            _, sameVariancePValue = st.levene(x, y)
+        else:
+            _, sameVariancePValue = st.bartlett(x, y)
+        isVarianceEqual = sameVariancePValue > varianceAlpha
+        stat, pValue = st.ttest_ind(x, y, equal_var=isVarianceEqual)
+        if isVarianceEqual:
+            statsMethod = "independent t-test"
+        else:
+            statsMethod = "Welch's-test"
+        if np.isnan(pValue):
+            pValue = 1
+        return pValue, stat, statsMethod
 
 def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=True,
                              baseResultsFolder = "Results/divEventData/manualCentres/",
