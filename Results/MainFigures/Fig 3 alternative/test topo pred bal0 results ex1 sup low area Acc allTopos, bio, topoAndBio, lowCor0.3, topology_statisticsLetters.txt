@@ -1,5 +1,0 @@
-allTopos: {'WT SAM allTopos': 'ab', 'WT floral meristem allTopos': 'a', 'ktn floral meristem allTopos': 'b', 'ktn1-2 SAM allTopos': 'c'}
-bio: {'WT SAM bio': 'ab', 'WT floral meristem bio': 'a', 'ktn floral meristem bio': 'b', 'ktn1-2 SAM bio': 'c'}
-topoAndBio: {'WT SAM topoAndBio': 'ab', 'WT floral meristem topoAndBio': 'a', 'ktn floral meristem topoAndBio': 'b', 'ktn1-2 SAM topoAndBio': 'c'}
-lowCor0.3: {'WT SAM lowCor0.3': 'abc', 'WT floral meristem lowCor0.3': 'c', 'ktn floral meristem lowCor0.3': 'b', 'ktn1-2 SAM lowCor0.3': 'a'}
-topology: {'WT SAM topology': 'ab', 'WT floral meristem topology': 'b', 'ktn floral meristem topology': 'a', 'ktn1-2 SAM topology': 'c'}

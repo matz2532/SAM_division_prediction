@@ -85,19 +85,13 @@ class BarPlotPlotterExtended (BarPlotPlotter):
     def doStatistics(self, performanceIdx, baseScenarioIdx):
         setsPerofmancesOfBaseScenario = self.testResultTables[baseScenarioIdx]
         differencesBetweenTestScenariosDf = []
-        statisticsLetters = ""
         for featureSetIdx, featureSetName in enumerate(self.selectedFeatureSetFolders):
             scenarioResultTables = self.selectTestScenarioResultsOfFeature(featureSetIdx)
             statisticsOfComparison = self.testAllPerformancesVsIdx(scenarioResultTables, baseScenarioIdx, performanceIdx, featureSetName)
             differencesBetweenTestScenariosDf.append(statisticsOfComparison)
-            currentStatisticsLetters = PValueToLetterConverter(statisticsOfComparison.rename(columns={"p-values":"p-value"})).GetGroupNameLetters()
-            statisticsLetters += f"{featureSetName}: {currentStatisticsLetters}\n"
         betweenTestScenariosTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_betweenTestScenariosPValues.csv")
         differencesBetweenTestScenariosDf = pd.concat(differencesBetweenTestScenariosDf)
         differencesBetweenTestScenariosDf.to_csv(betweenTestScenariosTableName)
-        statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
-        with open(statisticsLettersFilename, "w") as file:
-            file.write(statisticsLetters)
 
     def selectTestScenarioResultsOfFeature(self, featureSetIdx):
         scenarioResultTables = []
