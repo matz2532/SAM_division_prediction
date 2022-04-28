@@ -101,13 +101,12 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
     # Fig. 5 A - div prediction acc. randomisation results to further add text in power point
     if figuresToDo == "all" or "Fig. 5 A" in figuresToDo:
         fontSize = 24
-        fig5AResultFolder = resultsFolder + "Fig 5 A/div pred random/"
+        fig5AResultFolder = resultsFolder + "Fig 5/div pred random/"
         Path(fig5AResultFolder).mkdir(parents=True, exist_ok=True)
         mainDivPredRandomization(performance="Acc", plotOnlyRandom=True,
                                  baseResultsFolder="Results/divEventData/manualCentres/",
                                  savePlotFolder=fig5AResultFolder,
                                  fontSize=fontSize)
-
     # Fig. 5 B - topo prediction acc. randomisation results to further add text in power point
     # Fig. 8 - comparison of obs. vs  pred. of all centrality applying div. and topo. prediction models
     # Fig. 9 - density distributions of features - A topological and B biological features
