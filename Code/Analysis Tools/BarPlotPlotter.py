@@ -446,14 +446,18 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
     if savePlotFolder is None:
         savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
+        divEventPred = ["allTopos", "area", "topoAndBio"]
+        randFilename = "combinedResultsWithTestingOf_100_randomizedRuns_ex0.csv"
         filenameToSave = savePlotFolder + "div pred random results{} {} {}.png".format(addition, performance, setNames)
     else:
+        randFilename = None
         filenameToSave = savePlotFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
                                       compareRandAndNorm=False,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder,
+                                      randFilename=randFilename,
                                       plotOnlyRandom=plotOnlyRandom,
                                       performanceIdx=performanceIdx,
                                       minY=minY,
@@ -478,7 +482,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         minY = 0.5
     if selectedDivEventPred is None:
         if doMainFig:
-            divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.3", "topology"]# ["allTopos", "bio", "topoAndBio"]
+            divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.3", "topology"]
         else:
             divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "bio"]
     else:
@@ -503,9 +507,11 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
     if savePlotFolder is None:
         savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
-        randFilename = "combinedResultsWithTestingOf_5_randomizedRuns_{}.csv".format(excludingTxt)
+        divEventPred = ["allTopos", "bio", "topoAndBio"]
+        randFilename = "combinedResultsWithTestingOf_100_randomizedRuns_{}.csv".format(excludingTxt)
         filenameToSave = savePlotFolder + "topo random pred results {}{} {} {}.png".format(excludingTxt, addition, performance, setNames)
     else:
+        randFilename = None
         filenameToSave = savePlotFolder + "topo pred {} results {}{} {} {}.png".format(balanceTxt, excludingTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
@@ -528,6 +534,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
     myBarPlotPlotter = BarPlotPlotter(baseResultsFolder, divEventPred,
                                       compareRandAndNorm=False,
                                       addOtherTestWithBaseFolder=addOtherTestWithBaseFolder,
+                                      randFilename=randFilename,
                                       resultsTestFilename=resultsTestFilename,
                                       plotOnlyRandom=plotOnlyRandom,
                                       furtherFolder=furtherFolder,
