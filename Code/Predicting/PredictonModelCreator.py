@@ -174,7 +174,7 @@ class PredictonModelCreator (object):
         uniquePlantNames = plantNameOfTrainData[uniqueIdx]
         numberOfPlants = len(uniquePlantNames)
         for currentValidationPlant in uniquePlantNames:
-            if self.printCurrentSplit or True:
+            if self.printCurrentSplit:
                 print("val plant {} with split {}/{}".format(currentValidationPlant, self.currentSplit, numberOfPlants))
             isValidationPlant = np.isin(plantNameOfTrainData, currentValidationPlant)
             validationIdx, trainIdx = np.where(isValidationPlant)[0], np.where(np.invert(isValidationPlant))[0]
