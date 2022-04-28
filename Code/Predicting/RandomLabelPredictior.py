@@ -1,7 +1,11 @@
 import numpy as np
 import pandas as pd
+import pickle
 import sys
+import warnings
+warnings.simplefilter("ignore", UserWarning)
 
+from pathlib import Path
 from PredictonManager import PredictonManager
 
 class RandomLabelPredictior (object):
@@ -21,8 +25,8 @@ class RandomLabelPredictior (object):
         if recreateRadomLabels:
             self.createRandomLabels(nrOfRandomRuns)
         if runModel:
-            self.runModels(nrOfRandomRuns, self.resultsFolder)
-        self.combineRandomResults(nrOfRandomRuns, self.resultsFolder)
+            self.runModels(nrOfRandomRuns, self.basicResultsFolder)
+        self.combineRandomResults(nrOfRandomRuns, self.basicResultsFolder)
 
     def setBaseParameters(self, featureSet):
         if self.divEventPred is True:
@@ -31,12 +35,22 @@ class RandomLabelPredictior (object):
         else:
             insert = "topoPredData/diff/"
             self.useOnlyTwo = False
-        assert featureSet in ["area", "bio", "topology", "topoAndBio", "allTopos"], "featureSet needs to be area, bio, topology, allTopos, or topoAndBio, featureSet is {}".format(featureSet)
+        assert featureSet in ["area", "bio", "topology", "topoAndBio", "allTopos", "lowCor0.3", "lowCor0.5", "lowCor0.7"], "featureSet needs to be area, bio, topology, allTopos, or topoAndBio, featureSet is {}".format(featureSet)
         self.setFeatureAndLabelFolder = "Data/WT/{}manualCentres/{}/".format(insert, featureSet)
-        self.resultsFolder = "Results/{}manualCentres/{}/".format(insert, featureSet)
+        self.basicResultsFolder = "Results/{}manualCentres/{}/".format(insert, featureSet)
         self.givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(featureSet)
-        self.basicLabelName = "combinedLabels{}.csv"
+        self.basicLabelName = "randomisedCombinedLabels{}.csv"
         self.labelName = "combinedLabels.csv"
+        if self.excludeDividingNeighbours:
+            excludedValue = 1
+            modelFolderName = "svm_k2h_combinedTable_l3f0n1c0bal0ex1/"
+        else:
+            excludedValue = 0
+            modelFolderName = "svm_k2h_combinedTable_l3f0n1c0bal0ex0/"
+        externalModelFilename = f"{self.basicResultsFolder}{modelFolderName}testModel.pkl"
+        with open(externalModelFilename, "rb") as fh:
+            externalModel = pickle.load(fh)
+        self.hyperParameters = externalModel.GetHyperParameters()
 
     def createRandomLabels(self, nrOfRandomRuns):
         print("Shuffeling labels")
@@ -58,40 +72,40 @@ class RandomLabelPredictior (object):
             self.runManager(resultsFolder, labelNameCurrentRand)
 
     def runManager(self, resultsFolder, labelNameCurrentRand):
-        plantNames = ["P1", "P2", "P5", "P6", "P8"]
-        testPlants = ["P2"]
-        allFeatureProperties = ["topology", "topologyArea", "topologyWall", "topologyDist", "combinedTable"]#, "combinedTable"]
-        featureProperty = allFeatureProperties[-1]
         dataFolder = "Data/WT/"
-        featureAndLabelFolder = "Data/WT/Tissue mapping/"
-        runModelTraining = True
-        centralCellsDict =  {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]], # in T2 5380 was not found check tissue in MGX
+        plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
+        testPlants = ["P2", "P9"]
+        modelType =  {"modelType":"svm","kernel":"rbf"}
+        usePreviousTrainedModelsIfPossible = False
+        onlyTestModelWithoutTrainingData = False
+        useManualCentres = True
+        # print options:
+        printBalancedLabelCount = True
+        nSplits = "per plant"
+        centralCellsDict = {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
                             "P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
                             "P5":[[38], [585, 968, 982], [927, 1017], [1136], [1618, 1575, 1445]],
-                            "P6":[[861], [1651, 1621], [1763, 1844], [2109, 2176], [2381]],
-                            "P8":[[3241, 2869, 3044], [3421, 3657], [2805, 2814, 2876], [3013], [358, 189]]}
+                            "P6":[[861], [], [], [2109, 2176], [2381]],
+                            "P8":[[3241, 2869, 3044], [3421, 3657], [], [], [358, 189]],
+                            "P9":[[1047, 721, 1048], [7303, 7533], [6735, 7129], [2160, 2228], [7366, 7236]],
+                            "P10":[[1511, 1524], [7281, 7516, 7534], [], [7634, 7722, 7795, 7794], [1073, 1074, 892]],
+                            "P11":[[1751], [9489], [9759, 9793], [3300, 3211, 3060], [3956, 3979]]}
+        doHyperParameterisation = False
         normalisePerTissue = False
         normaliseTrainTestData = True
         normaliseTrainValTestData = False
-        doHyperParameterisation = False
-        hyperParameters = None
-        nestedModelProp = False
-        modelEnsambleNumber = 1
-        selectedData = 1
-        parametersToAddOrOverwrite = None
-        parName = None
-        modelNameExtension = ""
-        modelType = {"modelType":"svm", "kernel":"rbf"}
-        folderToSaveVal = resultsFolder
-        if self.printResultsFolder:
-            print("resultsFolder: " + resultsFolder)
+        featureProperty = "combinedTable"
+        runModelTraining = True
+
+
         manager = PredictonManager(plantNames=plantNames,
                                testPlants=testPlants,
                                featureProperty=featureProperty,
                                dataFolder=dataFolder,
-                               featureAndLabelFolder=featureAndLabelFolder,
+                               featureAndLabelFolder=self.setFeatureAndLabelFolder,
                                givenFeatureName=self.givenFeatureName,
                                resultsFolder=resultsFolder,
+                               nSplits=nSplits,
                                labelName=labelNameCurrentRand,
                                modelType=modelType,
                                runModelTraining = runModelTraining,
@@ -102,14 +116,9 @@ class RandomLabelPredictior (object):
                                normaliseTrainTestData=normaliseTrainTestData,
                                normaliseTrainValTestData=normaliseTrainValTestData,
                                doHyperParameterisation=doHyperParameterisation,
-                               hyperParameters=hyperParameters,
-                               nestedModelProp=nestedModelProp,
-                               modelEnsambleNumber=modelEnsambleNumber,
-                               selectedData=selectedData,
-                               parametersToAddOrOverwrite=parametersToAddOrOverwrite,
-                               specialParName=parName,
-                               modelNameExtension=modelNameExtension,
-                               folderToSaveVal=folderToSaveVal,
+                               hyperParameters=self.hyperParameters,
+                               useGivenHyperParForTesting=True,
+                               folderToSaveVal=resultsFolder,
                                setFeatureAndLabelFolder=self.setFeatureAndLabelFolder,
                                useOnlyTwo=self.useOnlyTwo)
 
@@ -122,10 +131,10 @@ class RandomLabelPredictior (object):
         allResultsTables = []
         if self.excludeDividingNeighbours:
             excludedValue = 1
-            modelFolderName = "svm_k2_combinedTable_l3f0n1c0ex1/"
+            modelFolderName = "svm_k2_combinedTable_l3f0n1c0bal0ex1/"
         else:
             excludedValue = 0
-            modelFolderName = "svm_k2_combinedTable_l3f0n1c0ex0/"
+            modelFolderName = "svm_k2_combinedTable_l3f0n1c0bal0ex0/"
         for i in range(1, nrOfRandomRuns+1):
             resultsFolder = basicResultsFolder + "rand{}/".format(i) + modelFolderName
             resultsTable = pd.read_csv(resultsFolder + "results{}.csv".format(testingTxt), index_col=0)
@@ -148,24 +157,25 @@ class RandomLabelPredictior (object):
 def mainCallDivPredRandomization():
     for featureSet in ["area", "allTopos", "topology", "topoAndBio"]:
         print("featureSet", featureSet)
-        myRandomLabelPredictior = RandomLabelPredictior(nrOfRandomRuns=1000,
-                              recreateRadomLabels=False, featureSet=featureSet,
-                              divEventPred=True, includeTesting=True)
+        myRandomLabelPredictior = RandomLabelPredictior(nrOfRandomRuns=100,
+                              recreateRadomLabels=True, runModel=True,
+                              featureSet=featureSet,
+                              divEventPred=True, includeTesting=True,
+                              excludeDividingNeighbours=False)
 
-def mainCallTopoPredRandomization(excludeDividingNeighboursPar=[False], # [True, False]
-                                  featureSetPar=["topology", "topoAndBio"] # ["bio", "allTopos", "topology", "topoAndBio"]
-                                  ):
+def mainCallTopoPredRandomization(excludeDividingNeighboursPar=[True], # [True, False]
+                                  givenSets= ["bio", "allTopos", "topology", "topoAndBio"]):
     for excludeDividingNeighbours in excludeDividingNeighboursPar:
-        for featureSet in featureSetPar:
+        for featureSet in givenSets:
             print("featureSet", featureSet, "excludeDividingNeighbours", excludeDividingNeighbours)
-            myRandomLabelPredictior = RandomLabelPredictior(nrOfRandomRuns=1000,
+            myRandomLabelPredictior = RandomLabelPredictior(nrOfRandomRuns=9,
                                   recreateRadomLabels=True, featureSet=featureSet,
                                   excludeDividingNeighbours=excludeDividingNeighbours,
                                   divEventPred=False, includeTesting=True)
 
 def main():
-    # mainCallDivPredRandomization()
-    mainCallTopoPredRandomization()
+    mainCallDivPredRandomization()
+    # mainCallTopoPredRandomization()
 
 if __name__ == '__main__':
     main()
