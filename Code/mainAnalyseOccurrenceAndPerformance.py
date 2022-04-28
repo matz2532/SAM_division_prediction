@@ -93,7 +93,7 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     # Fig. 4 D - concordance between the observed and predicted topologies
     # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 5 A"]):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 5 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
@@ -108,6 +108,14 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
                                  savePlotFolder=fig5AResultFolder,
                                  fontSize=fontSize)
     # Fig. 5 B - topo prediction acc. randomisation results to further add text in power point
+    if figuresToDo == "all" or "Fig. 5 B" in figuresToDo:
+        fontSize = 24
+        fig5BResultFolder = resultsFolder + "Fig 5/topo pred random/"
+        Path(fig5BResultFolder).mkdir(parents=True, exist_ok=True)
+        mainTopoPredRandomization(performance="Acc", plotOnlyRandom=True,
+                                 baseResultsFolder="Results/topoPredData/diff/manualCentres/",
+                                 savePlotFolder=fig5BResultFolder,
+                                 fontSize=fontSize)
     # Fig. 8 - comparison of obs. vs  pred. of all centrality applying div. and topo. prediction models
     # Fig. 9 - density distributions of features - A topological and B biological features
     if figuresToDo == "all" or "Fig. 9 A" in figuresToDo:
