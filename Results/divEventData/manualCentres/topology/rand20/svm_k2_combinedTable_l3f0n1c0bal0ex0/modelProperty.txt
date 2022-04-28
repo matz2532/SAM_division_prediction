@@ -1,0 +1,4 @@
+propertyName: svm_k2_combinedTable_l3f0n1c0bal0ex0,
+featureFilename: Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv,
+labelFilename: Data/WT/divEventData/manualCentres/topology/randomisedCombinedLabels20.csv,
+nrOfLabels: {0: 1458, 1: 605}nrOfFeatures: 20
