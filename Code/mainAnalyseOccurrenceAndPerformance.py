@@ -93,12 +93,21 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     # Fig. 4 D - concordance between the observed and predicted topologies
     # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 9 B"]):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 5 A"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
         mainSaveCorrelation(baseFeatureFolder="Data/WT/divEventData/manualCentres/", savePlotFolder=resultsFolder)
     # Fig. 5 A - div prediction acc. randomisation results to further add text in power point
+    if figuresToDo == "all" or "Fig. 5 A" in figuresToDo:
+        fontSize = 24
+        fig5AResultFolder = resultsFolder + "Fig 5 A/div pred random/"
+        Path(fig5AResultFolder).mkdir(parents=True, exist_ok=True)
+        mainDivPredRandomization(performance="Acc", plotOnlyRandom=True,
+                                 baseResultsFolder="Results/divEventData/manualCentres/",
+                                 savePlotFolder=fig5AResultFolder,
+                                 fontSize=fontSize)
+
     # Fig. 5 B - topo prediction acc. randomisation results to further add text in power point
     # Fig. 8 - comparison of obs. vs  pred. of all centrality applying div. and topo. prediction models
     # Fig. 9 - density distributions of features - A topological and B biological features
@@ -113,5 +122,5 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
 
 
 if __name__== "__main__":
-    plotAndPrepareMainFigures()
-    # plotAndPrepareSuppFigures()
+    # plotAndPrepareMainFigures()
+    plotAndPrepareSuppFigures()
