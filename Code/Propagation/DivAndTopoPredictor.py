@@ -63,9 +63,10 @@ class DivAndTopoPredictor (object):
     def setupDividingCellsAndResultingTopoChanges(self):
         if self.loadPredictionsFromFolder is None:
             self.predDivEvents()
-            self.predTopoChanges()
             if not self.savePredictionsToFolder is None:
                 pickle.dump(self.dividingCellsOfTimePoint, open(self.savePredictionsToFolder + "dividingCellsOfTimePoint.pkl", "wb"))
+            self.predTopoChanges()
+            if not self.savePredictionsToFolder is None:
                 pickle.dump(self.topoChangesOfTimePoint, open(self.savePredictionsToFolder + "topoChangesOfTimePoint.pkl", "wb"))
                 pickle.dump(self.topoPairs, open(self.savePredictionsToFolder + "topoPairsOfTimePoint.pkl", "wb"))
         else:
@@ -142,8 +143,10 @@ class DivAndTopoPredictor (object):
     def calcTopoDataOfDividingCells(self):
         featuresOfTopoPred = []
         for i, dividingCells in enumerate(self.dividingCellsOfTimePoint):
-            topoFeature = self.createTopoDataFor(dividingCells, self.timePoints[i])
-            featuresOfTopoPred.append(topoFeature)
+            print("time point", self.timePoints[i])
+            if len(dividingCells) > 0:
+                topoFeature = self.createTopoDataFor(dividingCells, self.timePoints[i])
+                featuresOfTopoPred.append(topoFeature)
         return featuresOfTopoPred
 
     def createTopoDataFor(self, dividingCells, timePoint, addBioFeatures=True):
@@ -193,6 +196,7 @@ class DivAndTopoPredictor (object):
         allTopoFeatures = []
         featuresOfTissue = self.selectDivPredFeatures(timePoint, startCol=0)
         cells = featuresOfTissue.iloc[:, 2].to_numpy()
+        print("divCellNeighbourPairs", divCellNeighbourPairs)
         isNeighborFeatureMissing = np.isin(divCellNeighbourPairs[:, 1], cells, invert=True)
         missingCells = np.unique(divCellNeighbourPairs[isNeighborFeatureMissing, 1])
         missingCellsFeatures = self.calcMissingCellsFeatures(missingCells, timePoint)
@@ -555,9 +559,9 @@ class DivAndTopoPredictor (object):
         return 0
 
 def loadTestModelsAndData(baseFolder, featureSet):
-    divDataFolder = "{}divEventData/{}/".format(baseFolder, featureSet)
-    divResultsFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0ex0/".format(featureSet)
-    topoResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0ex1/".format(featureSet)
+    divDataFolder = "{}divEventData/manualCentres/{}/".format(baseFolder, featureSet)
+    divResultsFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(featureSet)
+    topoResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(featureSet)
     divSampleDataFilename = divDataFolder + "combinedFeatures_{}_notnormalised.csv".format(featureSet)
     divSampleLabelFilename = divDataFolder + "combinedLabels.csv"
     divPredModelFilename = divResultsFolder + "testModel.pkl"
@@ -595,8 +599,8 @@ def main():
     for i, t in enumerate(timePoints):
         centralCells = findCentralNonPeripheralCells("{}{}/".format(baseFolder, plant), plant, t, mostCentralCells[i])
         centralCellsList.append(centralCells)
-    savePredictionsToFolder = "Results/DivAndTopoApplication/"
-    loadPredictionsFromFolder = savePredictionsToFolder# None
+    savePredictionsToFolder = f"Results/DivAndTopoApplication/{plant}/"
+    loadPredictionsFromFolder = None # savePredictionsToFolder#
     divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, featureSet)
     myDivAndTopoPredictor = DivAndTopoPredictor(divPredModel, topoPredModel,
                                                 divSampleData, baseFolder,
@@ -607,6 +611,40 @@ def main():
                                                 centralCellsList=centralCellsList,
                                                 loadPredictionsFromFolder=loadPredictionsFromFolder,
                                                 savePredictionsToFolder=savePredictionsToFolder)
+
+def calculateCombinedCorrelations():
+    featureSet = "topoAndBio"
+    baseResultsFolder = "Results/DivAndTopoApplication/"
+    plantNames = ["P2", "P9"]
+    allExpectedFeatures = []
+    allPredictedFeatures = []
+    for plant in plantNames:
+        savePredictionsToFolder = f"{baseResultsFolder}{plant}/"
+        actualFeatures = np.load(savePredictionsToFolder + "actualFeatures.npy")
+        predFeatures = np.load(savePredictionsToFolder + "predFeatures.npy")
+        allExpectedFeatures.append(actualFeatures)
+        allPredictedFeatures.append(predFeatures)
+    allExpectedFeatures = np.concatenate(allExpectedFeatures, axis=0)
+    allPredictedFeatures = np.concatenate(allPredictedFeatures, axis=0)
+    correlations = DivAndTopoPredictor().correlateFeatures(predFeatures, actualFeatures)
+    print(correlations)
+    np.save(self.savePredictionsToFolder + "correlations.npy", correlations)
+
+def mainWithMultiple():
+    featureSet = "topoAndBio"# "allTopos"
+    baseFolder = "./Data/WT/"
+    plantNames = ["P2", "P9"]
+    mostCentralCellsDict = {"P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
+                        "P9":[[1047, 721, 1048], [7303, 7533], [6735, 7129], [2160, 2228], [7366, 7236]]}
+    timePoints = [0,1,2,3]
+    centralCellsList = []
+    for plant in plantNames:
+        for i, t in enumerate(timePoints):
+            centralCells = findCentralNonPeripheralCells("{}{}/".format(baseFolder, plant), plant, t, mostCentralCells[plant][i])
+            centralCellsList.append(centralCells)
+        savePredictionsToFolder = f"Results/DivAndTopoApplication/{plant}/"
+        loadPredictionsFromFolder = None # savePredictionsToFolder#
+        divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, featureSet)
 
 if __name__ == '__main__':
     main()
