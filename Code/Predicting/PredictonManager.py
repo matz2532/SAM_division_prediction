@@ -292,7 +292,7 @@ class PredictonManager (object):
             self.features = pd.read_csv(self.featureFilename, sep=self.sep)
             self.labels = pd.read_csv(self.labelFilename, sep=self.sep)
         self.features = self.features.copy()
-        print(self.features.shape[1])
+        # print(self.features.shape[1])
         self.labels = self.labels.copy()
         self.preProcessFeatruesAndLabels()
         if self.printUsedSampleNumbers:
@@ -499,11 +499,12 @@ class PredictonManager (object):
         useGivenFeatureColumns = useGivenFeatureColumns[isFeaturePresent]
         self.features = self.features.loc[:, useGivenFeatureColumns]
 
-    def removeDividingCells(self):
+    def removeDividingCells(self, printOutNrOfRemovedSamples=False):
         identifier = DividingCellInTableIdentifier(self.features,
                                                    self.excludeDividingNeighboursDict)
         samplesToRemove = identifier.GetAllDividingCellIdxInTable()
-        print("nr of samplesToRemove", len(samplesToRemove))
+        if printOutNrOfRemovedSamples:
+            print("nr of samplesToRemove", len(samplesToRemove))
         self.features.drop(samplesToRemove, inplace=True)
         self.labels.drop(samplesToRemove, inplace=True)
 
