@@ -69,10 +69,24 @@ class MyScorer (object):
         else:
             average = setAverage
         f1Score = metrics.f1_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
+        if len(f1Score) < self.nrOfClasses and average is None:
+            f1Score = self.expandIndividualClassPerformanceOnMissingLabel(f1Score, y_true, scoreName="F1-score")
         if inPercent:
             return 100*f1Score
         else:
             return f1Score
+
+    def expandIndividualClassPerformanceOnMissingLabel(self, perClassPerformances, expectedLabelsWithMissingClass, scoreName="F1-score"):
+        uniqueFoundLabels = np.unique(expectedLabelsWithMissingClass)
+        uniqueExpectedLabels = np.arange(self.nrOfClasses)
+        isExpectedLabelFound = np.isin(uniqueFoundLabels, uniqueExpectedLabels)
+        assert np.all(isExpectedLabelFound), f"While calculating the {scoreName}, there were fewer expected unique labels than the number of classes were given and\nthe labels: {uniqueFoundLabels[np.invert(isExpectedLabelFound)]} used are not in the expected format {uniqueExpectedLabels} (range(self.nrOfClasses))"
+        newPerformanceScores = np.zeros(self.nrOfClasses)
+        for i in range(len(perClassPerformances)):
+            labelName = uniqueFoundLabels[i]
+            idxOfLabelName = np.where(uniqueExpectedLabels == labelName)
+            newPerformanceScores[idxOfLabelName] = perClassPerformances[i]
+        return newPerformanceScores
 
     def calcAccuracy(self, y_true, y_pred, inPercent=True, checkSampleWeight=True):
         if checkSampleWeight:
@@ -99,6 +113,8 @@ class MyScorer (object):
         else:
             average = setAverage
         precision = metrics.precision_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
+        if len(precision) < self.nrOfClasses and average is None:
+            precision = self.expandIndividualClassPerformanceOnMissingLabel(precision, y_true, scoreName="precision")
         if inPercent:
             return 100*precision
         else:
