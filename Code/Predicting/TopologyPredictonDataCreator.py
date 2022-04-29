@@ -324,9 +324,9 @@ class TopologyPredictonDataCreator (BaseDataCreator):
         featureDF.index = np.arange(len(uniqueMappedParentCells))
         return featureDF
 
-    def calcSpecialGraph(self, plantIdx, timeIdx):
-        cellSizeFilename = self.GetValuesFrom("geometryFilename", plantIdx, timeIdx)
-        graphFilename = self.GetValuesFrom("graphFilename", plantIdx, timeIdx)
+    def calcSpecialGraph(self, plantIdx, timeIdx, isPlantIdxPlantName=False):
+        cellSizeFilename = self.GetValuesFrom("geometryFilename", plantIdx, timeIdx, isPlantIdxPlantName=isPlantIdxPlantName)
+        graphFilename = self.GetValuesFrom("graphFilename", plantIdx, timeIdx, isPlantIdxPlantName=isPlantIdxPlantName)
         useEdgeWeight = self.specialGraphProperties["useEdgeWeight"]
         invertEdgeWeight = self.specialGraphProperties["invertEdgeWeight"]
         useSharedWallWeight = self.specialGraphProperties["useSharedWallWeight"]
