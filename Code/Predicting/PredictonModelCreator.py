@@ -20,7 +20,7 @@ class PredictonModelCreator (object):
     verbosity=0
 
     def __init__(self, features, labels, testPlants, modelType, nSplits=5,
-                 seed=42, folderToSave=None,
+                 seed=42, folderToSaveNormalisationParameter=None,
                  normaliseTrainTestData=False,
                  normaliseTrainValTestData=False,
                  excludeDividingNeighboursDict=False,
@@ -39,7 +39,7 @@ class PredictonModelCreator (object):
         self.labels = labels
         self.testPlants = testPlants
         self.modelType = modelType
-        self.folderToSave = folderToSave
+        self.folderToSaveNormalisationParameter = folderToSaveNormalisationParameter
         self.normaliseTrainTestData = normaliseTrainTestData
         self.normaliseTrainValTestData = normaliseTrainValTestData
         self.excludeDividingNeighboursDict = excludeDividingNeighboursDict
@@ -80,9 +80,11 @@ class PredictonModelCreator (object):
             self.X_test = doZNormalise(self.X_test)
         elif self.normaliseTrainTestData:
             self.X_train, normParameters = doZNormalise(self.X_train, returnParameter=True)
+            np.save(self.folderToSaveNormalisationParameter + "normalisationParameterMeanAndStd.npy", normParameters)
             self.X_test = doZNormalise(self.X_test, useParameters=normParameters)
         elif self.normaliseTrainValTestData:
             normParameters = [np.mean(self.X_train, axis=0), np.std(self.X_train, axis=0)]
+            np.save(self.folderToSaveNormalisationParameter + "normalisationParameterMeanAndStd.npy", normParameters)
             self.X_test = doZNormalise(self.X_test, useParameters=normParameters)
         if self.runModelTraining:
             import time

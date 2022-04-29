@@ -321,6 +321,7 @@ class PredictonManager (object):
                                                      modelEnsambleNumber=self.modelEnsambleNumber,
                                                      balanceData=self.balanceData,
                                                      folderToSaveVal=self.resultsFolder,
+                                                     folderToSaveNormalisationParameter=self.resultsFolder,
                                                      useOnlyTwo=self.useOnlyTwo)
         if self.usePreviouslyTrainedModels and self.doHyperParameterisation:
             modelCreator.TrainAndTestModel(runModelTraining=self.runModelTraining,
