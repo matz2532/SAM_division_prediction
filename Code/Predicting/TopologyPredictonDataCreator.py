@@ -377,6 +377,7 @@ class TopologyPredictonDataCreator (BaseDataCreator):
 
     def SaveFeatureTable(self, filenameToSave, sep=","):
         if self.estimateFeatures:
+            Path(filenameToSave).parent.mkdir(parents=True, exist_ok=True)
             self.featureTable.to_csv(filenameToSave, index=False, sep=sep)
         else:
             print("The features could not be saved as they were not calculated. self.estimateFeatures =", self.estimateFeatures)
