@@ -19,16 +19,18 @@ from pathlib import Path
 from PeripheralCellIdentifier import PeripheralCellIdentifier
 from NeighborsOfDividingCellMapper import NeighborsOfDividingCellMapper
 from utils import doZNormalise
+from TopologyPredictonDataCreatorFromCellIds import saveTopoFeatureSetsFromCellIds
 
 class DivAndTopoPredictor (object):
 
     # Class to propagate tissue to the next time point
     def __init__(self, divPredModel, topoPredModel, divSampleData, baseFolder,
-                 plant, timePoints, divSampleLabel, seed=42,
-                 confirmResultsManually=False, useBioFeatures=True,
+                 plant, timePoints, divSampleLabel, run=True, seed=42,
+                 confirmResultsManually=False, useBioFeaturesForDivPrediction=True,
                  correlateTissues=False, simulateCellDivisions=False,
                  centralCellsList = None,
-                 loadPredictionsFromFolder=None, savePredictionsToFolder="Temporary/"):
+                 loadPredictionsFromFolder=None, savePredictionsToFolder="Temporary/",
+                 topoPredFeatureSet="", normalisationParameterForTopo=None):
         self.divPredModel = divPredModel
         self.topoPredModel = topoPredModel
         self.divSampleData = divSampleData
@@ -37,22 +39,25 @@ class DivAndTopoPredictor (object):
         self.timePoints = timePoints
         self.divSampleLabel = divSampleLabel
         self.confirmResultsManually = confirmResultsManually
-        self.useBioFeatures = useBioFeatures
+        self.useBioFeaturesForDivPrediction = useBioFeaturesForDivPrediction
         self.centralCellsList = centralCellsList
         self.loadPredictionsFromFolder = loadPredictionsFromFolder
         self.savePredictionsToFolder = savePredictionsToFolder
+        self.topoPredFeatureSet = topoPredFeatureSet
+        self.normalisationParameterForTopo = normalisationParameterForTopo
         Path(self.savePredictionsToFolder).mkdir(parents=True, exist_ok=True)
         np.random.seed(seed)
         self.excludedCells = {}
         self.topoPairs = {}
-        self.setup()
-        self.setupDividingCellsAndResultingTopoChanges()
-        if self.confirmResultsManually:
-            self.printTopoPredLabelsCount()
-        if simulateCellDivisions or correlateTissues:
-            self.simulateAllCellDivisions()
-            if correlateTissues:
-                self.estimateCorrelationsOfNonDivCells()
+        if run:
+            self.setup()
+            self.setupDividingCellsAndResultingTopoChanges()
+            if self.confirmResultsManually:
+                self.printTopoPredLabelsCount()
+            if simulateCellDivisions or correlateTissues:
+                self.simulateAllCellDivisions()
+                if correlateTissues:
+                    self.estimateCorrelationsOfNonDivCells()
 
     def setup(self):
         self.preprocessDivSampleData()
@@ -77,7 +82,7 @@ class DivAndTopoPredictor (object):
 
     def preprocessDivSampleData(self):
         duplicateRemover = DuplicateDoubleRemover(self.divSampleData)
-        self.duplicateColIdx = duplicateRemover.GetDuplicateColIdx() - 3 - self.useBioFeatures
+        self.duplicateColIdx = duplicateRemover.GetDuplicateColIdx() - 3 - self.useBioFeaturesForDivPrediction
         self.divSampleData = duplicateRemover.GetDoublesReducedTable()
 
     def zNormTestDataFromTrainPar(self, testPlant="P2"):
@@ -87,10 +92,10 @@ class DivAndTopoPredictor (object):
         self.divSampleData.iloc[idxOfTrainPlants, 3:], self.meanStdPar = doZNormalise(self.divSampleData.iloc[idxOfTrainPlants, 3:], returnParameter=True)
         self.divSampleData.iloc[idxOfTestPlant, 3:] = doZNormalise(self.divSampleData.iloc[idxOfTestPlant, 3:], useParameters=self.meanStdPar)
         # as area is the first feature given but not the first when later used for network feature normalisation
-        if self.useBioFeatures:
+        if self.useBioFeaturesForDivPrediction:
             self.meanStdPar = [self.meanStdPar[0][1:], self.meanStdPar[1][1:]]
 
-    def calcBioFeatureMeanStdToNormalise(self, testPlant, printOut=True):
+    def calcBioFeatureMeanStdToNormalise(self, testPlant, printOut=False):
         topoSampleDataFilename = "Data/WT/topoPredData/diff/manualCentres/bio/combinedFeatures_bio_notnormalised.csv"
         bioTopoSampleData = pd.read_csv(topoSampleDataFilename)
         isTrainValPlant = np.invert(bioTopoSampleData.iloc[:, 0]==testPlant)
@@ -140,135 +145,61 @@ class DivAndTopoPredictor (object):
     def calcCellId(self, plant, t):
         return self.divSampleData.iloc[self.selectIdxOf(self.divSampleData, self.plant, t), 2].to_numpy()
 
-    def calcTopoDataOfDividingCells(self):
-        featuresOfTopoPred = []
-        for i, dividingCells in enumerate(self.dividingCellsOfTimePoint):
-            print("time point", self.timePoints[i])
-            if len(dividingCells) > 0:
-                topoFeature = self.createTopoDataFor(dividingCells, self.timePoints[i])
-                featuresOfTopoPred.append(topoFeature)
-        return featuresOfTopoPred
-
-    def createTopoDataFor(self, dividingCells, timePoint, addBioFeatures=True):
-        self.excludedCells[timePoint] = []
-        divCellNeighbourPairs = self.extractTopoPredPairs(dividingCells, timePoint)
-        topoFeatures = self.calcTopoFeaturesFor(divCellNeighbourPairs, timePoint)
-        if addBioFeatures:
-            bioFeatureTable = self.calcBioFeatures(divCellNeighbourPairs, timePoint)
-            topoFeatures = np.concatenate([bioFeatureTable.iloc[:, 4:].to_numpy(), topoFeatures], axis=1)
-            self.topoPairs[timePoint] = bioFeatureTable.iloc[:, :4]
-        return topoFeatures
-
-    def extractTopoPredPairs(self, dividingCells, timePoint):
-        if not timePoint in self.excludedCells:
-            self.excludedCells[timePoint] = []
-        idxOfTissue = self.selectIdxOf(self.divSampleData, self.plant, timePoint)
-        fullNetwork = self.allNetworks[timePoint]
-        divCellNeighbourPairs = []
-        cellsOfTissue = self.selectDivPredFeatures(timePoint, startCol=0).iloc[:, 2].to_numpy()
-        for d in dividingCells:
-            neighbors = list(fullNetwork.neighbors(d))
-            addPairs = self.doAllNeighborsExistInFeatures(neighbors, cellsOfTissue)
-            if not addPairs:
-                addPairs = self.canMissingNeighborsFeaturesBeCalculated(neighbors, cellsOfTissue, fullNetwork)
-            if addPairs:
-                for n in neighbors:
-                    divCellNeighbourPairs.append([d, n])
-            else:
-                self.excludedCells[timePoint].append(d)
-        return np.asarray(divCellNeighbourPairs)
-
-    def doAllNeighborsExistInFeatures(self, neighborCells, cellsOfTissue):
-        return len(neighborCells) == np.sum(np.isin(neighborCells, cellsOfTissue))
-
-    def canMissingNeighborsFeaturesBeCalculated(self, neighborCells, cellsOfTissue, fullNetwork):
-        allNeighborsNeighbor = []
-        for n in neighborCells:
-            neighborsNeighbor = list(fullNetwork.neighbors(n))
-            allNeighborsNeighbor.extend(neighborsNeighbor)
-        allNeighborsNeighbor = np.unique(allNeighborsNeighbor)
-        peripheralCellIdentifier = PeripheralCellIdentifier(fullNetwork, testNetwork=False)
-        peripheralNeighborsNeighbor = peripheralCellIdentifier.findPeripheralCells(allNeighborsNeighbor)
-        return len(peripheralNeighborsNeighbor) == 0
-
-    def calcTopoFeaturesFor(self, divCellNeighbourPairs, timePoint, networkFeatureStartCol=4,
-                            concatDividingCellsFeatures=True):
-        allTopoFeatures = []
-        featuresOfTissue = self.selectDivPredFeatures(timePoint, startCol=0)
-        cells = featuresOfTissue.iloc[:, 2].to_numpy()
-        print("divCellNeighbourPairs", divCellNeighbourPairs)
-        isNeighborFeatureMissing = np.isin(divCellNeighbourPairs[:, 1], cells, invert=True)
-        missingCells = np.unique(divCellNeighbourPairs[isNeighborFeatureMissing, 1])
-        missingCellsFeatures = self.calcMissingCellsFeatures(missingCells, timePoint)
-        np.save(self.savePredictionsToFolder + "missingCellsFeatures.npy", missingCellsFeatures)
-        missingCellsFeatures = np.load(self.savePredictionsToFolder + "missingCellsFeatures.npy")
-        cells = np.concatenate([cells, missingCells])
-        featuresOfTissue = featuresOfTissue.iloc[:, networkFeatureStartCol:].to_numpy()
-        featuresOfTissue = np.concatenate([featuresOfTissue, missingCellsFeatures], axis=0)
-        nrOfRows = featuresOfTissue.shape[1]
-        rowToSplit = nrOfRows//2
-        for d, n in divCellNeighbourPairs:
-            dIdx = np.where(cells==d)[0]
-            nIdx = np.where(cells==n)[0]
-            diffFeatures = featuresOfTissue[nIdx, :] - featuresOfTissue[dIdx, :]
-            if concatDividingCellsFeatures:
-                neighbourCellFeatures = featuresOfTissue[nIdx, :]
-                currentFeatures = np.concatenate([diffFeatures, neighbourCellFeatures], axis=1)
-            else:
-                currentFeatures = diffFeatures
-            allTopoFeatures.append(currentFeatures)
-        allTopoFeatures = np.concatenate(allTopoFeatures, axis=0)
-        return allTopoFeatures
-
-    def calcMissingCellsFeatures(self, missingCells, timePoint):
-        cellSizeFilename = "./Data/WT/{}/area{}T{}.csv".format(self.plant, self.plant, timePoint)
-        graphFilename = "./Data/WT/{}/cellularConnectivityNetwork{}T{}.csv".format(self.plant, self.plant, timePoint)
-        weightingProperties = {"unweighted": [False, False, False, False],
-                                "weighted by area": [True, True, False, False],
-                                "weighted by wall":[True, False, True, False],
-                                "weighted by distance":[True, False, False, False]}
-        allFeatures = []
-        for name, weightProperty in weightingProperties.items():
-            useEdgeWeight, invertEdgeWeight, useSharedWallWeight, useDistanceWeight = weightProperty
-            graphCreator = GraphCreatorFromAdjacencyList(graphFilename,
-                                            cellSizeFilename=cellSizeFilename,
-                                            useEdgeWeight=useEdgeWeight,
-                                            invertEdgeWeight=invertEdgeWeight,
-                                            useSharedWallWeight=useSharedWallWeight,
-                                            useDistanceWeight=useDistanceWeight)
-            if useDistanceWeight:
-                graphCreator.AddCoordinatesPropertyToGraphFrom(cellSizeFilename)
-            currentGraph = graphCreator.GetGraph()
-            featureCreator = FeatureVectorCreator(currentGraph, allowedLabels=missingCells,
-                            filename=graphFilename)
-            # featureCreator.SaveFeatureMatrixAsCSV("Temporary/recreatedFeatures{}.csv".format(name))
-            featureVector = featureCreator.GetFeatureMatrix()
-            allFeatures.append(featureVector)
-        allFeatures = np.concatenate(allFeatures, axis=1)
-        allFeatures = np.delete(allFeatures, self.duplicateColIdx, axis=1)
-        meanStdPar = [self.meanStdPar[0].to_numpy(), self.meanStdPar[1].to_numpy()]
-        allFeatures = doZNormalise(allFeatures, useParameters=meanStdPar)
-        return allFeatures
-
-    def calcBioFeatures(self, divCellNeighbourPairs, timePoint):
-        nrOfCells = divCellNeighbourPairs.shape[0]
-        plantNames = np.full((nrOfCells, 1), self.plant)
-        timePoints = np.full((nrOfCells, 1), timePoint)
-        topoStandardTable = np.concatenate([plantNames, timePoints, divCellNeighbourPairs], axis=1)
-        topoStandardTable = pd.DataFrame(topoStandardTable, columns=["plant", "time point", "dividing parent cell", "parent neighbor"])
-        topoStandardTable = topoStandardTable.astype({"time point":int, "dividing parent cell":int, "parent neighbor":int})
-        bioFeatures = BiologicalFeatureCreatorForNetworkRecreation(baseFolder=self.baseFolder, oldFeatureTable=topoStandardTable).CreateBiologicalFeatures()
-        bioMeanPar = [self.bioMeanPar, self.bioStdPar]
-        bioFeatures.iloc[:, 4:] = doZNormalise(bioFeatures.iloc[:, 4:], useParameters=bioMeanPar)
-        return bioFeatures
-
     def predTopoChanges(self):
         self.topSampleData = self.calcTopoDataOfDividingCells()
         self.topoChangesOfTimePoint = []
         for t in self.timePoints:
             topoFeatures = self.topSampleData[t]
-            topoChanges = self.topoPredModel.predict(topoFeatures)
+            topoChanges = []
+            if len(topoFeatures) > 0:
+                topoChanges = self.topoPredModel.predict(topoFeatures)
             self.topoChangesOfTimePoint.append(topoChanges)
+
+    def calcTopoDataOfDividingCells(self, recreateTopoPredFeatures=True):
+        selectedCellsOfTissue = {self.plant : self.dividingCellsOfTimePoint}
+        if recreateTopoPredFeatures:
+            for setIdx in range(7):
+                saveTopoFeatureSetsFromCellIds(setIdx, "Data/WT/", [self.plant], self.savePredictionsToFolder,
+                                               selectedCellsOfTissue, timePointsPerPlant=5)
+        topoPredFeatureTable = pd.read_csv(f"{self.savePredictionsToFolder}{self.topoPredFeatureSet}/combinedFeatures_{self.topoPredFeatureSet}_notnormalised.csv")
+        topoPredFeatureTable = self.pruneFeaturesToFitModelFeatures(topoPredFeatureTable)
+        if not self.normalisationParameterForTopo is None:
+            topoPredFeatureTable.iloc[:, 4:] = doZNormalise(topoPredFeatureTable.iloc[:, 4:], useParameters=self.normalisationParameterForTopo)
+        topSampleData = []
+        for timePoint, currentFeatures in topoPredFeatureTable.groupby("time point"):
+            topSampleData.append(currentFeatures.iloc[:, 4:])
+            self.topoPairs[timePoint] = currentFeatures.iloc[:, :4].reset_index(drop=True)
+        return topSampleData
+
+    def pruneFeaturesToFitModelFeatures(self, topoPredFeatureTable, allFeatureProperties=["topology", "topologyArea", "topologyWall", "topologyDist"]):
+        columns = list(topoPredFeatureTable.columns)
+        for i, featureName in enumerate(columns):
+            if ".1" in featureName:
+                columns[i] = featureName.replace(".1", " "+allFeatureProperties[1])
+            elif ".2" in featureName:
+                columns[i] = featureName.replace(".2", " "+allFeatureProperties[2])
+            elif ".3" in featureName:
+                columns[i] = featureName.replace(".3", " "+allFeatureProperties[3])
+        originalColumns = list(topoPredFeatureTable.columns)
+        topoPredFeatureTable.rename(columns=dict(zip(originalColumns, columns)), inplace=True)
+        useGivenFeatureColumns = list(pd.read_csv(f"Results/topoPredData/diff/manualCentres/{self.topoPredFeatureSet}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/normalizedFeatures_train.csv").columns)
+        additionalColumnsToKeep = np.asarray(["plant", "time point", "dividing parent cell", "parent neighbor", "cell"])
+        topoPredFeatureTable = self.removeNotGivenFeatures(topoPredFeatureTable, useGivenFeatureColumns, additionalColumnsToKeep=additionalColumnsToKeep)
+        return topoPredFeatureTable
+
+    def removeNotGivenFeatures(self, table, useGivenFeatureColumns, additionalColumnsToKeep=[],
+                               printMissingColumnNames=True,
+                               ignoreMissingNames=["dividing parent cell", "parent neighbor", "cell"]):
+        useGivenFeatureColumns = np.concatenate([additionalColumnsToKeep, useGivenFeatureColumns])
+        columnNames = list(table.columns)
+        isFeaturePresent = np.isin(useGivenFeatureColumns, columnNames)
+        if printMissingColumnNames:
+            missingColumnNames = useGivenFeatureColumns[np.invert(isFeaturePresent)]
+            if len(missingColumnNames) != np.sum(np.isin(missingColumnNames, ignoreMissingNames)):
+                print(f"The given columns {missingColumnNames} could not be removed as they are not present in the feature table with columns {columnNames} and the columns {ignoreMissingNames} are normaly ignored.")
+        useGivenFeatureColumns = useGivenFeatureColumns[isFeaturePresent]
+        table = table.loc[:, useGivenFeatureColumns]
+        return table
 
     def simulateAllCellDivisions(self, folderToSave=None, networkBaseName="allPredNetworksDict_{}_T{}.pkl"):
         self.tPlusOneNetworks = []
@@ -283,7 +214,6 @@ class DivAndTopoPredictor (object):
 
     def applyDivAndTopoPred(self, timePoint, plotAndPrintResults=False):
         oldNetwork = self.allNetworks[timePoint]
-        dividingCells = self.dividingCellsOfTimePoint[timePoint]
         topoPredPairs = self.combineTopoPredAndPairInfos(timePoint)
         orderOfDivCells = self.determineOrderOfInmplementingChanges(topoPredPairs)
         centralCells = None if self.centralCellsList is None else self.centralCellsList[timePoint]
@@ -295,7 +225,8 @@ class DivAndTopoPredictor (object):
     def combineTopoPredAndPairInfos(self, timePoint):
         topologicalChanges = self.topoChangesOfTimePoint[timePoint]
         topoPairs = self.topoPairs[timePoint]
-        topoPredPairs = pd.concat([topoPairs, pd.DataFrame(topologicalChanges, columns=["labels"])], axis=1)
+        predictedLabelTable = pd.DataFrame(topologicalChanges, columns=["labels"])
+        topoPredPairs = pd.concat([topoPairs, predictedLabelTable], axis=1)
         return topoPredPairs
 
     def determineOrderOfInmplementingChanges(self, topoPredPairs):
@@ -319,7 +250,7 @@ class DivAndTopoPredictor (object):
                 else:
                     labelsOfDivNeighbors.append([])
             else:
-                print("The selected dividing cell {} is not inside the topology prediction olumn dividing cells {}".format(d, np.unique(topoPredPairs.iloc[:, 2])))
+                print("The selected dividing cell {} is not inside the topology prediction column dividing cells {}".format(d, np.unique(topoPredPairs.iloc[:, 2])))
         return np.asarray(nrOfDivNeighbors), np.asarray(labelsOfDivNeighbors)
 
     def getIdxOf(self, entry, table, colIdx=2):
@@ -558,11 +489,13 @@ class DivAndTopoPredictor (object):
     def calcIfTopologiesAreIdentical(self, observedLocalTopology, predictedLocalTopology):
         return 0
 
-def loadTestModelsAndData(baseFolder, featureSet):
-    divDataFolder = "{}divEventData/manualCentres/{}/".format(baseFolder, featureSet)
-    divResultsFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(featureSet)
-    topoResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(featureSet)
-    divSampleDataFilename = divDataFolder + "combinedFeatures_{}_notnormalised.csv".format(featureSet)
+def loadTestModelsAndData(baseFolder, divPredFeatureSet, topoPredFeatureSet=None):
+    if topoPredFeatureSet is None:
+        topoPredFeatureSet = divPredFeatureSet
+    divDataFolder = "{}divEventData/manualCentres/{}/".format(baseFolder, divPredFeatureSet)
+    divResultsFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(divPredFeatureSet)
+    topoResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(topoPredFeatureSet)
+    divSampleDataFilename = divDataFolder + "combinedFeatures_{}_notnormalised.csv".format(divPredFeatureSet)
     divSampleLabelFilename = divDataFolder + "combinedLabels.csv"
     divPredModelFilename = divResultsFolder + "testModel.pkl"
     topoPredModelFilename = topoResultsFolder + "testModel.pkl"
@@ -590,8 +523,12 @@ def findCentralNonPeripheralCells(baseFolder, plantName, timePoint, mostCentralC
     return centralCells
 
 def main():
-    featureSet = "topoAndBio"# "allTopos"
+    divPredFeatureSet = "allTopos"
+    useBioFeaturesForDivPrediction = divPredFeatureSet=="area" or divPredFeatureSet=="topoAndBio"
+    topoPredFeatureSet = "topoAndBio"
     baseFolder = "./Data/WT/"
+
+    normalisationParameterForTopo = np.load(f"Results/topoPredData/diff/manualCentres/{topoPredFeatureSet}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/normalisationParameterMeanAndStd.npy")
     plant = "P2"
     timePoints = [0,1,2,3]
     mostCentralCells = [[392],  [553, 779, 527], [525], [1135]]
@@ -600,22 +537,22 @@ def main():
         centralCells = findCentralNonPeripheralCells("{}{}/".format(baseFolder, plant), plant, t, mostCentralCells[i])
         centralCellsList.append(centralCells)
     savePredictionsToFolder = f"Results/DivAndTopoApplication/{plant}/"
-    loadPredictionsFromFolder = None # savePredictionsToFolder#
-    divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, featureSet)
+    loadPredictionsFromFolder = None#savePredictionsToFolder#
+    divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, divPredFeatureSet, topoPredFeatureSet)
     myDivAndTopoPredictor = DivAndTopoPredictor(divPredModel, topoPredModel,
                                                 divSampleData, baseFolder,
                                                 plant, timePoints,
                                                 divSampleLabel=divSampleLabel,
+                                                useBioFeaturesForDivPrediction=useBioFeaturesForDivPrediction,
                                                 correlateTissues=True,
                                                 simulateCellDivisions=True,
                                                 centralCellsList=centralCellsList,
                                                 loadPredictionsFromFolder=loadPredictionsFromFolder,
-                                                savePredictionsToFolder=savePredictionsToFolder)
+                                                savePredictionsToFolder=savePredictionsToFolder,
+                                                topoPredFeatureSet=topoPredFeatureSet,
+                                                normalisationParameterForTopo=normalisationParameterForTopo)
 
-def calculateCombinedCorrelations():
-    featureSet = "topoAndBio"
-    baseResultsFolder = "Results/DivAndTopoApplication/"
-    plantNames = ["P2", "P9"]
+def calculateCombinedCorrelations(baseResultsFolder="Results/DivAndTopoApplication/", plantNames=["P2", "P9"]):
     allExpectedFeatures = []
     allPredictedFeatures = []
     for plant in plantNames:
@@ -626,25 +563,47 @@ def calculateCombinedCorrelations():
         allPredictedFeatures.append(predFeatures)
     allExpectedFeatures = np.concatenate(allExpectedFeatures, axis=0)
     allPredictedFeatures = np.concatenate(allPredictedFeatures, axis=0)
-    correlations = DivAndTopoPredictor().correlateFeatures(predFeatures, actualFeatures)
+    correlations = DivAndTopoPredictor(divPredModel=None, topoPredModel=None, divSampleData=None, baseFolder=None,
+                 plant=None, timePoints=None, divSampleLabel=None, run=False).correlateFeatures(predFeatures, actualFeatures)
     print(correlations)
-    np.save(self.savePredictionsToFolder + "correlations.npy", correlations)
+    np.save(baseResultsFolder + "correlations.npy", correlations)
 
 def mainWithMultiple():
-    featureSet = "topoAndBio"# "allTopos"
+    justLoadPredictions = True
+    baseResultsFolder = "Results/DivAndTopoApplication/"
+    divPredFeatureSet = "allTopos"
+    useBioFeaturesForDivPrediction = divPredFeatureSet=="area" or divPredFeatureSet=="topoAndBio"
+    topoPredFeatureSet = "topoAndBio"
     baseFolder = "./Data/WT/"
+    normalisationParameterForTopo = np.load(f"Results/topoPredData/diff/manualCentres/{topoPredFeatureSet}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/normalisationParameterMeanAndStd.npy")
     plantNames = ["P2", "P9"]
     mostCentralCellsDict = {"P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
                         "P9":[[1047, 721, 1048], [7303, 7533], [6735, 7129], [2160, 2228], [7366, 7236]]}
     timePoints = [0,1,2,3]
-    centralCellsList = []
+    divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, divPredFeatureSet, topoPredFeatureSet)
     for plant in plantNames:
+        centralCellsList = []
         for i, t in enumerate(timePoints):
-            centralCells = findCentralNonPeripheralCells("{}{}/".format(baseFolder, plant), plant, t, mostCentralCells[plant][i])
+            centralCells = findCentralNonPeripheralCells("{}{}/".format(baseFolder, plant), plant, t, mostCentralCellsDict[plant][i])
             centralCellsList.append(centralCells)
-        savePredictionsToFolder = f"Results/DivAndTopoApplication/{plant}/"
-        loadPredictionsFromFolder = None # savePredictionsToFolder#
-        divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, featureSet)
+        savePredictionsToFolder = f"{baseResultsFolder}{plant}/"
+        if justLoadPredictions:
+            loadPredictionsFromFolder = savePredictionsToFolder
+        else:
+            loadPredictionsFromFolder = None
+        myDivAndTopoPredictor = DivAndTopoPredictor(divPredModel, topoPredModel,
+                                                    divSampleData, baseFolder,
+                                                    plant, timePoints,
+                                                    divSampleLabel=divSampleLabel,
+                                                    useBioFeaturesForDivPrediction=useBioFeaturesForDivPrediction,
+                                                    correlateTissues=True,
+                                                    simulateCellDivisions=True,
+                                                    centralCellsList=centralCellsList,
+                                                    loadPredictionsFromFolder=loadPredictionsFromFolder,
+                                                    savePredictionsToFolder=savePredictionsToFolder,
+                                                    topoPredFeatureSet=topoPredFeatureSet,
+                                                    normalisationParameterForTopo=normalisationParameterForTopo)
+    calculateCombinedCorrelations(baseResultsFolder=baseResultsFolder, plantNames=["P2", "P9"])
 
 if __name__ == '__main__':
-    main()
+    mainWithMultiple()
