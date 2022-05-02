@@ -65,7 +65,7 @@ class RandomLabelPredictior (object):
 
     def runModels(self, nrOfRandomRuns, basicResultsFolder):
         for i in range(1, nrOfRandomRuns+1):
-            if i % 100 == 0:
+            if i % 20 == 0:
                 print("currentRandomSample: {}/{}".format(i, nrOfRandomRuns))
             labelNameCurrentRand = self.basicLabelName.format(i)
             resultsFolder = basicResultsFolder + "rand{}/".format(i)
@@ -164,18 +164,18 @@ def mainCallDivPredRandomization():
                               excludeDividingNeighbours=False)
 
 def mainCallTopoPredRandomization(excludeDividingNeighboursPar=[True], # [True, False]
-                                  givenSets= ["bio", "allTopos", "topology", "topoAndBio"]):
+                                  givenSets= ["bio", "allTopos", "topoAndBio"]):
     for excludeDividingNeighbours in excludeDividingNeighboursPar:
         for featureSet in givenSets:
             print("featureSet", featureSet, "excludeDividingNeighbours", excludeDividingNeighbours)
-            myRandomLabelPredictior = RandomLabelPredictior(nrOfRandomRuns=9,
+            myRandomLabelPredictior = RandomLabelPredictior(nrOfRandomRuns=100,
                                   recreateRadomLabels=True, featureSet=featureSet,
                                   excludeDividingNeighbours=excludeDividingNeighbours,
                                   divEventPred=False, includeTesting=True)
 
 def main():
-    mainCallDivPredRandomization()
-    # mainCallTopoPredRandomization()
+    # mainCallDivPredRandomization()
+    mainCallTopoPredRandomization()
 
 if __name__ == '__main__':
     main()
