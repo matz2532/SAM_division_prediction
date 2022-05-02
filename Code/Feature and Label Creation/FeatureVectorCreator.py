@@ -69,7 +69,8 @@ class FeatureVectorCreator (object):
         self.featureMatrix = self.calculateLocalAndLocalGlobalFeatures()
         if not self.allowedLabels is None:
             self.allowedLabels = np.asarray(self.allowedLabels).copy()
-            assert np.all(np.isin(self.allowedLabels, self.allNodesOfGraph)), "The features for the node/s {} should be calculated, but are not present in the graph {} with the nodes {}.".format(self.allowedLabels[np.isin(self.allowedLabels, self.allNodesOfGraph)], self.filename, self.allNodesOfGraph)
+            isCellPresent = np.isin(self.allowedLabels, self.allNodesOfGraph)
+            assert np.all(isCellPresent), "The features for the node/s {} should be calculated, but are not present in the graph {} with the nodes {}.".format(self.allowedLabels[np.invert(isCellPresent)], self.filename, self.allNodesOfGraph)
             self.removeNotAllowedLabels()
             self.orderByLabels()
         self.addFeaturesOffInducedGraphToFeatureMatrix(self.neighborhoodsOfInducedGraphs, self.featuresOnInducedGraph)
