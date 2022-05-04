@@ -208,7 +208,7 @@ class LocalTopologyPredictionComparer (DivAndTopoPredictor):
         elif showPlot:
             plt.show()
 
-def main():
+def compareLocalTopologyPrediction():
     from DivAndTopoPredictor import loadTestModelsAndData
     # apply topo pred and compare it with observed tissue by only looking at how dividing cell and its neighbours change
     # merge div neighbours
@@ -290,5 +290,5 @@ def mainPlotResults():
     plt.show()
 
 if __name__ == '__main__':
-    main()
+    compareLocalTopologyPrediction()
     # mainPlotResults()

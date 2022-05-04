@@ -567,7 +567,7 @@ def calculateCombinedCorrelations(baseResultsFolder="Results/DivAndTopoApplicati
     print(correlations)
     np.save(baseResultsFolder + "correlations.npy", correlations)
 
-def mainWithMultiple():
+def propagateAndCorrelateTissues():
     justLoadPredictions = False
     baseResultsFolder = "Results/DivAndTopoApplication/"
     divPredFeatureSet = "allTopos"
@@ -605,4 +605,4 @@ def mainWithMultiple():
     calculateCombinedCorrelations(baseResultsFolder=baseResultsFolder, plantNames=["P2", "P9"])
 
 if __name__ == '__main__':
-    mainWithMultiple()
+    propagateAndCorrelateTissues()
