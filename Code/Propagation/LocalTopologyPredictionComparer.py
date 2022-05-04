@@ -7,9 +7,11 @@ import scipy.stats
 import sys
 
 sys.path.insert(0, "./Code/")
+sys.path.insert(0, "./Code/Feature and Label Creation/")
 from DivAndTopoPredictor import DivAndTopoPredictor
 from utils import convertParentLabelingTableToDict
 from pathlib import Path
+from PeripheralCellIdentifier import PeripheralCellIdentifier
 
 class LocalTopologyPredictionComparer (DivAndTopoPredictor):
 
@@ -34,11 +36,9 @@ class LocalTopologyPredictionComparer (DivAndTopoPredictor):
                     neighours = diviationsAndTotal[1]
                     nrOfDiviations.append(diviations)
                     nrOfNeighbours.append(neighours)
-        unqiues, counts = np.unique(nrOfDiviations, return_counts=True)
-        print("nrOfNeighbours", nrOfNeighbours)
-        print("nrOfDiviations", nrOfDiviations)
-        print(list(unqiues))
-        print(list(counts))
+        np.save(self.loadPredictionsFromFolder+"nrOfNeighbours.npy", nrOfNeighbours)
+        np.save(self.loadPredictionsFromFolder+"nrOfDiviations.npy", nrOfDiviations)
+        return nrOfDiviations, nrOfNeighbours
 
     def prepareDataForCurrentTissue(self, timePoint):
         self.currentTissueName = "{} {}".format(self.plant, timePoint)
@@ -67,12 +67,13 @@ class LocalTopologyPredictionComparer (DivAndTopoPredictor):
 
     def mergeCurrentPredictedTopoChangesTable(self, timePointIdx):
         predictedDividingCells = self.dividingCellsOfTimePoint[timePointIdx]
-        topoPairs = self.extractTopoPredPairs(predictedDividingCells, timePointIdx)
+        topoPairs = self.topoPairs[timePointIdx]
         predictedTopoClasses = self.topoChangesOfTimePoint[timePointIdx]
         nrRows = len(predictedTopoClasses)
         plantNameCol = np.full(nrRows, self.plant)
         timePointCol = np.full(nrRows, timePointIdx)
-        currentPredictedTopoChanges = np.concatenate([[topoPairs[:, 0]], [topoPairs[:, 1]], [predictedTopoClasses]], axis=0)
+        dividingCells, theirNeighbours = topoPairs.iloc[:, 2].to_numpy(), topoPairs.iloc[:, 3].to_numpy()
+        currentPredictedTopoChanges = np.concatenate([[dividingCells], [theirNeighbours], [predictedTopoClasses]], axis=0)
         currentPredictedTopoChangesTable = pd.DataFrame(currentPredictedTopoChanges.T)
         return currentPredictedTopoChangesTable
 
@@ -212,19 +213,29 @@ def main():
     # apply topo pred and compare it with observed tissue by only looking at how dividing cell and its neighbours change
     # merge div neighbours
     # compare with two images per figure
-    resultsFolder = "Results/DivAndTopoApplication/VisualisingPropagation/"
-    featureSet = "topoAndBio"# "allTopos"
+    divPredFeatureSet = "allTopos"
+    useBioFeaturesForDivPrediction = divPredFeatureSet=="area" or divPredFeatureSet=="topoAndBio"
+    topoPredFeatureSet = "topoAndBio"
     baseFolder = "./Data/WT/"
-    plant = "P2"
+    baseResultsFolder = "Results/DivAndTopoApplication/"
+    plantNames = ["P2", "P9"]
     timePoints = [0,1,2,3]
-    topologicalChangesTable = pd.read_csv("./Data/WT/topoPredData/diff/manualCentres/topoAndBio/combinedLabels.csv")
-    divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, featureSet)
-    myComparer = LocalTopologyPredictionComparer(divPredModel, topoPredModel,
-                                                divSampleData, baseFolder,
-                                                plant, timePoints,
-                                                divSampleLabel=divSampleLabel,
-                                                loadPredictionsFromFolder="Temporary/")
-    myComparer.CompareSingleDividingNeighbourhoods(topologicalChangesTable, resultsFolder=resultsFolder)
+    allNumberOfNeighbours, allErrorsPerTopo = [], []
+    for plant in plantNames:
+        imageResultsFolder = f"{baseResultsFolder}{plant}/VisualisingPropagation/"
+        loadPredictionsFromFolder = f"{baseResultsFolder}{plant}/"
+        topologicalChangesTable = pd.read_csv("./Data/WT/topoPredData/diff/manualCentres/topoAndBio/combinedLabels.csv")
+        divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, divPredFeatureSet, topoPredFeatureSet)
+        myComparer = LocalTopologyPredictionComparer(divPredModel=None, topoPredModel=None,
+                                                    divSampleData=divSampleData, baseFolder=baseFolder,
+                                                    plant=plant, timePoints=timePoints,
+                                                    divSampleLabel=divSampleLabel,
+                                                    loadPredictionsFromFolder=loadPredictionsFromFolder)
+        numberOfNeighbours, errorsPerTopo = myComparer.CompareSingleDividingNeighbourhoods(topologicalChangesTable, resultsFolder=imageResultsFolder)
+        allNumberOfNeighbours.append(numberOfNeighbours)
+        allErrorsPerTopo.append(errorsPerTopo)
+    np.save(baseResultsFolder+"nrOfNeighbours.npy", numberOfNeighbours)
+    np.save(baseResultsFolder+"nrOfDiviations.npy", errorsPerTopo)
 
 def calcRandomDistributionOfErrorsFor(numberOfNeighbours, repetitions=1000,
                                       percentage=True, columnNames=None):
@@ -279,5 +290,5 @@ def mainPlotResults():
     plt.show()
 
 if __name__ == '__main__':
-    # main()
-    mainPlotResults()
+    main()
+    # mainPlotResults()
