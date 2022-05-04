@@ -231,9 +231,11 @@ def compareLocalTopologyPrediction():
                                                     plant=plant, timePoints=timePoints,
                                                     divSampleLabel=divSampleLabel,
                                                     loadPredictionsFromFolder=loadPredictionsFromFolder)
-        numberOfNeighbours, errorsPerTopo = myComparer.CompareSingleDividingNeighbourhoods(topologicalChangesTable, resultsFolder=imageResultsFolder)
+        errorsPerTopo, numberOfNeighbours = myComparer.CompareSingleDividingNeighbourhoods(topologicalChangesTable, resultsFolder=imageResultsFolder)
         allNumberOfNeighbours.append(numberOfNeighbours)
         allErrorsPerTopo.append(errorsPerTopo)
+    allNumberOfNeighbours = np.concatenate(allNumberOfNeighbours)
+    allErrorsPerTopo = np.concatenate(allErrorsPerTopo)
     np.save(baseResultsFolder+"nrOfNeighbours.npy", numberOfNeighbours)
     np.save(baseResultsFolder+"nrOfDiviations.npy", errorsPerTopo)
 
