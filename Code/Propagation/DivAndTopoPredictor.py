@@ -47,7 +47,6 @@ class DivAndTopoPredictor (object):
         self.normalisationParameterForTopo = normalisationParameterForTopo
         Path(self.savePredictionsToFolder).mkdir(parents=True, exist_ok=True)
         np.random.seed(seed)
-        self.excludedCells = {}
         self.topoPairs = {}
         if run:
             self.setup()
@@ -569,7 +568,7 @@ def calculateCombinedCorrelations(baseResultsFolder="Results/DivAndTopoApplicati
     np.save(baseResultsFolder + "correlations.npy", correlations)
 
 def mainWithMultiple():
-    justLoadPredictions = True
+    justLoadPredictions = False
     baseResultsFolder = "Results/DivAndTopoApplication/"
     divPredFeatureSet = "allTopos"
     useBioFeaturesForDivPrediction = divPredFeatureSet=="area" or divPredFeatureSet=="topoAndBio"
