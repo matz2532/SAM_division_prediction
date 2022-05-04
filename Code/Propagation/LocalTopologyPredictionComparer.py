@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import networkx as nx
 import numpy as np
 import pandas as pd
 import pickle
+import scipy
 import scipy.stats
 import sys
 
@@ -250,17 +252,18 @@ def calcRandomDistributionOfErrorsFor(numberOfNeighbours, repetitions=1000,
     randomDistributions = np.concatenate(randomDistributions)
     return pd.DataFrame(randomDistributions, columns=columnNames)
 
-def mainPlotResults():
-    import scipy
-    percentage = True
-    numberOfNeighbours = [6, 6, 8, 10, 7, 7, 6, 6, 7, 6, 7, 6, 8, 7, 7, 7, 8, 6, 6, 7, 6, 8, 7, 7, 7, 6, 5, 7, 6, 6, 7, 6, 7, 7, 6, 5, 7, 7, 7]
+def plotPercentageCorrectTopologies(baseResultsFolder="Results/DivAndTopoApplication/",
+                                    folderToSave=None, plotName="topology prediction density plot.png",
+                                    percentage=True, fontSize=20):
+    numberOfNeighbours = np.load(baseResultsFolder+"nrOfNeighbours.npy")
+    errorsPerTopo = np.load(baseResultsFolder+"nrOfDiviations.npy")
     randomDistributions = calcRandomDistributionOfErrorsFor(numberOfNeighbours, percentage=percentage, columnNames=["random"])
-    errorsPerTopo = [2, 4, 3, 7, 3, 4, 4, 1, 4, 2, 1, 3, 4, 5, 3, 5, 4, 5, 4, 2, 2, 5, 5, 5, 4, 2, 2, 1, 2, 1, 4, 3, 2, 3, 2, 4, 3, 2, 4]
     errorsPerTopo = np.asarray(errorsPerTopo)
     numberOfNeighbours = np.asarray(numberOfNeighbours)
     if percentage:
         errorsPerTopo = errorsPerTopo / numberOfNeighbours
     d = pd.DataFrame(errorsPerTopo, columns=["predicted"])
+    plt.rcParams.update({"font.size": fontSize})
     fig, ax = plt.subplots()
     if percentage:
         d = 100*(1 - d)
@@ -271,26 +274,41 @@ def mainPlotResults():
         bw_method = .5
         plt.xlim((0, 8))
     ksTest = scipy.stats.ks_2samp(d.iloc[:, 0].to_numpy(), randomDistributions.iloc[:, 0].to_numpy())
-    print(ksTest)
-    d.plot.kde(legend=True, ax=ax, bw_method=bw_method)
-    randomDistributions.plot.kde(legend=True, ax=ax, bw_method=bw_method)
-    ax2 = ax.twinx()
-    d.plot.hist(legend=False, density=False, ax=ax2)
-    ax.set_ylabel('Probability')
-    ax.grid(axis='y')
-    ax.set_facecolor('#d8dcd6')
-    ax2.set_ylabel("Count")
-    ax2.set_ylim(0, 15)
+    distributionResultsText = f"Distribution {ksTest} from {baseResultsFolder}"
+    axTwin = ax.twinx()
+    d.plot.hist(legend=False, density=False, ax=axTwin, zorder=1)
+    d.plot.kde(legend=False, ax=ax, bw_method=bw_method, lw=4, color="black", zorder=2)
+    d.plot.kde(legend=False, ax=ax, bw_method=bw_method, lw=2, zorder=2)
+    randomDistributions.plot.kde(legend=False, ax=ax, bw_method=bw_method, lw=2, zorder=2)
+    ax.set_zorder(axTwin.get_zorder() + 1)
+    ax.patch.set_visible(False)
+    ax.set_ylabel("Probability")
+    ax.set_facecolor("#d8dcd6")
+    axTwin.set_ylabel("Count")
+    axTwin.set_ylim(0, 17)
+    axTwin.set_yticks(range(0,16,5))
+    prop_cycle = plt.rcParams["axes.prop_cycle"]
+    colors = prop_cycle.by_key()["color"]
+    legendHanldes = [mpatches.Patch(color=colors[0], label="predicted"), mpatches.Patch(color=colors[1], label="random")]
+    plt.legend(handles=legendHanldes, prop={"size": fontSize-8})
     if percentage:
         plt.xlim((0, 100))
     else:
         plt.xlim((0, 8))
     ax.set_facecolor("white")
-    ax.spines['top'].set_visible(False)
-    ax2.spines['top'].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    axTwin.spines["top"].set_visible(False)
     ax.set_xlabel("Percentage of correctly labeled neighbours\nper local topology")
-    plt.show()
+    if not folderToSave is None:
+        plt.savefig(folderToSave+plotName, bbox_inches="tight")
+        plt.close()
+        with open(folderToSave+plotName.replace(".png", "distribution test.txt"), "w") as fh:
+            fh.write(distributionResultsText)
+        fh.close()
+    else:
+        print(distributionResultsText)
+        plt.show()
 
-if __name__ == '__main__':
-    compareLocalTopologyPrediction()
-    # mainPlotResults()
+if __name__ == "__main__":
+    # compareLocalTopologyPrediction()
+    plotPercentageCorrectTopologies(folderToSave="Results/DivAndTopoApplication/")

@@ -1,17 +1,19 @@
 import sys
 
 sys.path.insert(0, "./Code/Analysis Tools/")
+sys.path.insert(0, "./Code/Propagation/")
 from BarPlotPlotter import mainDivPredRandomization, mainTopoPredRandomization
 from BarPlotPlotterExtended import mainDivPredTestComparisons, mainTopoPredTestComparisons
 from CorrelationHeatMapDisplayer import mainSaveCorrelation
 from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
 from FeatureDensityPlotting import mainSaveDensityPlotsOfFeaturesFromDiffScenarios
 from GeneralDataAnalyser import GeneralDataAnalyser
+from LocalTopologyPredictionComparer import plotPercentageCorrectTopologies
 from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 2 B alternative", "Fig. 3 B alternative"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 4 C"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -89,7 +91,14 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                             modelBaseFolder="Results/topoPredData/diff/manualCentres/",
                                             saveUnderFolder=fig3ResultFolder)
     # Fig. 4 B - example of predicted and observed topo prediction
-    # Fig. 4 C - percentage of of correctly estimated neighbours per local topology
+    # Fig. 4 C - percentage of correctly estimated neighbours per local topology
+    if figuresToDo == "all" or "Fig. 4 C" in figuresToDo:
+        fig4ResultFolder = resultsFolder + "Fig 4/"
+        Path(fig4ResultFolder).mkdir(parents=True, exist_ok=True)
+        plotPercentageCorrectTopologies(baseResultsFolder="Results/DivAndTopoApplication/",
+                                        folderToSave=fig4ResultFolder,
+                                        plotName="Fig 4C - topology prediction density plot.png",
+                                        fontSize=20)
     # Fig. 4 D - concordance between the observed and predicted topologies
     # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
 
@@ -129,5 +138,5 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
 
 
 if __name__== "__main__":
-    # plotAndPrepareMainFigures()
-    plotAndPrepareSuppFigures()
+    plotAndPrepareMainFigures()
+    # plotAndPrepareSuppFigures()
