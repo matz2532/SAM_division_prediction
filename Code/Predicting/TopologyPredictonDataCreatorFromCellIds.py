@@ -79,11 +79,10 @@ class TopologyPredictonDataCreatorFromCellIds (TopologyPredictonDataCreator):
                 selectedCellsNeighbourPairs = self.getCellNeighbourPairs(selectedCells, parentConnectivityNetwork)
                 self.myStandardTableFormater.SetPlantNameByIdx(plantIdx)
                 self.myStandardTableFormater.SetTimePoint(timeIdx)
-                for dividingParentCell, neighbours in selectedCellsNeighbourPairs:
-                    for currentNeighbour in neighbours:
-                        mappedDaughterData = [dividingParentCell, currentNeighbour, currentNeighbour]
-                        out = self.myStandardTableFormater.GetProperStandardFormatWith(mappedDaughterData)
-                        dataOfPlantTissue.append(out)
+                for dividingParentCell, neighbour in selectedCellsNeighbourPairs:
+                    mappedDaughterData = [dividingParentCell, neighbour, neighbour]
+                    out = self.myStandardTableFormater.GetProperStandardFormatWith(mappedDaughterData)
+                    dataOfPlantTissue.append(out)
         columnNames = ["plant", "time point", "dividing parent cell", "parent neighbor", "mapped daughter"]
         dataOfPlantTissue = pd.DataFrame(dataOfPlantTissue, columns=columnNames)
         return dataOfPlantTissue
@@ -93,7 +92,7 @@ class TopologyPredictonDataCreatorFromCellIds (TopologyPredictonDataCreator):
         for cell in cellIds:
             neighbours = list(network.neighbors(cell))
             for neighbourCell in neighbours:
-                selectedCellsNeighbourPairs.append([cell, neighbours])
+                selectedCellsNeighbourPairs.append([cell, neighbourCell])
         selectedCellsNeighbourPairs = np.asarray(selectedCellsNeighbourPairs)
         return selectedCellsNeighbourPairs
 
@@ -179,3 +178,17 @@ def saveTopoFeatureSetsFromCellIds(set, dataFolder, plantNames, folderToSave, se
     folderToSave += featureProperty + "/"
     Path(folderToSave).mkdir(parents=True, exist_ok=True)
     myTopologyPredictonDataCreator.SaveFeatureTable(folderToSave+"combinedFeatures_{}_notnormalised.csv".format(featureProperty))
+
+def main():
+    import pickle
+    setIdx = 0
+    plant = "P2"
+    savePredictionsToFolder = f"Temporary/DivAndTopoApplication/{plant}/"
+    loadPredictionsToFolder = f"Results/DivAndTopoApplication/{plant}/"
+    dividingCellsOfTimePoint = pickle.load(open(loadPredictionsToFolder+"dividingCellsOfTimePoint.pkl", "rb"))
+    selectedCellsOfTissue = {plant : dividingCellsOfTimePoint}
+    saveTopoFeatureSetsFromCellIds(setIdx, "Data/WT/", [plant], savePredictionsToFolder,
+                                   selectedCellsOfTissue, timePointsPerPlant=5)
+
+if __name__== "__main__":
+    main()
