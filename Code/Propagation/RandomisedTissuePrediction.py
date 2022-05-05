@@ -9,7 +9,7 @@ sys.path.insert(0, "./Code/Feature and Label Creation/")
 from DivAndTopoPredictor import DivAndTopoPredictor, findCentralNonPeripheralCells
 from PeripheralCellIdentifier import PeripheralCellIdentifier
 from StandardTableFormater import StandardTableFormater
-from TopologyPredictonDataCreator import getParentNetworksOf
+from TopologyPredictonDataCreator import TopologyPredictonDataCreator
 
 class RandomisedTissuePrediction (DivAndTopoPredictor):
     confirmResultsManually = False
@@ -153,6 +153,21 @@ def printStatus(currentIteration, maxNrOfIterations, startTime, msgWith3FormatEn
     timeAfterStart = np.round((time.time()-startTime)/60, 1)
     print(msgWith3FormatEntries.format(currentIteration, maxNrOfIterations, timeAfterStart))
 
+def getParentNetworksOf(plantName=3, timeIdx=3, dataFolder="Data/WT/", centralCellsDict=None):
+    if  centralCellsDict is None:
+        centralCellsDict =  {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
+                            "P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
+                            "P5":[[38], [585, 968, 982], [927, 1017], [1136], [1618, 1575, 1445]],
+                            "P6":[[861], [1651, 1621], [1763, 1844], [2109, 2176], [2381]],
+                            "P8":[[3241, 2869, 3044], [3421, 3657], [2805, 2814, 2876], [3013], [358, 189]]}
+    myTopologyPredictonDataCreator = TopologyPredictonDataCreator(dataFolder, 5, [plantName],centralCellsDict=centralCellsDict, skipFooterOfGeometryFile=4)
+    data = myTopologyPredictonDataCreator.GetData()
+    if type(timeIdx) == int:
+        parentConnectivityNetwork = data[plantName]["graphCreators"][timeIdx].GetGraph()
+    else:
+        parentConnectivityNetwork = [data[plantName]["graphCreators"][t].GetGraph() for t in timeIdx]
+    return parentConnectivityNetwork
+
 def repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=None, nrOfRepetitions=None,
                                             testPlant="P2", timePoints=[0, 1, 2, 3],
                                             baseFolder = "./Data/WT/",
@@ -244,7 +259,6 @@ def wrapRandomTissuePredictionAndComparison(givenSeedsToDo, nrOfRepetitions, ver
     print("diff", diff[argsort])
 
 def main():
-    from TopologyPredictonDataCreator import getParentNetworksOf
     nrOfRepetitions = 100
     givenSeedsToDo = np.arange(nrOfRepetitions)
     givenCellsNotToDivide = "Results/DivAndTopoApplication/predictedCellsToDivideP2AllSteps.npy"
