@@ -7,6 +7,7 @@ import time
 sys.path.insert(0, "./Code/Feature and Label Creation/")
 
 from DivAndTopoPredictor import DivAndTopoPredictor, findCentralNonPeripheralCells
+from pathlib import Path
 from PeripheralCellIdentifier import PeripheralCellIdentifier
 from StandardTableFormater import StandardTableFormater
 from TopologyPredictonDataCreator import TopologyPredictonDataCreator
@@ -149,9 +150,9 @@ def calcProbabilityOfLabel(divLabelTable, labelColIdx=-1):
     _, counts = np.unique(divLabelTable.iloc[:, labelColIdx], return_counts=True)
     return counts/divLabelTable.shape[0]
 
-def printStatus(currentIteration, maxNrOfIterations, startTime, msgWith3FormatEntries="{} of {} random tissue predictions are done. {} min"):
+def printStatus(plantName, currentIteration, maxNrOfIterations, startTime, msgWith3FormatEntries="For {} {} of {} random tissue predictions are done. {} min"):
     timeAfterStart = np.round((time.time()-startTime)/60, 1)
-    print(msgWith3FormatEntries.format(currentIteration, maxNrOfIterations, timeAfterStart))
+    print(msgWith3FormatEntries.format(plantName, currentIteration, maxNrOfIterations, timeAfterStart))
 
 def getParentNetworksOf(plantName=3, timeIdx=3, dataFolder="Data/WT/", centralCellsDict=None):
     if  centralCellsDict is None:
@@ -178,15 +179,15 @@ def repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=None, nrOfRepetitions
                                             saveNetworks=False,
                                             mostCentralCells=[[392],  [553, 779, 527], [525], [1135]]):
     assert not givenSeedsToDo is None or not nrOfRepetitions is None, "Either givenSeedsToDo or nrOfRepetitions needs to be different than None."
-    divLabelTable = pd.read_csv(baseFolder + "divEventData/allTopos/combinedLabels.csv")
+    divLabelTable = pd.read_csv(baseFolder + "divEventData/manualCentres/allTopos/combinedLabels.csv")
     topoLabelTable = pd.read_csv(baseFolder + "topoPredData/diff/manualCentres/allTopos/combinedLabels.csv")
     divLabelTable = removePlantEntries(divLabelTable, testPlant)
     topoLabelTable = removePlantEntries(topoLabelTable, testPlant)
     divisionProbability = calcProbabilityOfLabel(divLabelTable)
     topoPredProbability = calcProbabilityOfLabel(topoLabelTable)
-    divSampleData = pd.read_csv(baseFolder + "divEventData/topology/combinedFeatures_topology_notnormalised.csv")
-    divLabelTable = pd.read_csv(baseFolder + "divEventData/allTopos/combinedLabels.csv")
-    parentNetworks = getParentNetworksOf(plant=testPlant, timeIdx=timePoints, dataFolder=baseFolder)
+    divSampleData = pd.read_csv(baseFolder + "divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv")
+    divLabelTable = pd.read_csv(baseFolder + "divEventData/manualCentres/allTopos/combinedLabels.csv")
+    parentNetworks = getParentNetworksOf(plantName=testPlant, timeIdx=timePoints, dataFolder=baseFolder, centralCellsDict={testPlant:mostCentralCells})
     startTime = time.time()
     if givenSeedsToDo is None:
         givenSeedsToDo = np.arange(nrOfRepetitions)
@@ -202,9 +203,9 @@ def repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=None, nrOfRepetitions
     for i, seed in enumerate(givenSeedsToDo):
         if verbose == 1:
             if seed % printAfterIteration == 0:
-                printStatus(i, nrOfRepetitions, startTime)
+                printStatus(testPlant, i, nrOfRepetitions, startTime)
         elif verbose == 2:
-            printStatus(i, nrOfRepetitions, startTime)
+            printStatus(testPlant, i, nrOfRepetitions, startTime)
         myRandomisedTissuePrediction = RandomisedTissuePrediction(divisionProbability, topoPredProbability,
                                             divSampleData.copy(), divLabelTable.copy(), parentNetworks=parentNetworks.copy(),
                                             baseFolder=baseFolder, plant=testPlant, seed=seed,
@@ -230,43 +231,55 @@ def printMeanCorrelation(nrOfRepetitions, folderToLoad="Results/DivAndTopoApplic
         print(meanCor)
     return meanCor
 
-def wrapRandomTissuePredictionAndComparison(givenSeedsToDo, nrOfRepetitions, verbose=2,
+def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, givenSeedsToDo, nrOfRepetitions, verbose=1,
         runImprovedTopoPred=False, divideAllCells=False, saveNetworks=True,
         folderToSave="Results/DivAndTopoApplication/Random/{}/",
-        givenCellsNotToDivide=None):
+        givenCellsNotToDivideFolder=None):
     if runImprovedTopoPred:
         folderToSave = folderToSave.format("Realistic", "{}")
     else:
         folderToSave = folderToSave.format("FullyRandom", "{}")
-    if not givenCellsNotToDivide is None:
-        givenCellsNotToDivide = np.load(givenCellsNotToDivide, allow_pickle=True)
+    if not givenCellsNotToDivideFolder is None:
         if divideAllCells is True:
             folderToSave += "fullyReversedPrediction/"
         else:
             folderToSave += "reversedPrediction/"
     elif not runImprovedTopoPred:
         folderToSave += "normal/"
-    repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=givenSeedsToDo, nrOfRepetitions=nrOfRepetitions,
-                                            runImprovedTopoPred=runImprovedTopoPred, folderToSave=folderToSave,
-                                            verbose=verbose, givenCellsNotToDivide=givenCellsNotToDivide,
-                                            divideAllCells=divideAllCells, saveNetworks=saveNetworks)
-    meanCor = printMeanCorrelation(nrOfRepetitions, folderToLoad=folderToSave)
-    cor = np.load("Results/DivAndTopoApplication/correlations.npy")#
-    diff = cor - meanCor
-    argsort = np.argsort(cor)[::-1]
-    print(list(cor[argsort]))
-    print(list(meanCor[argsort]))
-    print("diff", diff[argsort])
+    for plant in plantNames:
+        folderToSavePlantResults = folderToSave + plant + "/"
+        Path(folderToSavePlantResults).mkdir(parents=True, exist_ok=True)
+        mostCentralCells = mostCentralCellsDict[plant]
+        if not givenCellsNotToDivideFolder is None:
+            givenCellsNotToDivide = np.load(givenCellsNotToDivideFolder+plant+"/dividingCellsOfTimePoint.pkl", allow_pickle=True)
+        repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=givenSeedsToDo, nrOfRepetitions=nrOfRepetitions,
+                                                testPlant=plant,
+                                                runImprovedTopoPred=runImprovedTopoPred, folderToSave=folderToSavePlantResults,
+                                                verbose=verbose, givenCellsNotToDivide=givenCellsNotToDivide,
+                                                divideAllCells=divideAllCells, saveNetworks=saveNetworks,
+                                                mostCentralCells=mostCentralCells)
+    # meanCor = printMeanCorrelation(nrOfRepetitions, folderToLoad=folderToSave)
+    # cor = np.load("Results/DivAndTopoApplication/correlations.npy")#
+    # diff = cor - meanCor
+    # argsort = np.argsort(cor)[::-1]
+    # print(list(cor[argsort]))
+    # print(list(meanCor[argsort]))
+    # print("diff", diff[argsort])
 
 def main():
+    plantNames = ["P2", "P9"]
+    mostCentralCellsDict = {"P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
+                        "P9":[[1047, 721, 1048], [7303, 7533], [6735, 7129], [2160, 2228], [7366, 7236]]}
     nrOfRepetitions = 100
     givenSeedsToDo = np.arange(nrOfRepetitions)
-    givenCellsNotToDivide = "Results/DivAndTopoApplication/predictedCellsToDivideP2AllSteps.npy"
-    wrapRandomTissuePredictionAndComparison(givenSeedsToDo=givenSeedsToDo,
+    givenCellsNotToDivideFolder = "Results/DivAndTopoApplication/"
+    wrapRandomTissuePredictionAndComparison(plantNames=plantNames,
+                                            mostCentralCellsDict=mostCentralCellsDict,
+                                            givenSeedsToDo=givenSeedsToDo,
                                             nrOfRepetitions=nrOfRepetitions,
                                             runImprovedTopoPred=False,
                                             divideAllCells=True,
-                                            givenCellsNotToDivide=givenCellsNotToDivide)
+                                            givenCellsNotToDivideFolder=givenCellsNotToDivideFolder)
     # timePoints=[0, 1, 2, 3]
     # testPlant = "P2"
     # baseFolder = "./Data/WT/"
