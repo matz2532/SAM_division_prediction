@@ -202,7 +202,7 @@ class DetailedCorrelationDataPlotter (object):
             self.doScatterPlot(self.dataPoints1[:, idx], self.dataPoints2[:, idx],
                     ax=ax_i, marker=markers[idx], labels=colNames[idx],
                     boxLoc="top-left", fontSize=14)
-        plt.savefig(self.baseFolder + "Figure 4 Sups part{}.png".format(j), bbox_inches="tight")
+        plt.savefig(self.baseFolder + "Figure Sups part{}.png".format(j), bbox_inches="tight")
         plt.close()
 
     def doZNormalise(self, twoDArray, useParameters=None, returnParameter=False):
@@ -286,6 +286,16 @@ class DetailedCorrelationDataPlotter (object):
             if showPlot:
                 plt.show()
 
+def combinFeatures(baseFolder, plantNames):
+    actualFeatures = []
+    predFeatures = []
+    for plant in plantNames:
+        actualFeatures.append(np.load("./{}{}/actualFeatures.npy".format(baseFolder, plant)))
+        predFeatures.append(np.load("./{}{}/predFeatures.npy".format(baseFolder, plant)))
+    actualFeatures = np.concatenate(actualFeatures, axis=0)
+    predFeatures = np.concatenate(predFeatures, axis=0)
+    return actualFeatures, predFeatures
+
 def plotFeaturesCorrelationOfPredVsObsPropagation():
     sys.path.insert(0, "./Code/Propagation/")
     # so actually dont load correlations to do correlation plots?
@@ -313,13 +323,7 @@ def plotFeaturesCorrelationOfPredVsObsPropagation():
                                                folderToLoad=folderToLoadRandomCor,
                                                printOut=False)
         givenCorrelation = np.asarray(givenCorrelation)
-    actualFeatures = []
-    predFeatures = []
-    for plant in plantNames:
-        actualFeatures.append(np.load("./{}{}/actualFeatures.npy".format(baseFolder, plant)))
-        predFeatures.append(np.load("./{}{}/predFeatures.npy".format(baseFolder, plant)))
-    actualFeatures = np.concatenate(actualFeatures, axis=0)
-    predFeatures = np.concatenate(predFeatures, axis=0)
+    actualFeatures, predFeatures = combinFeatures(baseFolder, plantNames)
     if ignoreFeaturesIdx:
         featuresToKeep = np.arange(len(colNames))
         featuresToKeep = featuresToKeep[np.isin(featuresToKeep, ignoreFeaturesIdx, invert=True)]
@@ -365,5 +369,5 @@ def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Resu
                                                         filenameToSave=filenameToSave)
 
 if __name__ == '__main__':
-    # compareModelPredictedVsRandomPropagationFeatureCorrelations()
+    compareModelPredictedVsRandomPropagationFeatureCorrelations()
     plotFeaturesCorrelationOfPredVsObsPropagation()

@@ -563,8 +563,7 @@ def calculateCombinedCorrelations(baseResultsFolder="Results/DivAndTopoApplicati
     allExpectedFeatures = np.concatenate(allExpectedFeatures, axis=0)
     allPredictedFeatures = np.concatenate(allPredictedFeatures, axis=0)
     correlations = DivAndTopoPredictor(divPredModel=None, topoPredModel=None, divSampleData=None, baseFolder=None,
-                 plant=None, timePoints=None, divSampleLabel=None, run=False).correlateFeatures(predFeatures, actualFeatures)
-    print(correlations)
+                 plant=None, timePoints=None, divSampleLabel=None, run=False).correlateFeatures(allExpectedFeatures, allPredictedFeatures)
     np.save(baseResultsFolder + "correlations.npy", correlations)
 
 def propagateAndCorrelateTissues():
