@@ -23,7 +23,7 @@ class RandomisedTissuePrediction (DivAndTopoPredictor):
                  folderToSave="Results/DivAndTopoApplication/Random/Realistic/",
                  givenCellsNotToDivide=None,
                  divideAllCells=False,
-                 correlateFeatures=False,
+                 correlateFeatures=True,
                  saveNetworks=True,
                  centralCellsList=None):
         self.divisionProbability = divisionProbability
@@ -217,19 +217,19 @@ def repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=None, nrOfRepetitions
                                             saveNetworks=saveNetworks,
                                             centralCellsList=centralCellsList)
 
-def printMeanCorrelation(nrOfRepetitions, folderToLoad="Results/DivAndTopoApplication/Random/Realistic/",
+def calcMeanAndStdCorrelation(nrOfRepetitions, plantNames, folderToLoad="Results/DivAndTopoApplication/Random/Realistic/",
                          baseFilename="correlations_seed{}.npy", printOut=True):
     allCorrelations = []
-    for seed in range(nrOfRepetitions):
-        cor = np.load(folderToLoad + baseFilename.format(seed))
-        if seed==0:
-            if printOut is True:
-                print(cor)
-        allCorrelations.append(cor)
+    for plant in plantNames:
+        for seed in range(nrOfRepetitions):
+            cor = np.load(folderToLoad + plant + "/" + baseFilename.format(seed))
+            allCorrelations.append(cor)
     meanCor = np.mean(allCorrelations, axis=0)
+    stdCor = np.std(allCorrelations, axis=0)
     if printOut is True:
         print(meanCor)
-    return meanCor
+        print(stdCor)
+    return meanCor, stdCor
 
 def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, givenSeedsToDo, nrOfRepetitions, verbose=1,
         runImprovedTopoPred=False, divideAllCells=False, saveNetworks=True,
@@ -258,7 +258,9 @@ def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, gi
                                                 verbose=verbose, givenCellsNotToDivide=givenCellsNotToDivide,
                                                 divideAllCells=divideAllCells, saveNetworks=saveNetworks,
                                                 mostCentralCells=mostCentralCells)
-    # meanCor = printMeanCorrelation(nrOfRepetitions, folderToLoad=folderToSave)
+    meanCor, stdCor = calcMeanAndStdCorrelation(nrOfRepetitions, plantNames=plantNames, folderToLoad=folderToSave)
+    np.save(folderToSave+"meanCorrelations.npy", meanCor)
+    np.save(folderToSave+"stdCorrelations.npy", stdCor)
     # cor = np.load("Results/DivAndTopoApplication/correlations.npy")#
     # diff = cor - meanCor
     # argsort = np.argsort(cor)[::-1]
