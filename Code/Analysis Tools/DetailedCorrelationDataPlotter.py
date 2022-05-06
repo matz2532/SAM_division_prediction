@@ -228,9 +228,10 @@ class DetailedCorrelationDataPlotter (object):
     def areColumnsTheSame(self, column1, column2):
         return np.all(column1 == column2)
 
-    def comparativeBarPlot(self, firstValues, secondValues, addAverage=False,
+    def comparativeBarPlot(self, firstValues, secondValues, secondValuesXerr, addAverage=False,
                            filenameToSave=None, baseFolder="",
-                           colNames=None, printOutColName=True, showPlot=True,
+                           colNames=None, trimColumnNames=True, printOutTrimmedColName=True,
+                           showYLabels=True,
                            firstColor="blue", secondColor="grey", colorPaletteName="colorblind"):# deep,
         if addAverage:
             firstValues = np.concatenate([[np.mean(firstValues)], firstValues])
@@ -242,31 +243,35 @@ class DetailedCorrelationDataPlotter (object):
             colorPallette = seaborn.color_palette(colorPaletteName)
             firstColor = colorPallette[0]
             secondColor = colorPallette[1]
-        colorColumnNumbers = len(firstColor)
-        stackedColor = np.stack([np.full((nrOfValues, colorColumnNumbers), firstColor), np.full((nrOfValues, colorColumnNumbers), secondColor)], axis=1)
-        stackedValues = np.stack([firstValues, secondValues], axis=1)
-        colArgMax = np.argmax(stackedValues, axis=1)
-        firstValueSet =[stackedValues[i, argmax] for i, argmax in enumerate(colArgMax)]
-        secondValueSet =[stackedValues[i, np.invert(argmax)] for i, argmax in enumerate(colArgMax)]
-        firstColorSet =[stackedColor[i, argmax] for i, argmax in enumerate(colArgMax)]
-        secondColorSet =[stackedColor[i, np.invert(argmax)] for i, argmax in enumerate(colArgMax)]
-
         fig, ax = plt.subplots()
         y_pos = np.arange(nrOfValues)
+        # colorColumnNumbers = len(firstColor)
+        # stackedColor = np.stack([np.full((nrOfValues, colorColumnNumbers), firstColor), np.full((nrOfValues, colorColumnNumbers), secondColor)], axis=1)
+        # stackedValues = np.stack([firstValues, secondValues], axis=1)
+        # colArgMax = np.argmax(stackedValues, axis=1)
+        # firstValueSet =[stackedValues[i, argmax] for i, argmax in enumerate(colArgMax)]
+        # secondValueSet =[stackedValues[i, np.invert(argmax)] for i, argmax in enumerate(colArgMax)]
+        # firstColorSet =[stackedColor[i, argmax] for i, argmax in enumerate(colArgMax)]
+        # secondColorSet =[stackedColor[i, np.invert(argmax)] for i, argmax in enumerate(colArgMax)]
         # ax.barh(y_pos, firstValueSet, align='center', color=firstColorSet)
         # ax.barh(y_pos, secondValueSet, align='center', color=secondColorSet)
         ax.barh(y_pos, firstValues, align='center', color=firstColor)
-        ax.barh(y_pos, secondValues, align='center', color=secondColor, alpha=0.7)
+        ax.barh(y_pos, secondValues, xerr=secondValuesXerr, align='center', color=secondColor, ecolor=secondColor, capsize=5, alpha=0.7)
         ax.set_xlabel("Pearson correlation coefficent")
         ax.set_yticks(y_pos)
-        if  not colNames is None:
-            ax.set_yticklabels(colNames)
-            if printOutColName:
-                txt = ""
-                for i in colNames:
-                    i = i.replace("centrality", "c")
-                    i = i.replace("on 2 neighborhood", "2nd n")
-                    txt += i+"\n"
+        if not colNames is None:
+            txt = ""
+            trimmedColNames = []
+            for i in colNames:
+                i = i.replace("centrality", "c")
+                i = i.replace("on 2 neighborhood", "2nd n")
+                txt += i+"\n"
+                trimmedColNames.append(i)
+            if trimColumnNames:
+                colNames = trimmedColNames
+            if showYLabels:
+                ax.set_yticklabels(colNames)
+            if printOutTrimmedColName:
                 print(txt)
         ax.set_xlim((0, 1))
         ax.invert_yaxis()  # labels read top-to-bottom
@@ -314,24 +319,39 @@ def main():
                                 filenameToSaveCorrelationPlot=filenameToSaveCorrelationPlot)
     myDetailedCorrelationDataPlotter.analyseDataPoints()
 
-def testMain():
-    baseFolder = "Results/DivAndTopoApplication/"
-    filenameToSave = "propagationCorrelationsComparingWith{}.png"
-    useFirst = False
-    r = [0.8012599137646944, 0.7094876298482123, 0.6739029353003783, 0.6062687494385892, 0.6061962964973668, 0.5202427837097923, 0.5139619908103954, 0.5078058753445247, 0.49672226863991037, 0.4574032098665024, 0.4574032098665024, 0.4166512363995707, 0.4003791802201093, 0.3413708248255878, 0.3352235129325244, 0.30683542726811036, 0.29799806756472424, 0.2948589013287368]
-    if useFirst:
-        # divide all predicted non-dividing cells
-        tag = "_DividingAllPredictedNonDividing"
-        rComparison = [0.5226668883489629, 0.44040474180175027, 0.4354098621321026, 0.6256362308179784, 0.43156492312457945, 0.7548597607792287, 0.1967149244173097, 0.7489812672343444, 0.6706057440056719, 0.5010677381978935, 0.5010677381978935, 0.4377185485001872, 0.3442277400469092, 0.2200803353905863, 0.5975689994842004, 0.5359966939276773, 0.014364861688750577, -0.09214908403422475]
+def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Results/DivAndTopoApplication/",
+                filenameToSave="propagationCorrelationsComparingWith{}.png",
+                featureFilename="Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv",
+                saveUnderFolder=None, startingFeatureIdx=4, ignoreFeaturesIdx=[0]):
+    if saveUnderFolder is None:
+        saveUnderFolder = baseFolder
+    r = np.load(baseFolder + "correlations.npy")
+    if not featureFilename is None:
+        featureNames = np.asarray(list(pd.read_csv(featureFilename).columns))[3:]
     else:
-        # # randomly divide percentage of predicted non-dividing cellscells
-        tag = "_RandomlyDividePercentageOfPredictedNonDividing"
-        rComparison = [0.7809168081766118, 0.6807925034113907, 0.6898028652278158, 0.7131269716740737, 0.7076859270721316, 0.6862206031088972, 0.31352656498027887, 0.6827619679402527, 0.6558252219799935, 0.5622226775047566, 0.5622226775047566, 0.5483043013022503, 0.4050697796763687, 0.2899819452503018, 0.4137609679699336, 0.3208272155271749, 0.1499374505206079, 0.06242164482421148]
+        featureNames = None
+    # compare againts randomisation of divide all predicted non-dividing cells
+    tag = "_DividingAllPredictedNonDividing"
+    print(baseFolder + "Random/FullyRandom/fullyReversedPrediction")
+    rComparison = np.load(baseFolder + "Random/FullyRandom/fullyReversedPrediction/meanCorrelations.npy")
+    rComparisonXerr = np.load(baseFolder + "Random/FullyRandom/fullyReversedPrediction/stdCorrelations.npy")
+    if ignoreFeaturesIdx:
+        featuresToKeep = np.arange(len(r))
+        featuresToKeep = featuresToKeep[np.isin(featuresToKeep, ignoreFeaturesIdx, invert=True)]
+        r = r[featuresToKeep]
+        rComparisonXerr = rComparisonXerr[featuresToKeep]
+        rComparison = rComparison[featuresToKeep]
+        if not featureNames is None:
+            featureNames = featureNames[featuresToKeep]
     argSort = np.argsort(r)[::-1]
+    if not featureNames is None:
+        featureNames = featureNames[argSort]
     filenameToSave = baseFolder + filenameToSave.format(tag)
     DetailedCorrelationDataPlotter().comparativeBarPlot(np.asarray(r)[argSort], np.asarray(rComparison)[argSort],
+                                                        secondValuesXerr=rComparisonXerr[argSort],
+                                                        colNames=featureNames,
                                                         filenameToSave=filenameToSave)
 
 if __name__ == '__main__':
-    # testMain()
-    main()
+    compareModelPredictedVsRandomPropagationFeatureCorrelations()
+    # main()
