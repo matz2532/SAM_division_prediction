@@ -11,6 +11,8 @@ from DuplicateDoubleRemover import DuplicateDoubleRemover
 
 class DetailedCorrelationDataPlotter (object):
 
+    correlationInformation=""
+
     # compare correlations of to data sets (Fig. 4D)
     def __init__(self, dataPoints1=None, dataPoints2=None, colNames=None, baseFolder="",
                  givenCorrelation=None, filenameToSaveCorrelationPlot="corBarPlot.png"):
@@ -27,6 +29,11 @@ class DetailedCorrelationDataPlotter (object):
         self.deleteColdIdx(duplicateColIdx)
         if self.givenCorrelation is None:
             self.plotDefaultDetailedCorrelations(duplicateColIdx)
+            corInfoExtension = "vsRandom"
+            if self.correlationInformation != "":
+                filename = self.baseFolder + f"correlation{corInfoExtension}Information.txt"
+                with open(filename, "w") as fh:
+                    fh.write(self.correlationInformation)
         else:
             r = np.delete(self.givenCorrelation, duplicateColIdx)
             argmax = np.argmax(np.abs(r))
@@ -46,8 +53,11 @@ class DetailedCorrelationDataPlotter (object):
         for i in np.argsort(r)[::-1]:
             print(self.colNames[i], r[i], corPValues[i], pValues[i])
         argmax = np.argmax(np.abs(r))
+        self.correlationInformation = ""
         if not rThreshold is None:
-            print("{} / {} Pearson correlation coefficients being higher than {}.".format(np.sum(r > rThreshold), len(r), rThreshold))
+            countAboveThresholdText = "{} / {} Pearson correlation coefficients being higher than {}.".format(np.sum(r > rThreshold), len(r), rThreshold)
+            self.correlationInformation += countAboveThresholdText + "\n"
+            print(countAboveThresholdText)
         fig, ax = plt.subplots()
         self.doScatterPlot(self.dataPoints1[:, argmax], self.dataPoints2[:, argmax], ax,
                            color="g", labels=self.colNames[argmax], savefig=True, fontSize=18)
@@ -136,11 +146,12 @@ class DetailedCorrelationDataPlotter (object):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.get_yaxis().set_ticks([])
-        txt = ""
+        featureAbreviationNames = ""
         for i in self.colNames[argsort]:
             i = i.replace("centrality", "c")
             i = i.replace("on 2 neighborhood", "2nd n")
-            txt += i+"\n"
+            featureAbreviationNames += i+"\n"
+        self.correlationInformation += featureAbreviationNames
         if savefig:
             plt.savefig(self.baseFolder + filenameToSave, bbox_inches="tight")
             plt.close()
@@ -229,7 +240,7 @@ class DetailedCorrelationDataPlotter (object):
 
     def comparativeBarPlot(self, firstValues, secondValues, secondValuesXerr, addAverage=False,
                            filenameToSave=None, baseFolder="",
-                           colNames=None, trimColumnNames=True, printOutTrimmedColName=True,
+                           colNames=None, trimColumnNames=True, printOutTrimmedColName=False,
                            showYLabels=True,
                            firstColor="blue", secondColor="grey", colorPaletteName="colorblind"):# deep,
         if addAverage:
@@ -272,6 +283,9 @@ class DetailedCorrelationDataPlotter (object):
                 ax.set_yticklabels(colNames)
             if printOutTrimmedColName:
                 print(txt)
+            filename = baseFolder + f"correlationPredVsObsInformation.txt"
+            with open(filename, "w") as fh:
+                fh.write(txt)
         ax.set_xlim((0, 1))
         ax.invert_yaxis()  # labels read top-to-bottom
         ax.spines['top'].set_visible(False)
@@ -348,7 +362,6 @@ def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Resu
         featureNames = None
     # compare againts randomisation of divide all predicted non-dividing cells
     tag = "_DividingAllPredictedNonDividing"
-    print(baseFolder + "Random/FullyRandom/fullyReversedPrediction")
     rComparison = np.load(baseFolder + "Random/FullyRandom/fullyReversedPrediction/meanCorrelations.npy")
     rComparisonXerr = np.load(baseFolder + "Random/FullyRandom/fullyReversedPrediction/stdCorrelations.npy")
     if ignoreFeaturesIdx:
@@ -362,10 +375,11 @@ def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Resu
     argSort = np.argsort(r)[::-1]
     if not featureNames is None:
         featureNames = featureNames[argSort]
-    filenameToSave = baseFolder + filenameToSave.format(tag)
+    filenameToSave = filenameToSave.format(tag)
     DetailedCorrelationDataPlotter().comparativeBarPlot(np.asarray(r)[argSort], np.asarray(rComparison)[argSort],
                                                         secondValuesXerr=rComparisonXerr[argSort],
                                                         colNames=featureNames,
+                                                        baseFolder=baseFolder,
                                                         filenameToSave=filenameToSave)
 
 if __name__ == '__main__':
