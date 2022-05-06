@@ -339,7 +339,6 @@ class DivAndTopoPredictor (object):
         np.save(self.savePredictionsToFolder + "actualFeatures.npy", actualFeatures)
         np.save(self.savePredictionsToFolder + "predFeatures.npy", predFeatures)
         correlations = self.correlateFeatures(predFeatures, actualFeatures)
-        print(correlations)
         np.save(self.savePredictionsToFolder + "correlations.npy", correlations)
 
     def calcFeaturesForNonDivCellsInBoth(self, savePredictedNetworksFolder=None):
