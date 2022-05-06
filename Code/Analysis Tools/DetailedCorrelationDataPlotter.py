@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
@@ -32,9 +33,10 @@ class DetailedCorrelationDataPlotter (object):
             self.plotCorrelations(r, savefig=True, filenameToSave=self.filenameToSaveCorrelationPlot)
 
     def deleteColdIdx(self, colToRemove):
-        self.dataPoints1 = np.delete(self.dataPoints1, colToRemove, axis=1)
-        self.dataPoints2 = np.delete(self.dataPoints2, colToRemove, axis=1)
-        self.colNames = np.delete(self.colNames, colToRemove)
+        if len(colToRemove) > 0:
+            self.dataPoints1 = np.delete(self.dataPoints1, colToRemove, axis=1)
+            self.dataPoints2 = np.delete(self.dataPoints2, colToRemove, axis=1)
+            self.colNames = np.delete(self.colNames, colToRemove)
 
     def plotDefaultDetailedCorrelations(self, duplicateColIdx, rThreshold=0.5):
         r, corPValues = self.correlateFeatures(self.dataPoints1, self.dataPoints2)
@@ -48,11 +50,8 @@ class DetailedCorrelationDataPlotter (object):
             print("{} / {} Pearson correlation coefficients being higher than {}.".format(np.sum(r > rThreshold), len(r), rThreshold))
         fig, ax = plt.subplots()
         self.doScatterPlot(self.dataPoints1[:, argmax], self.dataPoints2[:, argmax], ax,
-                           color="g", labels=self.colNames[argmax], savefig=True)
-        self.plotCorrelations(r, savefig=True, filenameToSave=self.filenameToSaveCorrelationPlot)
-        loadIdxToRemove = np.where(np.isin(self.colNames, "load centrality"))[0]
-        print(self.colNames, loadIdxToRemove)
-        self.doScatterPlotsExcept([argmax, loadIdxToRemove], r)
+                           color="g", labels=self.colNames[argmax], savefig=True, fontSize=18)
+        self.doScatterPlotsExcept([argmax], r)
 
     def correlateFeatures(self, expectedFeatures, observedFeatures):
         correlations = []
@@ -72,9 +71,9 @@ class DetailedCorrelationDataPlotter (object):
         return np.asarray(pValues), np.asarray(confidenceIntervalls)
 
     def doScatterPlot(self, x, y, ax, marker="o", color="g", showPlot=False, labels="",
-                      savefig=False, filenameToSave="highestCor.png", boxLoc=""):
-        # seaborn.regplot(x, y)
-        ax.scatter(x, y, marker=marker, c=color, alpha=0.8)
+                      savefig=False, filenameToSave="highestCor.png", boxLoc="", fontSize=10):
+        matplotlib.rcParams.update({"font.size":fontSize})
+        ax.scatter(x, y, marker=marker, c=color, alpha=0.3)
         m, b = np.polyfit(x, y, 1)
         minX, maxX = np.min(x), np.max(x)
         minY, maxY = np.min(y), np.max(y)
@@ -93,18 +92,19 @@ class DetailedCorrelationDataPlotter (object):
             elif labels == "avg path length 2nd n":
                 boxY += 0.035
         else:
-            boxX = maxX-(maxX-minX)/3
-            boxY = minY+(maxY-minY)/2.3
-            bbox = {'facecolor': 'grey', 'alpha': 0.5, 'pad': 10, "lw":1}
+            boxX = maxX-(maxX-minX)/2.3
+            boxY = minY+(maxY-minY)/10
+            bbox = {'facecolor': 'grey', 'alpha': 0.5, 'pad': 5, "lw":1}
         m_rounded = self.appropriatelyRound(m)
         b_rounded = self.appropriatelyRound(b)
         r_rounded = self.appropriatelyRound(r)
         ax.text(boxX, boxY, 'f(x) = {0:#.2g}*x+{1:#.2g}\nr = {2:#.2g}'.format(m, b, r), style='normal', fontsize=12,
-                bbox=bbox, multialignment="center")
+                bbox=bbox, multialignment="center", size=fontSize)
         ax.plot(np.unique(minMaxX), np.poly1d((m, b))(np.unique(minMaxX)), c="black", lw=1)
-        ax.set_title(labels, {'fontsize':"x-large"})
-        ax.set_xlabel("observed value")
-        ax.set_ylabel("predicted value")
+        ax.set_title(labels, {'fontsize':fontSize})
+        ax.set_xlabel("observed value", size=fontSize)
+        ax.set_ylabel("predicted value", size=fontSize)
+        ax.tick_params(axis="both", labelsize=fontSize)
         ax.set_xlim((minXY[0], maxXY[0]))
         ax.set_ylim((minXY[1], maxXY[1]))
         ax.spines['top'].set_visible(False)
@@ -141,7 +141,6 @@ class DetailedCorrelationDataPlotter (object):
             i = i.replace("centrality", "c")
             i = i.replace("on 2 neighborhood", "2nd n")
             txt += i+"\n"
-        print(txt)
         if savefig:
             plt.savefig(self.baseFolder + filenameToSave, bbox_inches="tight")
             plt.close()
@@ -202,7 +201,7 @@ class DetailedCorrelationDataPlotter (object):
             ax_i = ax[x, y]
             self.doScatterPlot(self.dataPoints1[:, idx], self.dataPoints2[:, idx],
                     ax=ax_i, marker=markers[idx], labels=colNames[idx],
-                    boxLoc="top-left")
+                    boxLoc="top-left", fontSize=14)
         plt.savefig(self.baseFolder + "Figure 4 Sups part{}.png".format(j), bbox_inches="tight")
         plt.close()
 
@@ -287,33 +286,46 @@ class DetailedCorrelationDataPlotter (object):
             if showPlot:
                 plt.show()
 
-def main():
+def plotFeaturesCorrelationOfPredVsObsPropagation():
     sys.path.insert(0, "./Code/Propagation/")
-    from RandomisedTissuePrediction import printMeanCorrelation
+    # so actually dont load correlations to do correlation plots?
+    from RandomisedTissuePrediction import calcMeanAndStdCorrelation
+    plantNames = ["P2", "P9"]
+    ignoreFeaturesIdx = [0]
     colNames = pd.read_csv("./Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv").columns.to_numpy()[3:]
     # print(colNames)
     baseFolder = "Results/DivAndTopoApplication/"
-    actualFeatures = np.load("./{}actualFeatures.npy".format(baseFolder))
-    predFeatures = np.load("./{}predFeatures.npy".format(baseFolder))
     random = [None, "fullyRandom", "improvedRandom"][0]
     nrOfRepetitions = 100
     folderToLoadRandomCor = "Results/DivAndTopoApplication/Random/"
     if random is None:
         filenameToSaveCorrelationPlot = "corBarPlot.png"
         givenCorrelation = None
-    elif random == "fullyRandom":
-        filenameToSaveCorrelationPlot = "corBarPlot_fullyRandom.png"
-        folderToLoadRandomCor += "FullyRandom/"
-        givenCorrelation = printMeanCorrelation(nrOfRepetitions,
-                                                folderToLoad=folderToLoadRandomCor,
-                                                printOut=False)
-    elif random == "improvedRandom":
-        filenameToSaveCorrelationPlot = "corBarPlot_improvedRandom.png"
-        folderToLoadRandomCor += "Realistic/"
-        givenCorrelation = printMeanCorrelation(nrOfRepetitions,
-                                                folderToLoad=folderToLoadRandomCor,
-                                                printOut=False)
+    else:
+        if random == "fullyRandom":
+            filenameToSaveCorrelationPlot = "corBarPlot_fullyRandom.png"
+            folderToLoadRandomCor += "FullyRandom/"
+        elif  random == "improvedRandom":
+            filenameToSaveCorrelationPlot = "corBarPlot_improvedRandom.png"
+            folderToLoadRandomCor += "Realistic/"
+        givenCorrelation, _ = calcMeanAndStdCorrelation(nrOfRepetitions,
+                                               plantNames=plantNames,
+                                               folderToLoad=folderToLoadRandomCor,
+                                               printOut=False)
         givenCorrelation = np.asarray(givenCorrelation)
+    actualFeatures = []
+    predFeatures = []
+    for plant in plantNames:
+        actualFeatures.append(np.load("./{}{}/actualFeatures.npy".format(baseFolder, plant)))
+        predFeatures.append(np.load("./{}{}/predFeatures.npy".format(baseFolder, plant)))
+    actualFeatures = np.concatenate(actualFeatures, axis=0)
+    predFeatures = np.concatenate(predFeatures, axis=0)
+    if ignoreFeaturesIdx:
+        featuresToKeep = np.arange(len(colNames))
+        featuresToKeep = featuresToKeep[np.isin(featuresToKeep, ignoreFeaturesIdx, invert=True)]
+        colNames = colNames[featuresToKeep]
+        actualFeatures = actualFeatures[:, featuresToKeep]
+        predFeatures = predFeatures[:, featuresToKeep]
     myDetailedCorrelationDataPlotter = DetailedCorrelationDataPlotter(actualFeatures, predFeatures, colNames, baseFolder,
                                 givenCorrelation=givenCorrelation,
                                 filenameToSaveCorrelationPlot=filenameToSaveCorrelationPlot)
@@ -353,5 +365,5 @@ def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Resu
                                                         filenameToSave=filenameToSave)
 
 if __name__ == '__main__':
-    compareModelPredictedVsRandomPropagationFeatureCorrelations()
-    # main()
+    # compareModelPredictedVsRandomPropagationFeatureCorrelations()
+    plotFeaturesCorrelationOfPredVsObsPropagation()
