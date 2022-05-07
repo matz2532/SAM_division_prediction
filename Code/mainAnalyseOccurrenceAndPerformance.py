@@ -13,7 +13,7 @@ from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 4 C"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 2 B alternative", "Fig. 3 B alternative"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -102,7 +102,7 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
     # Fig. 4 D - concordance between the observed and predicted topologies
     # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 5 B"]):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 9 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
@@ -126,6 +126,10 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
                                  savePlotFolder=fig5BResultFolder,
                                  fontSize=fontSize)
     # Fig. 8 - comparison of obs. vs  pred. of all centrality applying div. and topo. prediction models
+    if figuresToDo == "all" or "Fig. 8" in figuresToDo:
+        fig9AResultFolder = resultsFolder + "Fig 8/"
+        Path(fig9AResultFolder).mkdir(parents=True, exist_ok=True)
+        mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=True, savePlotFolder=fig9AResultFolder)
     # Fig. 9 - density distributions of features - A topological and B biological features
     if figuresToDo == "all" or "Fig. 9 A" in figuresToDo:
         fig9AResultFolder = resultsFolder + "Fig 9A/"
