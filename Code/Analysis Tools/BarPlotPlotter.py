@@ -1,8 +1,10 @@
 import itertools
+import matplotlib.colors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats as st
+import seaborn
 import sys
 
 from pathlib import Path
@@ -117,7 +119,8 @@ class BarPlotPlotter (object):
                 file.write(statisticsLetters)
         self.plotFigure(x_pos, mean, std, colors, performanceIdx, minY, fontSize=self.fontSize)
 
-    def setupData(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5, useTesting=True):
+    def setupData(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5,
+                  useTesting=True, colorPalletteName="colorblind"):
         if self.doSpecial:
             mean = self.doSpecial["mean"]
             std = self.doSpecial["std"]
@@ -132,15 +135,17 @@ class BarPlotPlotter (object):
                 mean, std = self.extractMeanAndStd(performanceIdx, nrOfReplicates=nrOfReplicates,
                                             plotOnlyRandom=self.plotOnlyRandom)
                 idx = 2
-                coloryByHtml = ["#2E75B6", "#548235"]
+                colorPallette = seaborn.color_palette(colorPalletteName)
+                coloryByHtml = [colorPallette[0], colorPallette[2]]
                 if useTesting:
                     mean, std = self.addTestData(mean, std, idx, performanceIdx, self.testResultTables)
                     idx += 1
-                    coloryByHtml.append("#ff5800")
+                    coloryByHtml.append(colorPallette[3])
                 if self.furtherTestResults:
                     mean, std = self.addTestData(mean, std, idx, performanceIdx, self.furtherTestResults)
                     idx += 1
-                    coloryByHtml.append("#d1008f")
+                    coloryByHtml.append(colorPallette[1])
+                coloryByHtml = [matplotlib.colors.to_hex(i) for i in coloryByHtml]
         x_pos = np.arange(len(mean))
         x_pos += np.arange(len(mean)) // idx
         colors = np.full(len(x_pos), coloryByHtml[0])
@@ -184,7 +189,8 @@ class BarPlotPlotter (object):
         mean, std = np.asarray(mean), np.asarray(std)
         return mean, std
 
-    def plotFigure(self, x_pos, mean, std, colors, performanceIdx, minY=0, fontSize=18):
+    def plotFigure(self, x_pos, mean, std, colors, performanceIdx, minY=0, fontSize=18,
+                   saveColors=True):
         if not self.resultsTable is None:
             yLabel = self.setYLabel(performanceIdx)
         else:
@@ -229,6 +235,10 @@ class BarPlotPlotter (object):
         if self.filenameToSave:
             plt.savefig(self.filenameToSave)
             plt.close()
+            if saveColors:
+                colorPalletteFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_colors.txt")
+                with open(colorPalletteFilename, "w") as fh:
+                    fh.write(str(list(pd.unique(colors))))
         else:
             plt.show()
 

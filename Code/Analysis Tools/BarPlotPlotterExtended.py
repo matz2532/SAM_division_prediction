@@ -1,6 +1,8 @@
+import matplotlib.colors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn
 import sys
 
 from BarPlotPlotter import BarPlotPlotter
@@ -50,10 +52,15 @@ class BarPlotPlotterExtended (BarPlotPlotter):
         self.doStatistics(performanceIdx, baseScenarioIdx)
         self.plotFigure(x_pos, mean, std, colors, performanceIdx, minY, fontSize=self.fontSize)
 
-    def setupData(self, performanceIdx):
+    def setupData(self, performanceIdx, colorStartIdx=1, colorPalletteName="colorblind"):
         mean, std = self.extractMeanAndStd(performanceIdx)
-        idx = 4
-        coloryByHtml = ["#ff5800", "#d1008f", "#2E75B6", "#548235"]
+        idx = len(self.scenarioResultsFolders)
+        colorPallette = seaborn.color_palette(colorPalletteName)
+        if idx == 4:
+            coloryByHtml = [colorPallette[3], colorPallette[1], colorPallette[4], colorPallette[6]]
+        else:
+            coloryByHtml = [colorPallette[i] for i in range(startIdx, startIdx+len(self.scenarioResultsFolders))]
+        coloryByHtml = [matplotlib.colors.to_hex(i) for i in coloryByHtml]
         x_pos = np.arange(len(mean))
         x_pos += np.arange(len(mean)) // idx
         colors = np.full(len(x_pos), coloryByHtml[0])
