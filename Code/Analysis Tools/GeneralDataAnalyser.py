@@ -27,9 +27,9 @@ class GeneralDataAnalyser (object):
             stdPercentageOfLabelOnes = np.std(percentageOfLabelOnePerTissue)
             percentageOfLabelOnePerTissue.append("{}+-{}".format(meanPercentageOfLabelOnes, stdPercentageOfLabelOnes))
             countsLabelZero = list(countArray[:, 0])
-            countsLabelZero.append(np.NaN)
+            countsLabelZero.append(np.sum(countArray[0]))
             countsLabelOnes = list(countArray[:, 1])
-            countsLabelOnes.append(np.NaN)
+            countsLabelOnes.append(np.sum(countArray[1]))
             tissueNameStringList = ["{}_{}".format(name, timePoint) for name, timePoint in tissueNames]
             tissueNameStringList.append("mean and std of percentage label 1")
             plantNames = [i[0] for i in tissueNames]
@@ -42,31 +42,36 @@ class GeneralDataAnalyser (object):
                                        "percentage of label 1":percentageOfLabelOnePerTissue,
                                        "plant name":plantNames,
                                        "time point":timePoints})
-            if saveResultsToFilename:
-                countTable.to_csv(saveResultsToFilename, index=False)
-            if printResults:
-                print(countTable.to_string())
+            countTable["counts of label 0"] = countTable["counts of label 0"].astype(pd.Int64Dtype())
+            countTable["counts of label 1"] = countTable["counts of label 1"].astype(pd.Int64Dtype())
+            countTable["time point"] = countTable["time point"].astype(pd.Int64Dtype())
+            useIndex = False
         elif countArray.shape[1] == 3:
             tissueNameAsRowName = ["{}".format(name) for name, timePoint in tissueNames]
             colNames = ["label {}".format(i) for i in range(countArray.shape[1])]
             countArrayDf = pd.DataFrame(countArray, columns=colNames, index=tissueNameAsRowName)
-            print(countArrayDf.to_string())
-            print("sum of", colNames)
-            print("      ",np.sum(countArray, axis=0))
+            summedLabelsDf = pd.DataFrame(dict(zip(colNames, np.sum(countArray, axis=0))), index=["summed labels"])
+            countTable = pd.concat([countArrayDf, summedLabelsDf], axis=0)
+            useIndex = True
+            print(countTable.to_string())
         else:
             print("Not yet implemented analysis with more than two label types.")
+        if saveResultsToFilename:
+            countTable.to_csv(saveResultsToFilename, index=useIndex)
+        if printResults:
+            print(countTable.to_string())
 
     def extractTissuesNamesLabelsAndCounts(self, labelTable, plantNameColIdx,
                                            timePointColIdx, labelColIdx):
         plantNames = labelTable.iloc[:, plantNameColIdx].to_numpy()
         timePoints = labelTable.iloc[:, timePointColIdx].to_numpy()
         labels = labelTable.iloc[:, labelColIdx].to_numpy()
-        uniquePlantNames = np.unique(plantNames)
+        uniquePlantNames = pd.unique(plantNames)
         tissueNames = []
         allTissuesUniqueLabels, allTissuesUniqueCounts= [], []
         for currentPlantName in uniquePlantNames:
             isPlantName = np.isin(plantNames, currentPlantName)
-            uniqueTimePoints = np.unique(timePoints[isPlantName])
+            uniqueTimePoints = pd.unique(timePoints[isPlantName])
             for currentTimePoint in uniqueTimePoints:
                 isTimePoint = np.isin(timePoints, currentTimePoint)
                 isTissue = isPlantName & isTimePoint
@@ -78,9 +83,9 @@ class GeneralDataAnalyser (object):
         return tissueNames, allTissuesUniqueLabels, allTissuesUniqueCounts
 
     def reorderCountsToArray(self, allTissuesUniqueLabels, allTissuesUniqueCounts):
-        uniqueLabels = np.unique(allTissuesUniqueLabels)
+        uniqueLabels = pd.unique(np.concatenate(allTissuesUniqueLabels))
         shape = (len(allTissuesUniqueLabels), len(uniqueLabels))
-        countArray = np.zeros(shape)
+        countArray = np.zeros(shape, dtype=int)
         for i in range(shape[0]):
             currentUniqueLabels = allTissuesUniqueLabels[i]
             if np.all(uniqueLabels == currentUniqueLabels):
@@ -101,12 +106,12 @@ class GeneralDataAnalyser (object):
         columnToDisplay = table.iloc[:-1, colIdxToDisplay].to_numpy()
         plantNames = table.iloc[:-1, plantNameColIdx].to_numpy()
         timePoints = table.iloc[:-1, timePointColIdx].to_numpy()
-        uniquePlantNames = np.unique(plantNames)
-        allUniqueTimePoints = np.unique(timePoints)
+        uniquePlantNames = pd.unique(plantNames)
+        allUniqueTimePoints = pd.unique(timePoints)
         orderedValues = np.full((len(uniquePlantNames), len(allUniqueTimePoints)), np.NaN)
         for i, currentPlantName in enumerate(uniquePlantNames):
             isPlantName = np.isin(plantNames, currentPlantName)
-            uniqueTimePoints = np.unique(timePoints[isPlantName])
+            uniqueTimePoints = pd.unique(timePoints[isPlantName])
             for currentTimePoint in uniqueTimePoints:
                 isTimePoint = np.isin(timePoints, currentTimePoint)
                 isTissue = isPlantName & isTimePoint
