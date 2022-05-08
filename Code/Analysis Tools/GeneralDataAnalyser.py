@@ -11,7 +11,7 @@ class GeneralDataAnalyser (object):
         self.labelTable  = labelTable
 
     def AnalyseLabelDistributionOverTissues(self, labelTable=None, plantNameColIdx=0,
-                                            timePointColIdx=1, labelColIdx=-1,
+                                            timePointColIdx=1, labelColIdx=-2,
                                             excludeNameTimePointPairList=None,
                                             saveResultsToFilename=None,
                                             printResults=False):
@@ -175,7 +175,6 @@ class GeneralDataAnalyser (object):
                         tableToAppend = pd.concat([fillerSeries, tableToAppend], ignore_index=True)
                 allTables[i] = combinedTable.append(tableToAppend, ignore_index=True)
         concatenatedTable = pd.concat(allTables)
-        print("saving", filenameToSave)
         concatenatedTable.to_csv(filenameToSave, index=False, header=False)
 
 def main():
@@ -198,43 +197,51 @@ def main():
     if combineTopoPredResults:
         myGeneralDataAnalyser.combineResultsPerformances(**topoArgs)
 
-def mainAnalyseNumbersOfDividingCells(baseFolderName="Data/{}/divEventData/manualCentres/",
-                analyseFolderWithExtension=["WT", "ktn"],
-                tissueNamesToExclude=["P6_1", "P6_2", "P8_2", "P8_3", "P10_2"],
-                redoTables=True):
+def saveLabelCountPerTissue(baseFolderName="Results/",
+                scenarioNameFolderExtensionPairs={"WT":"divEventData/manualCentres/", "ktn":"ktnDivEventData/manualCentres/"},
+                modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                redoTables=True, alsoSavePercentages=False):
     myGeneralDataAnalyser = GeneralDataAnalyser()
     if redoTables:
-        for folderExtension in analyseFolderWithExtension:
-            folder = baseFolderName.format(folderExtension)
-            labelTableFilename = folder + "topology/combinedLabels.csv"
+        for scenarioName, folderExtension in scenarioNameFolderExtensionPairs.items():
+            folder = baseFolderName + folderExtension
+            labelTableFilename = f"{folder}topology/{modelTypeFolderName}labelOverviewDf.csv"
             labelTable = pd.read_csv(labelTableFilename)
             saveResultsToFilename = folder + "labelCountPerTissue.csv"
             myGeneralDataAnalyser.AnalyseLabelDistributionOverTissues(labelTable=labelTable,
                                                 saveResultsToFilename=saveResultsToFilename)
-            table = pd.read_csv(saveResultsToFilename)
-            saveResultsToFilename = folder + "dividingCellsPercentage.csv"
-            myGeneralDataAnalyser.OrderPercentagesOfLabelOne(table, saveResultsToFilename=saveResultsToFilename)
-    tableNames = [baseFolderName.format(folderExtension) + "labelCountPerTissue.csv" for folderExtension in analyseFolderWithExtension]
+            if alsoSavePercentages:
+                table = pd.read_csv(saveResultsToFilename)
+                saveResultsToFilename = folder + "dividingCellsPercentage.csv"
+                myGeneralDataAnalyser.OrderPercentagesOfLabelOne(table, saveResultsToFilename=saveResultsToFilename)
+
+
+def mainAnalyseNumbersOfDividingCells(baseFolderName="Results/",
+                scenarioNameFolderExtensionPairs={"WT":"divEventData/manualCentres/", "ktn":"ktnDivEventData/manualCentres/"},
+                modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                tissueNamesToExclude=["P6_1", "P6_2", "P8_2", "P8_3", "P10_2"],
+                redoTables=True):
+    saveLabelCountPerTissue(baseFolderName=baseFolderName,
+                            scenarioNameFolderExtensionPairs=scenarioNameFolderExtensionPairs,
+                            modelTypeFolderName=modelTypeFolderName,
+                            redoTables=redoTables,
+                            alsoSavePercentages=True)
+    myGeneralDataAnalyser = GeneralDataAnalyser()
+    tableNames = [baseFolderName + folderExtension + "labelCountPerTissue.csv" for folderExtension in scenarioNameFolderExtensionPairs.values()]
     tables = [pd.read_csv(tableName) for tableName in tableNames]
     myGeneralDataAnalyser.CheckSignificanceBetweenTables(tables[0], tables[1], selectedColumn=3,
                                                         tissueNamesToExclude=tissueNamesToExclude)
 
-def mainAnalyseNumbersOfLocalTopologyPrediction():
-    analyseFolderWithExtension = ["ktn/topoPredData", "WT/topoPredData"]
-    baseFolderName = "Data/{}/diff/manualCentres/"
-    myGeneralDataAnalyser = GeneralDataAnalyser()
-    redoTables = True
-    if redoTables:
-        for folderExtension in analyseFolderWithExtension:
-            print(folderExtension)
-            folder = baseFolderName.format(folderExtension)
-            labelTableFilename = folder + "topology/combinedLabels.csv"
-            labelTable = pd.read_csv(labelTableFilename)
-            saveResultsToFilename = folder + "labelCountPerTissue.csv"
-            myGeneralDataAnalyser.AnalyseLabelDistributionOverTissues(labelTable=labelTable,
-                                                saveResultsToFilename=saveResultsToFilename)
+def mainAnalyseNumbersOfLocalTopologyPrediction(baseFolderName="Results/",
+                scenarioNameFolderExtensionPairs={"WT":"topoPredData/diff/manualCentres/", "ktn":"ktnTopoPredData/diff/manualCentres/"},
+                modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex1/",
+                redoTables=True):
+    saveLabelCountPerTissue(baseFolderName=baseFolderName,
+                            scenarioNameFolderExtensionPairs=scenarioNameFolderExtensionPairs,
+                            modelTypeFolderName=modelTypeFolderName,
+                            redoTables=redoTables)
 
 if __name__ == '__main__':
     # main()
     mainAnalyseNumbersOfDividingCells()
-    # mainAnalyseNumbersOfLocalTopologyPrediction()
+    mainAnalyseNumbersOfLocalTopologyPrediction()

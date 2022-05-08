@@ -1,0 +1,7 @@
+tissue name,counts of label 0,counts of label 1,percentage of label 1,plant name,time point
+ktnP1_1,95,21,18.103448275862068,ktnP1,1
+ktnP2_0,107,18,14.4,ktnP2,0
+ktnP2_1,86,24,21.818181818181817,ktnP2,1
+ktnP3_0,71,47,39.83050847457627,ktnP3,0
+ktnP3_1,49,57,53.77358490566038,ktnP3,1
+mean and std of percentage label 1,116,125,29.58514469485611+-14.918390015009987,,
