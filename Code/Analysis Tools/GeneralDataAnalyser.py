@@ -27,9 +27,9 @@ class GeneralDataAnalyser (object):
             stdPercentageOfLabelOnes = np.std(percentageOfLabelOnePerTissue)
             percentageOfLabelOnePerTissue.append("{}+-{}".format(meanPercentageOfLabelOnes, stdPercentageOfLabelOnes))
             countsLabelZero = list(countArray[:, 0])
-            countsLabelZero.append(np.sum(countArray[0]))
+            countsLabelZero.append(np.sum(countArray[:, 0]))
             countsLabelOnes = list(countArray[:, 1])
-            countsLabelOnes.append(np.sum(countArray[1]))
+            countsLabelOnes.append(np.sum(countArray[:, 1]))
             tissueNameStringList = ["{}_{}".format(name, timePoint) for name, timePoint in tissueNames]
             tissueNameStringList.append("mean and std of percentage label 1")
             plantNames = [i[0] for i in tissueNames]
