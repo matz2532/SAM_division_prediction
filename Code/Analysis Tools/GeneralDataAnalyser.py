@@ -217,7 +217,9 @@ def saveLabelCountPerTissue(baseFolderName="Results/",
 
 
 def mainAnalyseNumbersOfDividingCells(baseFolderName="Results/",
-                scenarioNameFolderExtensionPairs={"WT":"divEventData/manualCentres/", "ktn":"ktnDivEventData/manualCentres/"},
+                scenarioNameFolderExtensionPairs={"WT":"divEventData/manualCentres/", "ktn":"ktnDivEventData/manualCentres/",
+                                                  "WT floral":"floral meristems/WT/divEventData/manualCentres/",
+                                                  "ktn floral":"floral meristems/ktn/divEventData/manualCentres/"},
                 modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
                 tissueNamesToExclude=["P6_1", "P6_2", "P8_2", "P8_3", "P10_2"],
                 redoTables=True):
@@ -233,7 +235,9 @@ def mainAnalyseNumbersOfDividingCells(baseFolderName="Results/",
                                                         tissueNamesToExclude=tissueNamesToExclude)
 
 def mainAnalyseNumbersOfLocalTopologyPrediction(baseFolderName="Results/",
-                scenarioNameFolderExtensionPairs={"WT":"topoPredData/diff/manualCentres/", "ktn":"ktnTopoPredData/diff/manualCentres/"},
+                scenarioNameFolderExtensionPairs={"WT":"topoPredData/diff/manualCentres/", "ktn":"ktnTopoPredData/diff/manualCentres/",
+                                                  "WT floral":"floral meristems/WT/topoPredData/diff/manualCentres/",
+                                                  "ktn floral":"floral meristems/ktn/topoPredData/diff/manualCentres/"},
                 modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex1/",
                 redoTables=True):
     saveLabelCountPerTissue(baseFolderName=baseFolderName,

@@ -1,0 +1,10 @@
+tissue name,counts of label 0,counts of label 1,percentage of label 1,plant name,time point
+p4 FM1_0,14,14,50.0,p4 FM1,0
+p4 FM1_1,17,14,45.16129032258065,p4 FM1,1
+p4 FM1_2,8,20,71.42857142857143,p4 FM1,2
+p4 FM1_3,18,12,40.0,p4 FM1,3
+p4 FM2_0,12,19,61.29032258064516,p4 FM2,0
+p4 FM2_1,12,20,62.5,p4 FM2,1
+p4 FM2_2,17,19,52.77777777777778,p4 FM2,2
+p4 FM2_3,19,16,45.714285714285715,p4 FM2,3
+mean and std of percentage label 1,28,31,53.609030977982584+-9.925980608408127,,
