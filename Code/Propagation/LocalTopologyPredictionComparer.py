@@ -274,7 +274,9 @@ def plotPercentageCorrectTopologies(baseResultsFolder="Results/DivAndTopoApplica
         bw_method = .5
         plt.xlim((0, 8))
     ksTest = scipy.stats.ks_2samp(d.iloc[:, 0].to_numpy(), randomDistributions.iloc[:, 0].to_numpy())
-    distributionResultsText = f"Distribution {ksTest} from {baseResultsFolder}"
+    distributionResultsText = f"Distribution {ksTest} from {baseResultsFolder}\n"
+    numberOfLocalTopologies = len(numberOfNeighbours)
+    distributionResultsText += f"with {numberOfLocalTopologies} local topologies"
     axTwin = ax.twinx()
     d.plot.hist(legend=False, density=False, ax=axTwin, zorder=1)
     d.plot.kde(legend=False, ax=ax, bw_method=bw_method, lw=4, color="black", zorder=2)
@@ -302,7 +304,7 @@ def plotPercentageCorrectTopologies(baseResultsFolder="Results/DivAndTopoApplica
     if not folderToSave is None:
         plt.savefig(folderToSave+plotName, bbox_inches="tight")
         plt.close()
-        with open(folderToSave+plotName.replace(".png", "distribution test.txt"), "w") as fh:
+        with open(folderToSave+plotName.replace(".png", " distribution test.txt"), "w") as fh:
             fh.write(distributionResultsText)
         fh.close()
     else:

@@ -1,1 +1,0 @@
-Distribution KstestResult(statistic=0.5761525423728813, pvalue=4.330371589648618e-19) from Results/DivAndTopoApplication/
