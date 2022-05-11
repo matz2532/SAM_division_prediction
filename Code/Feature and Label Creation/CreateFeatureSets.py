@@ -18,7 +18,7 @@ class CreateFeatureSets (object):
                  useManualCentres=True, estimateFeatures=True, estimateLabels=True,
                  plantNames=["P1", "P2", "P5", "P6", "P8"], useTopoCreator=False,
                  timePointsPerPlant=5, centerRadius=30,
-                 centralCellsDict=None, skipEmptyCentrals=False, set=None,
+                 centralCellsDict=None, skipEmptyCentrals=False,
                  takeCorrelationFromDifferentFolder=None, keepFromFolder=None):
         self.dataFolder = dataFolder
         self.folderToSave = folderToSave
