@@ -299,14 +299,19 @@ class TopologyPredictonDataCreator (BaseDataCreator):
         combinedFeatures[0].index = np.arange(len(combinedFeatures[0]))
         if self.useRatio:
             combinedFeatures.append(featuresOfNeighbors/featuresOfCentralCells)
+            combinedFeatures[-1].columns = [c + "_ratio" for c in combinedFeatures[-1].columns]
             #add diff and abs diff for automatic calculation (for now the calculations are done manually see test.py "# create different versions of features")
         elif self.useDifferenceInFeatures:
             combinedFeatures.append(featuresOfNeighbors-featuresOfCentralCells)
+            combinedFeatures[-1].columns = [c + "_difference" for c in combinedFeatures[-1].columns]
         elif self.useAbsDifferenceInFeatures:
             combinedFeatures.append(np.abs(featuresOfNeighbors-featuresOfCentralCells))
+            combinedFeatures[-1].columns = [c + "_absDifference" for c in combinedFeatures[-1].columns]
         else:
+            featuresOfNeighbors.columns = [c + "_neighbour" for c in featuresOfNeighbors.columns]
             combinedFeatures.append(featuresOfNeighbors)
         if self.concatParentFeatures:
+            featuresOfCentralCells.columns = [c + "_div_cell" for c in featuresOfCentralCells.columns]
             combinedFeatures.append(featuresOfCentralCells)
         combinedFeatureDF = pd.concat(combinedFeatures, axis=1)
         return combinedFeatureDF
