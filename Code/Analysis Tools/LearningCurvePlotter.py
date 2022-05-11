@@ -1,3 +1,4 @@
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
@@ -22,6 +23,8 @@ class LearningCurvePlotter (object):
 
     def plot_learning_curve(self, nrOfTrainingSamples, testPerformance, trainPerformance,
                             ylim=None, plotLegend=True):
+        mpl.rcParams['axes.spines.right'] = False
+        mpl.rcParams['axes.spines.top'] = False
         plt.figure()
         if ylim is not None:
             plt.ylim(*ylim)
