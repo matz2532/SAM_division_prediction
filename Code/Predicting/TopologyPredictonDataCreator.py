@@ -23,7 +23,7 @@ class TopologyPredictonDataCreator (BaseDataCreator):
     def __init__(self, dataFolder=None, timePointsPerPlant=None, plantNames=None,
                 folderToSave=None, sep=",", skipFooterOfGeometryFile=4,
                 specialGraphProperties=None, centralCellsDict=None,
-                useRatio=False, useDifferenceInFeatures=True, useAbsDifferenceInFeatures=False,
+                useRatio=False, useDifferenceInFeatures=False, useAbsDifferenceInFeatures=False,
                 concatParentFeatures=True,
                 zNormaliseFeaturesPerTissue=False):
         self.dataFolder = dataFolder
