@@ -49,7 +49,6 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
     for usingWT, createDivData in tasks:
-        if usingWT:
             centralCellsDict = WtCentralCellsDict
             if createDivData:
                 dataArgs = wtDivDataArgs
@@ -120,9 +119,9 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
                 dataArgs = ktnDivDataArgs
             else:
                 dataArgs = tktnTopoDataArgs
-        CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict, setRange=[7],
+        CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict,
                           **dataArgs)
 
 if __name__== "__main__":
-    # mainConvertRawDataToFeaturesAndLabels()
+    mainConvertRawDataToFeaturesAndLabels()
     mainConvertFloralMeristemRawDataToFeaturesAndLabels()
