@@ -9,18 +9,19 @@ class LearningCurvePlotter (object):
     def __init__(self, testPerformance, trainPerformance, nrOfSamples,
                 yLabel="F1-score", showPlot=True,
                 trainLabel = "Training score", testLabel = "Test score",
-                useConfidenceIntervall=False, limitYAxis=False):
+                useConfidenceIntervall=False, limitYAxis=False, plotLegend=True):
         self.yLabel = yLabel
         self.useConfidenceIntervall = useConfidenceIntervall
         self.trainLabel = trainLabel
         self.testLabel = testLabel
         self.limitYAxis = limitYAxis
-        self.plot_learning_curve(nrOfSamples, testPerformance, trainPerformance)
+        self.plotLegend = plotLegend
+        self.plot_learning_curve(nrOfSamples, testPerformance, trainPerformance, plotLegend=self.plotLegend)
         if showPlot:
             plt.show()
 
     def plot_learning_curve(self, nrOfTrainingSamples, testPerformance, trainPerformance,
-                            ylim=None):
+                            ylim=None, plotLegend=True):
         plt.figure()
         if ylim is not None:
             plt.ylim(*ylim)
@@ -36,7 +37,8 @@ class LearningCurvePlotter (object):
         self.plotPerformance(nrOfTrainingSamples, testPerformance,
                              label=self.testLabel, alpha=0.1, color="g")
         plt.ylim(ylim[0], ylim[1])
-        plt.legend(loc="lower right")
+        if plotLegend:
+            plt.legend(loc="lower right")
         return plt
 
     def plotPerformance(self, nrOfTrainingSamples, performanceMatrix, label, alpha=0.1, color="r"):

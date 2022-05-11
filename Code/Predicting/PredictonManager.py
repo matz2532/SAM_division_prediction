@@ -34,6 +34,7 @@ class PredictonManager (object):
                  usePreviousTrainedModelsIfPossible=False,
                  onlyTestModelWithoutTrainingData=False,
                  saveLearningCurve=False,
+                 plotLearningCurveLegend=True,
                  testValidationPerTissue=True,
                  seed=42, specialGraphProperties=None,
                  simplifyLabels=False,
@@ -74,6 +75,7 @@ class PredictonManager (object):
         self.estimatedFeatures=True
         self.estimatedLabels=True
         self.saveLearningCurve = saveLearningCurve
+        self.plotLearningCurveLegend = plotLearningCurveLegend
         self.testValidationPerTissue = testValidationPerTissue
         self.saveDistributionsOfFeatures = False
         self.savePCA = False
@@ -389,7 +391,8 @@ class PredictonManager (object):
                                            nestedModelProp=self.nestedModelProp,
                                            modelEnsambleNumber=self.modelEnsambleNumber,
                                            balanceData=self.balanceData,
-                                           nrOfClasses= 2 if self.useOnlyTwo is True else 3)
+                                           nrOfClasses= 2 if self.useOnlyTwo is True else 3,
+                                           plotLearningCurveLegend=self.plotLearningCurveLegend)
             evaluator.EvaluateModel()
         if self.savePCA:
             baseFolder = "{}PCA/{}/".format(self.dataFolder, self.defineFeatureTypeProperty())

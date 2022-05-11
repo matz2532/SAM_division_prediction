@@ -25,7 +25,7 @@ class PredictonEvaluator (object):
                  hyperparamModels=None, nestedModelProp=False,
                  modelEnsambleNumber=False,
                  balanceData=False, selectedData=1, nrOfClasses=3,
-                 printLearningCurveSplit=True):
+                 printLearningCurveSplit=True, plotLearningCurveLegend=True):
         self.X_train, self.y_train = X_train, y_train
         self.X_test, self.y_test = X_test, y_test
         self.seed = seed
@@ -42,6 +42,7 @@ class PredictonEvaluator (object):
         self.balanceData = balanceData
         self.nrOfClasses = nrOfClasses
         self.printLearningCurveSplit = printLearningCurveSplit
+        self.plotLearningCurveLegend = plotLearningCurveLegend
         np.random.seed(self.seed)
 
     def EvaluateModel(self, useTestData=None):
@@ -70,7 +71,7 @@ class PredictonEvaluator (object):
                              yLabel="Accuracy [%]",
                              showPlot=self.saveToFolder is None,
                              testLabel="Validation Score",
-                             limitYAxis=False)
+                             limitYAxis=False, plotLegend=self.plotLearningCurveLegend)
         if not self.saveToFolder is None:
             plt.savefig(self.saveToFolder+"learning curve.png", bbox_inches="tight")
         else:
