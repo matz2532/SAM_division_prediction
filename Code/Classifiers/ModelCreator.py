@@ -94,7 +94,6 @@ class ModelCreator (object):
             parameters = {'gamma' : gamma, 'C' : C}
         elif self.modelType == "svm" and self.kernel == "linear":
             density = 100
-            gamma = self.equallySpacedValueSamplingOverScales([-8, 3], density)
             C = self.equallySpacedValueSamplingOverScales([-3,4], density)
             parameters = {'gamma' : gamma, 'C' : C}
         elif self.modelType == "random forest":
