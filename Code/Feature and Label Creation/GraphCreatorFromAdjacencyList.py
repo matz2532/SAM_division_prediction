@@ -76,7 +76,7 @@ class GraphCreatorFromAdjacencyList:
                     weight = 1 / sharedWall
                 elif self.useDistanceWeight:
                     distance = self.determineDistance(currentNodeLabel, adjacentNodeLabel)
-                    assert distance != 0, "The nodes {} and {} have a sharedWall of 0, which is not allowed. Consider removing one or both nodes.".format(currentNodeLabel, adjacentNodeLabel)
+                    assert distance != 0, "The nodes {} and {} have a distance of 0, which is not allowed. Consider removing one or both nodes.".format(currentNodeLabel, adjacentNodeLabel)
                     weight = 1 / distance
                 else:
                     weight = (currentCellSize+adjacentCellSize) / 2
