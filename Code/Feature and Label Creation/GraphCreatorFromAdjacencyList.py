@@ -77,7 +77,7 @@ class GraphCreatorFromAdjacencyList:
                 elif self.useDistanceWeight:
                     distance = self.determineDistance(currentNodeLabel, adjacentNodeLabel)
                     assert distance != 0, "The nodes {} and {} have a distance of 0, which is not allowed. Consider removing one or both nodes.".format(currentNodeLabel, adjacentNodeLabel)
-                    weight = 1 / distance
+                    weight = distance
                 else:
                     weight = (currentCellSize+adjacentCellSize) / 2
                 if self.invertEdgeWeight:
