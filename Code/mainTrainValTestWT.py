@@ -6,11 +6,10 @@ from PredictonManager import PredictonManager
 def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=None,
                        excludeDividingNeighboursProperties=[True, False],
                        runModelTraining=True, runModelTesting=False,
-                       saveLearningCurve=False):
+                       saveLearningCurve=False, modelType={"modelType":"svm","kernel":"rbf"}):
     dataFolder = "Data/WT/"
     plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
     testPlants = ["P2", "P9"]
-    modelType =  {"modelType":"svm","kernel":"rbf"}
     usePreviousTrainedModelsIfPossible = False
     onlyTestModelWithoutTrainingData = False
     useManualCentres = True
@@ -122,7 +121,12 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=True, runModelTraining=False, saveLearningCurve=True,
-                       runModelTesting=False)
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=False, saveLearningCurve=True,
-                       excludeDividingNeighboursProperties=[True], runModelTesting=False)
+    mainTrainValTestWT(runDivEventPred=True, runModelTraining=True, saveLearningCurve=False,
+                      runModelTesting=False, modelType={"modelType":"svm","kernel":"linear"})
+    mainTrainValTestWT(runDivEventPred=True, runModelTraining=True, saveLearningCurve=False,
+                       runModelTesting=False,givenSets = ["allTopos","topoAndBio", "lowCor0.3", "lowCor0.5", "lowCor0.7"])
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
+                      excludeDividingNeighboursProperties=[True], runModelTesting=False,
+                      givenSets = ["allTopos", "topoAndBio", "lowCor0.3", "lowCor0.5", "lowCor0.7"])
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
+                       excludeDividingNeighboursProperties=[True], runModelTesting=False, modelType={"modelType":"svm","kernel":"linear"})

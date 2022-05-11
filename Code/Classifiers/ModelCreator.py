@@ -92,6 +92,11 @@ class ModelCreator (object):
             gamma = np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)])
             C = np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])
             parameters = {'gamma' : gamma, 'C' : C}
+        elif self.modelType == "svm" and self.kernel == "linear":
+            density = 100
+            gamma = self.equallySpacedValueSamplingOverScales([-8, 3], density)
+            C = self.equallySpacedValueSamplingOverScales([-3,4], density)
+            parameters = {'gamma' : gamma, 'C' : C}
         elif self.modelType == "random forest":
             n_estimators = np.arange(5, 251, 5)
             max_depth_numbers = np.concatenate([np.arange(1, 6), np.arange(8, 17)])
