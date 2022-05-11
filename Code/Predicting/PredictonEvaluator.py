@@ -52,7 +52,7 @@ class PredictonEvaluator (object):
         if useTestData:
             self.testModelOn(self.X_test, self.y_test)
 
-    def doLearningCurveEstimation(self, useTestData=False, loadPerformances=False):
+    def doLearningCurveEstimation(self, useTestData=False, loadPerformances=True):
         allTrainPsFilename = self.saveToFolder + "allTrainPsStartingFrom{}.pkl".format(self.startRange)
         allValPsFilename = self.saveToFolder + "allValPsStartingFrom{}.pkl".format(self.startRange)
         usedSmpleNumbersFilename = self.saveToFolder + "usedSmpleNumbersStartingFrom{}.pkl".format(self.startRange)
