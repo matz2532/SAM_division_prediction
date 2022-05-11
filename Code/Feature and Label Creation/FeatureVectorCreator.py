@@ -38,7 +38,7 @@ class FeatureVectorCreator (object):
         if not useOwnFeatures is False:
             self.features = useOwnFeatures.copy()
         else:
-            self.features = ["degree", "weighted node degree", "clustering coefficient",
+            self.features = ["weighted node degree", "clustering coefficient",
                             "information centrality", "betweenness centrality",
                             "eigenvector centrality", "page rank", "katz centrality",
                             "current flow betweenness centrality",
