@@ -22,9 +22,10 @@ class LearningCurvePlotter (object):
             plt.show()
 
     def plot_learning_curve(self, nrOfTrainingSamples, testPerformance, trainPerformance,
-                            ylim=None, plotLegend=True):
+                            ylim=None, plotLegend=True, fontSize=18):
         mpl.rcParams['axes.spines.right'] = False
         mpl.rcParams['axes.spines.top'] = False
+        plt.rcParams.update({'font.size': fontSize})
         plt.figure()
         if ylim is not None:
             plt.ylim(*ylim)
