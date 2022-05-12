@@ -69,7 +69,11 @@ class MyScorer (object):
         else:
             average = setAverage
         f1Score = metrics.f1_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
-        if len(f1Score) < self.nrOfClasses and average is None:
+        try:
+            length = len(f1Score)
+        except:
+            length = self.nrOfClasses
+        if length < self.nrOfClasses and average is None:
             f1Score = self.expandIndividualClassPerformanceOnMissingLabel(f1Score, y_true, scoreName="F1-score")
         if inPercent:
             return 100*f1Score
@@ -113,8 +117,14 @@ class MyScorer (object):
         else:
             average = setAverage
         precision = metrics.precision_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
-        if len(precision) < self.nrOfClasses and average is None:
+        try:
+            length = len(f1Score)
+        except:
+            length = self.nrOfClasses
+        if length < self.nrOfClasses and average is None:
             precision = self.expandIndividualClassPerformanceOnMissingLabel(precision, y_true, scoreName="precision")
+        print("worked")
+        sys.exit()
         if inPercent:
             return 100*precision
         else:
