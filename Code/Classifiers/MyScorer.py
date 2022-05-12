@@ -123,8 +123,6 @@ class MyScorer (object):
             length = self.nrOfClasses
         if length < self.nrOfClasses and average is None:
             precision = self.expandIndividualClassPerformanceOnMissingLabel(precision, y_true, scoreName="precision")
-        print("worked")
-        sys.exit()
         if inPercent:
             return 100*precision
         else:
