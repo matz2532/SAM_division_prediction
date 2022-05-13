@@ -11,7 +11,6 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
     timePointsPerPlant = 3
     plantNames = ["ktnP1", "ktnP2", "ktnP3"]
     testPlants = ["ktnP1", "ktnP2", "ktnP3"]
-    modelType =  {"modelType":"svm","kernel":"rbf"}
     useTemporaryResultsFolder = False
     runModelTraining = False
     runModelTesting = True
@@ -26,7 +25,7 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
     centralCellsDict = {"ktnP1": [ [], [3839, 3959] ],
                         "ktnP2": [ [23], [424, 426, 50] ],
                         "ktnP3": [ [29, 199,527], [424, 28, 431] ] }
-    modelType = {"modelType":"svm", "kernel":"rbf"}
+    modelType = {"modelType":"svm", "kernel":"linear"}
     doHyperParameterisation = True
     normalisePerTissue = False
     normaliseTrainTestData = True
@@ -35,13 +34,13 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
     parName = None
     if runDivEventPred:
         if givenSets is None:
-            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
         for set in givenSets:
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}divEventData/manualCentres/{}/".format(dataFolder, set)
             resultsFolder = "Results/ktnDivEventData/manualCentres/{}/".format(set)
-            previousModelFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(set)
+            previousModelFolder = "Results/divEventData/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex0/".format(set)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             newResultsFolder = resultsFolder
@@ -80,13 +79,13 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
                                    printBalancedLabelCount=printBalancedLabelCount)
     else:
         if givenSets is None:
-            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
         for set in givenSets:
             print("testing topo prediction with set ", set)
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}topoPredData/diff/manualCentres/{}/".format(dataFolder, set)
             resultsFolder = "Results/ktnTopoPredData/diff/manualCentres/{}/".format(set)
-            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(set)
+            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/".format(set)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             if useTemporaryResultsFolder:

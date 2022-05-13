@@ -6,7 +6,7 @@ from PredictonManager import PredictonManager
 
 def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
     folderToSaveVal = None
-    modelType =  {"modelType":"svm", "kernel":"rbf"}
+    modelType =  {"modelType":"svm", "kernel":"linear"}
     useTemporaryResultsFolder = False
     runModelTraining = False
     runModelTesting = True
@@ -39,11 +39,11 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
     if runDivEventPred:
         predictionTypeExtension = "divEventData/"
         if givenSets is None:
-            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
     else:
         predictionTypeExtension = "topoPredData/"
         if givenSets is None:
-            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.5", "lowCor0.7"]
+            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
     dataFolder = dataBaseFolder + dataExtension
     featureAndLabelFolder = dataFolder + predictionTypeExtension
     plantNames = list(centralCellsDict.keys())
@@ -55,7 +55,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}manualCentres/{}/".format(featureAndLabelFolder, set)
             resultsFolder = "Results/{}manualCentres/{}/".format(dataExtension + predictionTypeExtension, set)
-            previousModelFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(set)
+            previousModelFolder = "Results/divEventData/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex0/".format(set)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             newResultsFolder = resultsFolder
@@ -97,7 +97,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}diff/manualCentres/{}/".format(featureAndLabelFolder, set)
             resultsFolder = "Results/{}diff/manualCentres/{}/".format(dataExtension + predictionTypeExtension, set)
-            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(set)
+            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/".format(set)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             if useTemporaryResultsFolder:
