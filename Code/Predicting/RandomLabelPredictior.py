@@ -43,10 +43,10 @@ class RandomLabelPredictior (object):
         self.labelName = "combinedLabels.csv"
         if self.excludeDividingNeighbours:
             excludedValue = 1
-            modelFolderName = "svm_k2h_combinedTable_l3f0n1c0bal0ex1/"
+            modelFolderName = "svm_k1h_combinedTable_l3f0n1c0bal0ex1/"
         else:
             excludedValue = 0
-            modelFolderName = "svm_k2h_combinedTable_l3f0n1c0bal0ex0/"
+            modelFolderName = "svm_k1h_combinedTable_l3f0n1c0bal0ex0/"
         externalModelFilename = f"{self.basicResultsFolder}{modelFolderName}testModel.pkl"
         with open(externalModelFilename, "rb") as fh:
             externalModel = pickle.load(fh)

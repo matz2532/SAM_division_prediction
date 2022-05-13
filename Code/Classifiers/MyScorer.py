@@ -526,7 +526,7 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
     else:
         excludingTxt = "ex0"
     for i, set in enumerate(featureSets):
-        folderExtension = "svm_k2h_combinedTable_l3f0n1c0bal0{}/".format(excludingTxt)
+        folderExtension = "svm_k1h_combinedTable_l3f0n1c0bal0{}/".format(excludingTxt)
         resultsFolder = resultsBaseFolder + "{}/{}".format(set, folderExtension)
         modelFolder = modelBaseFolder + "{}/{}".format(set, folderExtension)
         title = ""
@@ -595,9 +595,9 @@ def main():
     mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
                                         modelBaseFolder="Results/topoPredData/diff/manualCentres/")
     sys.exit()
-    # folder = "Results/divEventData/area/svm_k2h_combinedTable_l3f0n1c0ex0/"
-    # folder = "Results/Tissue mapping/reducedFeatures_d26/onlyTopoDistWithParent/svm_k2h_combinedTable_l3f0n1c0ex0/"
-    # folder = "Temporary/topoAndBio/svm_k2h_combinedTable_l3f0n1c0ex1/"
+    # folder = "Results/divEventData/area/svm_k1h_combinedTable_l3f0n1c0ex0/"
+    # folder = "Results/Tissue mapping/reducedFeatures_d26/onlyTopoDistWithParent/svm_k1h_combinedTable_l3f0n1c0ex0/"
+    # folder = "Temporary/topoAndBio/svm_k1h_combinedTable_l3f0n1c0ex1/"
     # idx = 1
     # plotGivenFeatureSetRocCurves(resultsBaseFolder="Temporary/", featureSets=["topoAndBio"], saveFig=True)
     # model = pickle.load(open(folder+"models.pkl", "rb"))[idx]

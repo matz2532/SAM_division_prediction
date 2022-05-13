@@ -150,10 +150,10 @@ class GeneralDataAnalyser (object):
             return None
         print(testResults)
 
-    def combineResultsPerformances(self, resultsTableFolder="Results/divEventData/manualCentres/adjusted div Pred/{}/svm_k2h_combinedTable_l3f0n1c0ex0/", baseResultsFilename="resultsWithTesting.csv",
+    def combineResultsPerformances(self, resultsTableFolder="Results/divEventData/manualCentres/adjusted div Pred/{}/svm_k1h_combinedTable_l3f0n1c0ex0/", baseResultsFilename="resultsWithTesting.csv",
                                    filenameToSave="Results/divEventData/manualCentres/adjusted div Pred/combinedResultsOfFeatureSets.csv",
                                    featureSets=["allTopos", "area", "topoAndBio", "lowCor0.7", "lowCor0.5", "topology"],
-                                   additionalTableFolder="Results/ktnDivEventData/manualCentres/adjusted div Pred/{}/svm_k2h_combinedTable_l3f0n1c0ex0/",
+                                   additionalTableFolder="Results/ktnDivEventData/manualCentres/adjusted div Pred/{}/svm_k1h_combinedTable_l3f0n1c0ex0/",
                                    addAdditionalTableDataAtTheEnd=True, addedRowName="ktn testing"):
         allTables = []
         for set in featureSets:
@@ -182,15 +182,15 @@ def main():
     combineTopoPredResults = True
     combineResultsBaseName = "combinedResultsOfFeatureSets.csv"
     divBaseFolder = "Results/divEventData/manualCentres/adjusted div Pred/"
-    divArgs = {"resultsTableFolder" : divBaseFolder + "{}/svm_k2h_combinedTable_l3f0n1c0ex0/",
+    divArgs = {"resultsTableFolder" : divBaseFolder + "{}/svm_k1h_combinedTable_l3f0n1c0ex0/",
             "filenameToSave" : divBaseFolder + combineResultsBaseName,
             "featureSets" : ["allTopos", "area", "topoAndBio", "lowCor0.7", "lowCor0.5", "topology"],
-            "additionalTableFolder" : "Results/ktnDivEventData/manualCentres/adjusted div Pred/{}/svm_k2h_combinedTable_l3f0n1c0ex0/"}
+            "additionalTableFolder" : "Results/ktnDivEventData/manualCentres/adjusted div Pred/{}/svm_k1h_combinedTable_l3f0n1c0ex0/"}
     topoBaseFolder = "Results/topoPredData/diff/manualCentres/"
-    topoArgs = {"resultsTableFolder" : topoBaseFolder + "{}/svm_k2h_combinedTable_l3f0n1c0ex1/",
+    topoArgs = {"resultsTableFolder" : topoBaseFolder + "{}/svm_k1h_combinedTable_l3f0n1c0ex1/",
             "filenameToSave" : topoBaseFolder + combineResultsBaseName,
             "featureSets" : ["allTopos", "bio", "topoAndBio", "lowCor0.7", "lowCor0.5", "topology"],
-            "additionalTableFolder" : "Results/ktnTopoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0ex1/"}
+            "additionalTableFolder" : "Results/ktnTopoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0ex1/"}
     myGeneralDataAnalyser = GeneralDataAnalyser()
     if combineDivPredResults:
         myGeneralDataAnalyser.combineResultsPerformances(**divArgs)
@@ -199,7 +199,7 @@ def main():
 
 def saveLabelCountPerTissue(baseFolderName="Results/",
                 scenarioNameFolderExtensionPairs={"WT":"divEventData/manualCentres/", "ktn":"ktnDivEventData/manualCentres/"},
-                modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                modelTypeFolderName="svm_k1h_combinedTable_l3f0n1c0bal0ex0/",
                 redoTables=True, alsoSavePercentages=False):
     myGeneralDataAnalyser = GeneralDataAnalyser()
     if redoTables:
@@ -220,7 +220,7 @@ def mainAnalyseNumbersOfDividingCells(baseFolderName="Results/",
                 scenarioNameFolderExtensionPairs={"WT":"divEventData/manualCentres/", "ktn":"ktnDivEventData/manualCentres/",
                                                   "WT floral":"floral meristems/WT/divEventData/manualCentres/",
                                                   "ktn floral":"floral meristems/ktn/divEventData/manualCentres/"},
-                modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex0/",
+                modelTypeFolderName="svm_k1h_combinedTable_l3f0n1c0bal0ex0/",
                 tissueNamesToExclude=["P6_1", "P6_2", "P8_2", "P8_3", "P10_2"],
                 redoTables=True):
     saveLabelCountPerTissue(baseFolderName=baseFolderName,
@@ -238,7 +238,7 @@ def mainAnalyseNumbersOfLocalTopologyPrediction(baseFolderName="Results/",
                 scenarioNameFolderExtensionPairs={"WT":"topoPredData/diff/manualCentres/", "ktn":"ktnTopoPredData/diff/manualCentres/",
                                                   "WT floral":"floral meristems/WT/topoPredData/diff/manualCentres/",
                                                   "ktn floral":"floral meristems/ktn/topoPredData/diff/manualCentres/"},
-                modelTypeFolderName="svm_k2h_combinedTable_l3f0n1c0bal0ex1/",
+                modelTypeFolderName="svm_k1h_combinedTable_l3f0n1c0bal0ex1/",
                 redoTables=True):
     saveLabelCountPerTissue(baseFolderName=baseFolderName,
                             scenarioNameFolderExtensionPairs=scenarioNameFolderExtensionPairs,

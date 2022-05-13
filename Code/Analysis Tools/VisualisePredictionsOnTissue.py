@@ -209,10 +209,10 @@ def mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
         print("The color scheme {} does not exist use an exisiting color scheme or implement your own.")
         sys.exit()
     if doDivPredVisualisation:
-        baseResultsFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/"
+        baseResultsFolder = "Results/divEventData/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex0/"
         allFeatureSets = ["allTopos", "area", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]
     else:
-        baseResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/"
+        baseResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/"
         allFeatureSets = ["allTopos", "bio", "topoAndBio", "lowCor0.7", "lowCor0.3", "topology"]
     if featureSetName is None:
         featureSetName = allFeatureSets[featureSetIdx]

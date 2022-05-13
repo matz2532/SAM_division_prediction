@@ -17,7 +17,7 @@ class BarPlotPlotter (object):
     # plot bar plots of all bar result figures
     def __init__(self, baseResultsFolder, selectedFeatureSetFolders,
                  addOtherTestWithBaseFolder=None,
-                 furtherFolder="svm_k2h_combinedTable_l3f0n1c0bal1ex0/",
+                 furtherFolder="svm_k1h_combinedTable_l3f0n1c0bal1ex0/",
                  randFilename="combinedResultsWithTestingOf_1000_randomizedRuns_ex1.csv",
                  resultFilename="results.csv", resultsTestFilename="resultsWithOnlyTesting.csv", performanceIdx=1,
                  plotOnlyRandom=False, filenameToSave="", fontSize=18,
@@ -451,7 +451,7 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
             balanceTxt = "bal0"
     else:
         balanceTxt = ""
-    furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
+    furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
     setNames = ", ".join(divEventPred)
     if savePlotFolder is None:
         savePlotFolder = baseResultsFolder
@@ -508,7 +508,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
             balanceTxt = "bal0"
     else:
         balanceTxt = ""
-    furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
+    furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
     if len(divEventPred) == 3:
         addition = " main fig"
     else:

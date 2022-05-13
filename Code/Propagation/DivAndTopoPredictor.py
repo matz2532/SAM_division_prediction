@@ -181,7 +181,7 @@ class DivAndTopoPredictor (object):
                 columns[i] = featureName.replace(".3", " "+allFeatureProperties[3])
         originalColumns = list(topoPredFeatureTable.columns)
         topoPredFeatureTable.rename(columns=dict(zip(originalColumns, columns)), inplace=True)
-        useGivenFeatureColumns = list(pd.read_csv(f"Results/topoPredData/diff/manualCentres/{self.topoPredFeatureSet}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/normalizedFeatures_train.csv").columns)
+        useGivenFeatureColumns = list(pd.read_csv(f"Results/topoPredData/diff/manualCentres/{self.topoPredFeatureSet}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/normalizedFeatures_train.csv").columns)
         additionalColumnsToKeep = np.asarray(["plant", "time point", "dividing parent cell", "parent neighbor", "cell"])
         topoPredFeatureTable = self.removeNotGivenFeatures(topoPredFeatureTable, useGivenFeatureColumns, additionalColumnsToKeep=additionalColumnsToKeep)
         return topoPredFeatureTable
@@ -491,8 +491,8 @@ def loadTestModelsAndData(baseFolder, divPredFeatureSet, topoPredFeatureSet=None
     if topoPredFeatureSet is None:
         topoPredFeatureSet = divPredFeatureSet
     divDataFolder = "{}divEventData/manualCentres/{}/".format(baseFolder, divPredFeatureSet)
-    divResultsFolder = "Results/divEventData/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex0/".format(divPredFeatureSet)
-    topoResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/".format(topoPredFeatureSet)
+    divResultsFolder = "Results/divEventData/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex0/".format(divPredFeatureSet)
+    topoResultsFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/".format(topoPredFeatureSet)
     divSampleDataFilename = divDataFolder + "combinedFeatures_{}_notnormalised.csv".format(divPredFeatureSet)
     divSampleLabelFilename = divDataFolder + "combinedLabels.csv"
     divPredModelFilename = divResultsFolder + "testModel.pkl"
@@ -526,7 +526,7 @@ def main():
     topoPredFeatureSet = "topoAndBio"
     baseFolder = "./Data/WT/"
 
-    normalisationParameterForTopo = np.load(f"Results/topoPredData/diff/manualCentres/{topoPredFeatureSet}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/normalisationParameterMeanAndStd.npy")
+    normalisationParameterForTopo = np.load(f"Results/topoPredData/diff/manualCentres/{topoPredFeatureSet}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/normalisationParameterMeanAndStd.npy")
     plant = "P2"
     timePoints = [0,1,2,3]
     mostCentralCells = [[392],  [553, 779, 527], [525], [1135]]
@@ -572,7 +572,7 @@ def propagateAndCorrelateTissues():
     useBioFeaturesForDivPrediction = divPredFeatureSet=="area" or divPredFeatureSet=="topoAndBio"
     topoPredFeatureSet = "topoAndBio"
     baseFolder = "./Data/WT/"
-    normalisationParameterForTopo = np.load(f"Results/topoPredData/diff/manualCentres/{topoPredFeatureSet}/svm_k2h_combinedTable_l3f0n1c0bal0ex1/normalisationParameterMeanAndStd.npy")
+    normalisationParameterForTopo = np.load(f"Results/topoPredData/diff/manualCentres/{topoPredFeatureSet}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/normalisationParameterMeanAndStd.npy")
     plantNames = ["P2", "P9"]
     mostCentralCellsDict = {"P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
                         "P9":[[1047, 721, 1048], [7303, 7533], [6735, 7129], [2160, 2228], [7366, 7236]]}

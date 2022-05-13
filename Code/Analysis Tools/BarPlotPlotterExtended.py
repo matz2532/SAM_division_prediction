@@ -17,7 +17,7 @@ class BarPlotPlotterExtended (BarPlotPlotter):
 
     def __init__(self, scenarioResultsFolders, selectedFeatureSetFolders,
                  addOtherTestWithBaseFolder=None,
-                 furtherFolder="svm_k2h_combinedTable_l3f0n1c0bal1ex0/",
+                 furtherFolder="svm_k1h_combinedTable_l3f0n1c0bal1ex0/",
                  resultFilename="results.csv", resultsTestFilename="resultsWithOnlyTesting.csv", performanceIdx=1,
                  filenameToSave="", fontSize=18,
                  minY=0, doSpecial=False, nrOfReplicates=6):
@@ -158,7 +158,7 @@ def mainDivPredTestComparisons(performance="Acc", doMainFig=True,
             balanceTxt = "bal0"
     else:
         balanceTxt = ""
-    furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
+    furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
     setNames = ", ".join(featureSetNames)
     if savePlotFolder is None:
         savePlotFolder = scenarioResultsFolders[0]
@@ -203,7 +203,7 @@ def mainTopoPredTestComparisons(performance="Acc", doMainFig=True,
             balanceTxt = "bal0"
     else:
         balanceTxt = ""
-    furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
+    furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
     if len(featureSetNames) == 3:
         addition = " main fig"
     else:
