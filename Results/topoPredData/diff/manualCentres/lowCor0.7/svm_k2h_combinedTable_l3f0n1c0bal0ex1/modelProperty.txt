@@ -1,4 +1,4 @@
 propertyName: svm_k2h_combinedTable_l3f0n1c0bal0ex1,
 featureFilename: Data/WT/topoPredData/diff/manualCentres/lowCor0.7/combinedFeatures_lowCor0.7_notnormalised.csv,
 labelFilename: Data/WT/topoPredData/diff/manualCentres/lowCor0.7/combinedLabels.csv,
-nrOfLabels: {0: 1173, 1: 905, 2: 937}nrOfFeatures: 104
+nrOfLabels: {0: 1159, 1: 895, 2: 926}nrOfFeatures: 105
