@@ -121,11 +121,10 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=True, runModelTraining=False, saveLearningCurve=False,
+    from mainConvertRawDataToFeaturesAndLabels import mainConvertRawDataToFeaturesAndLabels, mainConvertFloralMeristemRawDataToFeaturesAndLabels
+    mainConvertRawDataToFeaturesAndLabels()
+    mainConvertFloralMeristemRawDataToFeaturesAndLabels()
+    mainTrainValTestWT(runDivEventPred=True, runModelTraining=True, saveLearningCurve=True,
                       runModelTesting=True)
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
-                       excludeDividingNeighboursProperties=[True], runModelTesting=True)
-    mainTrainValTestWT(runDivEventPred=True, runModelTraining=False, saveLearningCurve=True,
-                      runModelTesting=False)
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=False, saveLearningCurve=True,
-                       excludeDividingNeighboursProperties=[True], runModelTesting=False)
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=True,
+                       excludeDividingNeighboursProperties=[False], runModelTesting=True)

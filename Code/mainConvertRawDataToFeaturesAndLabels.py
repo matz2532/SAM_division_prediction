@@ -48,7 +48,9 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/",
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
+    tasks = [[True, True], [False, True]]
     for usingWT, createDivData in tasks:
+        if usingWT:
             centralCellsDict = WtCentralCellsDict
             if createDivData:
                 dataArgs = wtDivDataArgs
@@ -106,6 +108,7 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
                    "useTopoCreator": True,
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
+    tasks = [[True, True], [False, True]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
