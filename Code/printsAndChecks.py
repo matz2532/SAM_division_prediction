@@ -20,5 +20,49 @@ def mainPrintXOutOfPossibleNonDivCellAfterPropagation():
     actualNonDiv = len(fullPredictedFeatureOfNonDivCellsTable)
     print(f"{actualNonDiv} of the possible {possibleNonDiv} non-dividing cells in the observed topology were also non-dividing in the predicted topology")
 
+def loadAndExtractPerformance(baseResultsFolder, featureSet, kernel="rbf", excludeTxt="0",
+                              modelTypeProp="svm_k{}h_combinedTable_l3f0n1c0bal0ex{}",
+                              resultFilename="results.csv",
+                              columnToSelect="val Acc",
+                              indexToUse="mean"):
+    assert kernel == "rbf" or kernel == "linear", "The kernel needs to be 'rbf' or 'linear'."
+    kernelTxt = "2" if kernel == "rbf" else  "1"
+    filename = f"{baseResultsFolder}{featureSet}/{modelTypeProp.format(kernelTxt, excludeTxt)}/{resultFilename}"
+    table = pd.read_csv(filename, index_col=0)
+    return table.loc[indexToUse, columnToSelect]
+
+def calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt="0"):
+    performances = []
+    for featureSet in givenSets:
+        performances.append(loadAndExtractPerformance(baseResultsFolder, featureSet, kernel=kernel, excludeTxt=excludeTxt))
+    return np.mean(performances)
+
+def printDecisionBetweenRbfAndLinearKernelFor(baseResultsFolder="Results/", checkDivEventPred=True, performanceThreshold=1.5):
+    # performanceThreshold means in case linear kernel performs only 1.5% worse than rbf kernel our threshold is met to choose the linear kernel
+    if checkDivEventPred:
+        scenarioTxt = "division event pred"
+        predTypeExtension = "divEventData/manualCentres/"
+        givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+        excludeTxt = "0"
+    else:
+        scenarioTxt = "local topology pred"
+        predTypeExtension = "topoPredData/diff/manualCentres/"
+        givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+        excludeTxt = "1"
+    baseResultsFolder += predTypeExtension
+    meanRbfKernelValidationAccuracy = calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt=excludeTxt)
+    meanLinearKernelValidationAccuracy = calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="linear", excludeTxt=excludeTxt)
+    meanDifference = meanRbfKernelValidationAccuracy - meanLinearKernelValidationAccuracy
+    if meanDifference < performanceThreshold:
+        kernelToUseTxt = "linear"
+    else:
+        kernelToUseTxt = "rbf"
+    print(f"Use the kernel {kernelToUseTxt} for {scenarioTxt} as {meanRbfKernelValidationAccuracy} - {meanLinearKernelValidationAccuracy} = {meanDifference} < {performanceThreshold} (perform rbf - linear < threshold).")
+
+def mainDecideBetweenRbfAndLinearKernelForDivsionAndTopoPredictionModels():
+    printDecisionBetweenRbfAndLinearKernelFor(checkDivEventPred=True)
+    printDecisionBetweenRbfAndLinearKernelFor(checkDivEventPred=False)
+
 if __name__== "__main__":
-    mainPrintXOutOfPossibleNonDivCellAfterPropagation()
+    # mainPrintXOutOfPossibleNonDivCellAfterPropagation()
+    mainDecideBetweenRbfAndLinearKernelForDivsionAndTopoPredictionModels()
