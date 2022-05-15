@@ -78,23 +78,23 @@ SVC(C=0.0793, break_ties=False, cache_size=200, class_weight='balanced',
     coef0=0.0, decision_function_shape='ovr', degree=3, gamma='scale',
     kernel='linear', max_iter=-1, probability=False, random_state=None,
     shrinking=True, tol=0.001, verbose=False)
-SVC(C=0.0793, break_ties=False, cache_size=200, class_weight='balanced',
-    coef0=0.0, decision_function_shape='ovr', degree=3, gamma='scale',
-    kernel='linear', max_iter=-1, probability=False, random_state=None,
-    shrinking=True, tol=0.001, verbose=False)
-SVC(C=0.11800000000000001, break_ties=False, cache_size=200,
+SVC(C=0.07390000000000001, break_ties=False, cache_size=200,
     class_weight='balanced', coef0=0.0, decision_function_shape='ovr', degree=3,
     gamma='scale', kernel='linear', max_iter=-1, probability=False,
     random_state=None, shrinking=True, tol=0.001, verbose=False)
-SVC(C=0.0009550000000000001, break_ties=False, cache_size=200,
+SVC(C=0.14500000000000002, break_ties=False, cache_size=200,
     class_weight='balanced', coef0=0.0, decision_function_shape='ovr', degree=3,
     gamma='scale', kernel='linear', max_iter=-1, probability=False,
     random_state=None, shrinking=True, tol=0.001, verbose=False)
-SVC(C=0.00604, break_ties=False, cache_size=200, class_weight='balanced',
+SVC(C=0.000973, break_ties=False, cache_size=200, class_weight='balanced',
     coef0=0.0, decision_function_shape='ovr', degree=3, gamma='scale',
     kernel='linear', max_iter=-1, probability=False, random_state=None,
     shrinking=True, tol=0.001, verbose=False)
-SVC(C=0.0703, break_ties=False, cache_size=200, class_weight='balanced',
+SVC(C=0.0271, break_ties=False, cache_size=200, class_weight='balanced',
     coef0=0.0, decision_function_shape='ovr', degree=3, gamma='scale',
     kernel='linear', max_iter=-1, probability=False, random_state=None,
     shrinking=True, tol=0.001, verbose=False)
+SVC(C=0.20800000000000002, break_ties=False, cache_size=200,
+    class_weight='balanced', coef0=0.0, decision_function_shape='ovr', degree=3,
+    gamma='scale', kernel='linear', max_iter=-1, probability=False,
+    random_state=None, shrinking=True, tol=0.001, verbose=False)
