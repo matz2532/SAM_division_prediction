@@ -23,7 +23,7 @@ class TopologyPredictonDataCreator (BaseDataCreator):
     def __init__(self, dataFolder=None, timePointsPerPlant=None, plantNames=None,
                 folderToSave=None, sep=",", skipFooterOfGeometryFile=4,
                 specialGraphProperties=None, centralCellsDict=None,
-                useRatio=False, useDifferenceInFeatures=False, useAbsDifferenceInFeatures=False,
+                useRatio=False, useDifferenceInFeatures=True, useAbsDifferenceInFeatures=False,
                 concatParentFeatures=True,
                 zNormaliseFeaturesPerTissue=False):
         self.dataFolder = dataFolder
@@ -295,22 +295,23 @@ class TopologyPredictonDataCreator (BaseDataCreator):
         featuresOfCentralCells.index = np.arange(len(featuresOfCentralCells))
         combinedFeatures = [tissueLabelTable.iloc[:, :4].copy()]
         combinedFeatures[0].index = np.arange(len(combinedFeatures[0]))
+        baseColumnNames = list(featuresOfNeighbors.columns)
+        # add features
+        featuresOfNeighbors.columns = [c + "_neighbour" for c in baseColumnNames]
+        combinedFeatures.append(featuresOfNeighbors)
+        if self.concatParentFeatures:
+            featuresOfCentralCells.columns = [c + "_div_cell" for c in baseColumnNames]
+            combinedFeatures.append(featuresOfCentralCells)
         if self.useRatio:
             combinedFeatures.append(featuresOfNeighbors/featuresOfCentralCells)
-            combinedFeatures[-1].columns = [c + "_ratio" for c in combinedFeatures[-1].columns]
+            combinedFeatures[-1].columns = [c + "_ratio" for c in baseColumnNames]
             #add diff and abs diff for automatic calculation (for now the calculations are done manually see test.py "# create different versions of features")
         elif self.useDifferenceInFeatures:
-            combinedFeatures.append(featuresOfNeighbors-featuresOfCentralCells)
-            combinedFeatures[-1].columns = [c + "_difference" for c in combinedFeatures[-1].columns]
+            differenceFeatureTable = pd.DataFrame(featuresOfNeighbors.to_numpy() - featuresOfCentralCells.to_numpy(), columns=[c + "_difference" for c in baseColumnNames])
+            combinedFeatures.append(differenceFeatureTable)
         elif self.useAbsDifferenceInFeatures:
             combinedFeatures.append(np.abs(featuresOfNeighbors-featuresOfCentralCells))
-            combinedFeatures[-1].columns = [c + "_absDifference" for c in combinedFeatures[-1].columns]
-        else:
-            featuresOfNeighbors.columns = [c + "_neighbour" for c in featuresOfNeighbors.columns]
-            combinedFeatures.append(featuresOfNeighbors)
-        if self.concatParentFeatures:
-            featuresOfCentralCells.columns = [c + "_div_cell" for c in featuresOfCentralCells.columns]
-            combinedFeatures.append(featuresOfCentralCells)
+            combinedFeatures[-1].columns = [c + "_absDifference" for c in baseColumnNames]
         combinedFeatureDF = pd.concat(combinedFeatures, axis=1)
         return combinedFeatureDF
 

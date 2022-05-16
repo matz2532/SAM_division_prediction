@@ -84,11 +84,11 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
                 for set in givenSets:
                     labelName = "combinedLabels.csv"
                     if useManualCentres:
-                        setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/manualCentres/{}/".format(set)
-                        resultsFolder = "{}diff/manualCentres/{}/".format(baseResultsFolder, set)
+                        setFeatureAndLabelFolder = "Data/WT/topoPredData/concatPlusDiff/manualCentres/{}/".format(set)
+                        resultsFolder = "{}concatPlusDiff/manualCentres/{}/".format(baseResultsFolder, set)
                     else:
-                        setFeatureAndLabelFolder = "Data/WT/topoPredData/diff/{}/".format(set)
-                        resultsFolder = "{}diff/{}/".format(baseResultsFolder, set)
+                        setFeatureAndLabelFolder = "Data/WT/topoPredData/concatPlusDiff/{}/".format(set)
+                        resultsFolder = "{}concatPlusDiff/{}/".format(baseResultsFolder, set)
                     givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
                     print("resultsFolder: "+resultsFolder)
                     manager = PredictonManager(plantNames=plantNames,
@@ -121,10 +121,7 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    from mainConvertRawDataToFeaturesAndLabels import mainConvertRawDataToFeaturesAndLabels, mainConvertFloralMeristemRawDataToFeaturesAndLabels
-    mainConvertRawDataToFeaturesAndLabels()
-    mainConvertFloralMeristemRawDataToFeaturesAndLabels()
-    mainTrainValTestWT(runDivEventPred=True, runModelTraining=True, saveLearningCurve=True,
-                      runModelTesting=True)
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=True,
-                       excludeDividingNeighboursProperties=[False], runModelTesting=True)
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
+                       excludeDividingNeighboursProperties=[True], runModelTesting=False)
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
+                       excludeDividingNeighboursProperties=[True], runModelTesting=False, modelType={"modelType":"svm","kernel":"rbf"})

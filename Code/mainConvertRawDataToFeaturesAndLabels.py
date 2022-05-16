@@ -19,7 +19,7 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "estimateLabels":True,
                    "useManualCentres":True}
     wtTopoDataArgs = {"dataFolder":"Data/WT/",
-                   "folderToSave":"Data/WT/topoPredData/diff/",
+                   "folderToSave":"Data/WT/topoPredData/concatPlusDiff/",
                    "plantNames":["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"],
                    "estimateFeatures":True,
                    "estimateLabels":True,
@@ -48,7 +48,7 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/",
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
-    tasks = [[False, False]]
+    tasks = [[True, False]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
@@ -127,4 +127,4 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
 
 if __name__== "__main__":
     mainConvertRawDataToFeaturesAndLabels()
-    mainConvertFloralMeristemRawDataToFeaturesAndLabels()
+    # mainConvertFloralMeristemRawDataToFeaturesAndLabels()
