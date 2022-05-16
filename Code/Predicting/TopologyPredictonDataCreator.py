@@ -262,14 +262,12 @@ class TopologyPredictonDataCreator (BaseDataCreator):
         featuresAndSources = []
         plantNames = self.labelTable.iloc[:, 0].unique()
         timePoints = self.labelTable.iloc[:, 1].unique()
-        for plantName in plantNames:
-            for timePoint in timePoints:
-                tissueLabelTable = self.getTissueLabels(plantName, timePoint)
-                plantIdx = np.where(np.asarray(self.plantNames) == plantName)[0][0]
-                timeIdx = np.where(timePoints == timePoint)[0][0]
-                if len(tissueLabelTable) > 0:
-                    featuresOfTissue = self.determineFeaturesOf(tissueLabelTable, plantIdx, timeIdx)
-                    featuresAndSources.append(featuresOfTissue)
+        groupedTables = self.labelTable.groupby(["plant", "time point"])
+        for groupId, groupTable in groupedTables:
+            plantName, timePoint = groupId
+            tissueLabelTable = self.getTissueLabels(plantName, timePoint)
+            featuresOfTissue = self.determineFeaturesOf(tissueLabelTable, plantName, timePoint)
+            featuresAndSources.append(featuresOfTissue)
         self.featureTable = pd.concat(featuresAndSources, axis=0, ignore_index=True)
 
     def getTissueLabels(self, plantName, timePoint, plantColIdx=0, timeColIdx=1):
@@ -283,12 +281,12 @@ class TopologyPredictonDataCreator (BaseDataCreator):
             tissueLabelTable = []
         return tissueLabelTable
 
-    def determineFeaturesOf(self, tissueLabelTable, plantIdx, timeIdx):
+    def determineFeaturesOf(self, tissueLabelTable, plantName, timeIdx):
         fullFormat = tissueLabelTable.to_numpy()
         dividingParentCells = fullFormat[:, 2].astype(int)
         neighboringParentCells = fullFormat[:, 3].astype(int)
         unique = np.unique([dividingParentCells, neighboringParentCells])
-        uniqueFeatureDF = self.calcFeatureTable(plantIdx, timeIdx, unique)
+        uniqueFeatureDF = self.calcFeatureTable(plantName, timeIdx, unique)
         isNeighbore = self.whereAreElementsIn(unique, neighboringParentCells)
         isCentral = self.whereAreElementsIn(unique, dividingParentCells)
         featuresOfNeighbors = uniqueFeatureDF.iloc[isNeighbore,:].copy()
@@ -316,12 +314,12 @@ class TopologyPredictonDataCreator (BaseDataCreator):
         combinedFeatureDF = pd.concat(combinedFeatures, axis=1)
         return combinedFeatureDF
 
-    def calcFeatureTable(self, plantIdx, timeIdx, uniqueMappedParentCells):
+    def calcFeatureTable(self, plantName, timeIdx, uniqueMappedParentCells):
         if self.specialGraphProperties is None:
-            parentConnectivityNetwork = self.GetValuesFrom("graph", plantIdx, timeIdx)
+            parentConnectivityNetwork = self.GetValuesFrom("graph", plantName, timeIdx, isPlantIdxPlantName=True)
         else:
-            parentConnectivityNetwork = self.calcSpecialGraph(plantIdx, timeIdx)
-            cellSizeFilename = self.GetValuesFrom("geometryFilename", plantIdx, timeIdx)
+            parentConnectivityNetwork = self.calcSpecialGraph(plantName, timeIdx, isPlantIdxPlantName=True)
+            cellSizeFilename = self.GetValuesFrom("geometryFilename", plantName, timeIdx, isPlantIdxPlantName=True)
         myFeatureVectorCreator = FeatureVectorCreator(parentConnectivityNetwork,
                                                       allowedLabels=uniqueMappedParentCells,
                                                       zNormaliseFeaturesPerTissue=self.zNormaliseFeaturesPerTissue)
@@ -329,9 +327,9 @@ class TopologyPredictonDataCreator (BaseDataCreator):
         featureDF.index = np.arange(len(uniqueMappedParentCells))
         return featureDF
 
-    def calcSpecialGraph(self, plantIdx, timeIdx, isPlantIdxPlantName=False):
-        cellSizeFilename = self.GetValuesFrom("geometryFilename", plantIdx, timeIdx, isPlantIdxPlantName=isPlantIdxPlantName)
-        graphFilename = self.GetValuesFrom("graphFilename", plantIdx, timeIdx, isPlantIdxPlantName=isPlantIdxPlantName)
+    def calcSpecialGraph(self, plantName, timeIdx, isPlantIdxPlantName=True):
+        cellSizeFilename = self.GetValuesFrom("geometryFilename", plantName, timeIdx, isPlantIdxPlantName=isPlantIdxPlantName)
+        graphFilename = self.GetValuesFrom("graphFilename", plantName, timeIdx, isPlantIdxPlantName=isPlantIdxPlantName)
         useEdgeWeight = self.specialGraphProperties["useEdgeWeight"]
         invertEdgeWeight = self.specialGraphProperties["invertEdgeWeight"]
         useSharedWallWeight = self.specialGraphProperties["useSharedWallWeight"]
