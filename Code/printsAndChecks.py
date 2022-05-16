@@ -22,7 +22,7 @@ def mainPrintXOutOfPossibleNonDivCellAfterPropagation():
 
 def loadAndExtractPerformance(baseResultsFolder, featureSet, kernel="rbf", excludeTxt="0",
                               modelTypeProp="svm_k{}h_combinedTable_l3f0n1c0bal0ex{}",
-                              resultFilename="results.csv",
+                              resultFilename="resultsWithTesting.csv",
                               columnToSelect="val Acc",
                               indexToUse="mean"):
     assert kernel == "rbf" or kernel == "linear", "The kernel needs to be 'rbf' or 'linear'."
@@ -35,6 +35,7 @@ def calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt
     performances = []
     for featureSet in givenSets:
         performances.append(loadAndExtractPerformance(baseResultsFolder, featureSet, kernel=kernel, excludeTxt=excludeTxt))
+    print(performances)
     return np.mean(performances)
 
 def printDecisionBetweenRbfAndLinearKernelFor(baseResultsFolder="Results/", checkDivEventPred=True, performanceThreshold=1.5):
@@ -42,12 +43,12 @@ def printDecisionBetweenRbfAndLinearKernelFor(baseResultsFolder="Results/", chec
     if checkDivEventPred:
         scenarioTxt = "division event pred"
         predTypeExtension = "divEventData/manualCentres/"
-        givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+        givenSets = ["allTopos", "area", "topoAndBio"]#, "topology", "lowCor0.3", "lowCor0.7"]
         excludeTxt = "0"
     else:
         scenarioTxt = "local topology pred"
         predTypeExtension = "topoPredData/diff/manualCentres/"
-        givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+        givenSets = ["allTopos", "bio", "topoAndBio"]#, "topology", "lowCor0.3", "lowCor0.7"]
         excludeTxt = "1"
     baseResultsFolder += predTypeExtension
     meanRbfKernelValidationAccuracy = calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt=excludeTxt)
