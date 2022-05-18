@@ -45,12 +45,12 @@ class BarPlotPlotter (object):
         self.randTable = []
         self.testResultTables = None
         self.furtherTestResults = None
-        if not self.doSpecial:
+        if not self.doSpecial and not self.plotOnlyRandom:
             self.resultsTable = self.loadTables(self.baseResultsFolder) # add check for number of replicates
         else:
             self.resultsTable = None
         if (self.plotOnlyRandom or self.compareRandAndNorm) and not self.doSpecial:
-            self.randTable = self.loadTables(self.baseResultsFolder, addFurtherFolder=False,
+            self.randTable = self.loadTables(self.baseResultsFolder, addFurtherFolder=True,
                                              addSpecificNameSuffix=self.randFilename)
         else:
             if not self.resultsTestFilename is None:
@@ -163,7 +163,10 @@ class BarPlotPlotter (object):
     def extractMeanAndStd(self, performanceIdx=1, nrOfReplicates=5, plotOnlyRandom=False):
         mean = np.zeros(2*len(self.selectedFeatureSetFolders))
         std = np.zeros(2*len(self.selectedFeatureSetFolders))
-        startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
+        if plotOnlyRandom:
+            startPerformanceValIdx = self.randTable[0].shape[1] // 2
+        else:
+            startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
         for i in range(len(self.selectedFeatureSetFolders)):
             if plotOnlyRandom:
                 table = self.randTable[i]
@@ -442,7 +445,7 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
         divEventPred = ["allTopos", "area", "topoAndBio", "lowCor0.3", "topology"]
         addition = " main fig"
     else:
-        divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "area"]
+        divEventPred = ["lowCor0.3", "lowCor0.7", "topology", "area"]
         addition = " sup low area"
     if not balanceData is None:
         if balanceData:
@@ -451,15 +454,16 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
             balanceTxt = "bal0"
     else:
         balanceTxt = ""
-    furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
     setNames = ", ".join(divEventPred)
     if savePlotFolder is None:
         savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
+        furtherFolder = ""
         divEventPred = ["allTopos", "area", "topoAndBio"]
         randFilename = "combinedResultsWithTestingOf_100_randomizedRuns_ex0.csv"
         filenameToSave = savePlotFolder + "div pred random results{} {} {}.png".format(addition, performance, setNames)
     else:
+        furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
         randFilename = None
         filenameToSave = savePlotFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
@@ -494,7 +498,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         if doMainFig:
             divEventPred = ["allTopos", "bio", "topoAndBio", "lowCor0.3", "topology"]
         else:
-            divEventPred = ["lowCor0.3", "lowCor0.5", "lowCor0.7", "topology", "bio"]
+            divEventPred = ["lowCor0.3", "lowCor0.7", "topology", "bio"]
     else:
         divEventPred = selectedDivEventPred
     if excludeDivNeighbours:
