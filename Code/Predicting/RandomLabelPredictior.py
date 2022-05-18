@@ -141,14 +141,7 @@ class RandomLabelPredictior (object):
             allResultsTables.append(resultsTable.to_numpy())
         allResultsTables = np.asarray(allResultsTables)
         meanResultsTable = np.mean(allResultsTables, axis=0)
-        std = [np.std(allResultsTables[:, :-2-self.includeTesting, i]) for i in range(meanResultsTable.shape[1])]
-        meanResultsTable[-1-self.includeTesting, :] = std
         resultsTable.iloc[:, :] = meanResultsTable
-        if self.includeTesting:
-            stdTest = [np.std(allResultsTables[:, -1, i]) for i in range(meanResultsTable.shape[1])]
-            stdTest = pd.DataFrame(stdTest, columns=["std testing"], index=resultsTable.columns)
-            stdTest = stdTest.T
-            resultsTable = pd.concat([resultsTable, stdTest], axis=0)
         meanResultsTableName = basicResultsFolder + "combinedResults{}Of_{}_randomizedRuns_ex{}.csv".format(testingTxt, nrOfRandomRuns, excludedValue)
         if self.printEndResult:
             print(str(resultsTable))
@@ -174,8 +167,8 @@ def mainCallTopoPredRandomization(excludeDividingNeighboursPar=[True], # [True, 
                                   divEventPred=False, includeTesting=True)
 
 def main():
-    # mainCallDivPredRandomization()
-    mainCallTopoPredRandomization()
+    mainCallDivPredRandomization()
+    # mainCallTopoPredRandomization()
 
 if __name__ == '__main__':
     main()

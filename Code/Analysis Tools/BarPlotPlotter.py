@@ -37,6 +37,7 @@ class BarPlotPlotter (object):
         self.filenameToSave = filenameToSave
         self.fontSize = fontSize
         self.nrOfReplicates = nrOfReplicates
+        self.useTesting = not self.resultsTestFilename is None or plotOnlyRandom
         self.loadFiles()
         self.createFigures(self.performanceIdx, self.compareRandAndNorm,
                            minY=self.minY)
@@ -80,7 +81,7 @@ class BarPlotPlotter (object):
                       printPValues=False):
         x_pos, mean, std, colors = self.setupData(performanceIdx, compareRandAndNorm,
                                                   nrOfReplicates=self.nrOfReplicates,
-                                                  useTesting=not self.testResultTables is None)
+                                                  useTesting=self.useTesting)
         statisticsLetters = ""
         pValueTable = None
         statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
@@ -94,7 +95,7 @@ class BarPlotPlotter (object):
             valGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"validation p-values":"p-value"})).GetGroupNameLetters()
             statisticsLetters += f"trainingGroupLetters {trainingGroupLetters}\n"
             statisticsLetters += f"valGroupLetters {valGroupLetters}\n"
-        if not self.testResultTables is None:
+        if not self.testResultTables is None and not self.plotOnlyRandom:
             pValueTable = self.calcDifferenceBetweenTestPerformances(performanceIdx, existingPValueTable=pValueTable,
                         correctPValues=True)
             pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_trainValTestPValues.csv")
@@ -138,7 +139,11 @@ class BarPlotPlotter (object):
                 colorPallette = seaborn.color_palette(colorPalletteName)
                 coloryByHtml = [colorPallette[0], colorPallette[2]]
                 if useTesting:
-                    mean, std = self.addTestData(mean, std, idx, performanceIdx, self.testResultTables)
+                    if self.plotOnlyRandom:
+                        testResultTables = self.randTable
+                    else:
+                        testResultTables = self.testResultTables
+                    mean, std = self.addTestData(mean, std, idx, performanceIdx, testResultTables)
                     idx += 1
                     coloryByHtml.append(colorPallette[3])
                 if self.furtherTestResults:

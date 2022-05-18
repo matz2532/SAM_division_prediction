@@ -1,2 +1,0 @@
-trainingGroupLetters {'allTopos': 'a', 'bio': 'b', 'topoAndBio': 'c'}
-valGroupLetters {'allTopos': 'a', 'bio': 'b', 'topoAndBio': 'c'}
