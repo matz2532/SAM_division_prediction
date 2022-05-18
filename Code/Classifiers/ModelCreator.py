@@ -87,8 +87,8 @@ class ModelCreator (object):
     def calcDefaultHyperPar(self, X_train):
         if self.modelType == "svm" and self.kernel == "rbf":
             density = 100
-            # gamma = self.equallySpacedValueSamplingOverScales([-4, 3], density)
-            # C = self.equallySpacedValueSamplingOverScales([-3,4], density)
+            gamma = self.equallySpacedValueSamplingOverScales([-4, 3], density)
+            C = self.equallySpacedValueSamplingOverScales([-3,4], density)
             # gamma = np.concatenate([self.equallySpacedValueSamplingOverScales([-8,-7], density), self.equallySpacedValueSamplingOverScales([-5, -5], density)])
             # C = np.concatenate([self.equallySpacedValueSamplingOverScales([1,1], density), self.equallySpacedValueSamplingOverScales([4, 4], density)])
             parameters = {'gamma' : gamma, 'C' : C}
