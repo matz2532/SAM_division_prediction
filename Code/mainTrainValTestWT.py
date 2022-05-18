@@ -122,6 +122,4 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 if __name__ == '__main__':
     mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
-                       excludeDividingNeighboursProperties=[True], runModelTesting=False)
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
                        excludeDividingNeighboursProperties=[True], runModelTesting=False, modelType={"modelType":"svm","kernel":"rbf"})

@@ -22,7 +22,7 @@ def mainPrintXOutOfPossibleNonDivCellAfterPropagation():
 
 def loadAndExtractPerformance(baseResultsFolder, featureSet, kernel="rbf", excludeTxt="0",
                               modelTypeProp="svm_k{}h_combinedTable_l3f0n1c0bal0ex{}",
-                              resultFilename="resultsWithTesting.csv",
+                              resultFilename="results.csv",
                               columnToSelect="val Acc",
                               indexToUse="mean"):
     assert kernel == "rbf" or kernel == "linear", "The kernel needs to be 'rbf' or 'linear'."
@@ -31,7 +31,7 @@ def loadAndExtractPerformance(baseResultsFolder, featureSet, kernel="rbf", exclu
     table = pd.read_csv(filename, index_col=0)
     return table.loc[indexToUse, columnToSelect]
 
-def calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt="0"):
+def calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt="0", resultFilename="results.csv"):
     performances = []
     for featureSet in givenSets:
         performances.append(loadAndExtractPerformance(baseResultsFolder, featureSet, kernel=kernel, excludeTxt=excludeTxt))
@@ -51,8 +51,8 @@ def printDecisionBetweenRbfAndLinearKernelFor(baseResultsFolder="Results/", chec
         givenSets = ["allTopos", "bio", "topoAndBio"]#, "topology", "lowCor0.3", "lowCor0.7"]
         excludeTxt = "1"
     baseResultsFolder += predTypeExtension
-    meanRbfKernelValidationAccuracy = calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt=excludeTxt)
-    meanLinearKernelValidationAccuracy = calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="linear", excludeTxt=excludeTxt)
+    meanRbfKernelValidationAccuracy = calcMeanPerformanceOf(baseResultsFolder, givenSets, kernel="rbf", excludeTxt=excludeTxt,  resultFilename="resultsWithTesting.csv")
+    meanLinearKernelValidationAccuracy = calcMeanPerformanceOf("Results/topoPredData/concatPlusDiff/manualCentres/", givenSets, kernel="linear", excludeTxt=excludeTxt)
     meanDifference = meanRbfKernelValidationAccuracy - meanLinearKernelValidationAccuracy
     if meanDifference < performanceThreshold:
         kernelToUseTxt = "linear"
@@ -61,7 +61,7 @@ def printDecisionBetweenRbfAndLinearKernelFor(baseResultsFolder="Results/", chec
     print(f"Use the kernel {kernelToUseTxt} for {scenarioTxt} as {meanRbfKernelValidationAccuracy} - {meanLinearKernelValidationAccuracy} = {meanDifference} < {performanceThreshold} (perform rbf - linear < threshold).")
 
 def mainDecideBetweenRbfAndLinearKernelForDivsionAndTopoPredictionModels():
-    printDecisionBetweenRbfAndLinearKernelFor(checkDivEventPred=True)
+    # printDecisionBetweenRbfAndLinearKernelFor(checkDivEventPred=True)
     printDecisionBetweenRbfAndLinearKernelFor(checkDivEventPred=False)
 
 if __name__== "__main__":
