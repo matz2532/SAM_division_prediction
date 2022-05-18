@@ -75,7 +75,10 @@ class RandomLabelPredictior (object):
         dataFolder = "Data/WT/"
         plantNames = ["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"]
         testPlants = ["P2", "P9"]
-        modelType =  {"modelType":"svm","kernel":"rbf"}
+        if self.divEventPred:
+            modelType =  {"modelType":"svm","kernel":"linear"}
+        else:
+            modelType =  {"modelType":"svm","kernel":"rbf"}
         usePreviousTrainedModelsIfPossible = False
         onlyTestModelWithoutTrainingData = False
         useManualCentres = True
@@ -96,8 +99,6 @@ class RandomLabelPredictior (object):
         normaliseTrainValTestData = False
         featureProperty = "combinedTable"
         runModelTraining = True
-
-
         manager = PredictonManager(plantNames=plantNames,
                                testPlants=testPlants,
                                featureProperty=featureProperty,
@@ -131,10 +132,13 @@ class RandomLabelPredictior (object):
         allResultsTables = []
         if self.excludeDividingNeighbours:
             excludedValue = 1
-            modelFolderName = "svm_k2_combinedTable_l3f0n1c0bal0ex1/"
+            modelFolderName = "svm_k1_combinedTable_l3f0n1c0bal0ex1/"
         else:
             excludedValue = 0
-            modelFolderName = "svm_k2_combinedTable_l3f0n1c0bal0ex0/"
+            if self.divEventPred:
+                modelFolderName = "svm_k1_combinedTable_l3f0n1c0bal0ex0/"
+            else:
+                modelFolderName = "svm_k2_combinedTable_l3f0n1c0bal0ex0/"
         for i in range(1, nrOfRandomRuns+1):
             resultsFolder = basicResultsFolder + "rand{}/".format(i) + modelFolderName
             resultsTable = pd.read_csv(resultsFolder + "results{}.csv".format(testingTxt), index_col=0)
@@ -148,7 +152,7 @@ class RandomLabelPredictior (object):
         resultsTable.to_csv(meanResultsTableName)
 
 def mainCallDivPredRandomization():
-    for featureSet in ["area", "allTopos", "topology", "topoAndBio"]:
+    for featureSet in ["area", "allTopos", "topoAndBio"]:
         print("featureSet", featureSet)
         myRandomLabelPredictior = RandomLabelPredictior(nrOfRandomRuns=100,
                               recreateRadomLabels=True, runModel=True,
