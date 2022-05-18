@@ -75,20 +75,21 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
                                    labelName=labelName,
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
-    else:
+    else:    
         if givenSets is None:
             givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
         if baseResultsFolder is None:
             baseResultsFolder = "Results/topoPredData/"
+        dataSetType = "diff"
         for excludeDividingNeighbours in excludeDividingNeighboursProperties:
                 for set in givenSets:
                     labelName = "combinedLabels.csv"
                     if useManualCentres:
-                        setFeatureAndLabelFolder = "Data/WT/topoPredData/concatPlusDiff/manualCentres/{}/".format(set)
-                        resultsFolder = "{}concatPlusDiff/manualCentres/{}/".format(baseResultsFolder, set)
+                        setFeatureAndLabelFolder = "Data/WT/topoPredData/{}/manualCentres/{}/".format(dataSetType, set)
+                        resultsFolder = "{}{}/manualCentres/{}/".format(baseResultsFolder, dataSetType, set)
                     else:
-                        setFeatureAndLabelFolder = "Data/WT/topoPredData/concatPlusDiff/{}/".format(set)
-                        resultsFolder = "{}concatPlusDiff/{}/".format(baseResultsFolder, set)
+                        setFeatureAndLabelFolder = "Data/WT/topoPredData/{}/{}/".format(dataSetType, set)
+                        resultsFolder = "{}{}/{}/".format(baseResultsFolder, dataSetType, set)
                     givenFeatureName = "combinedFeatures_{}_notnormalised.csv".format(set)
                     print("resultsFolder: "+resultsFolder)
                     manager = PredictonManager(plantNames=plantNames,
@@ -121,5 +122,5 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
 
 
 if __name__ == '__main__':
-    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False,
+    mainTrainValTestWT(runDivEventPred=False, runModelTraining=True, saveLearningCurve=False, givenSets = ["allTopos"],
                        excludeDividingNeighboursProperties=[True], runModelTesting=False, modelType={"modelType":"svm","kernel":"rbf"})
