@@ -24,7 +24,7 @@ class TopologyPredictonDataCreator (BaseDataCreator):
                 folderToSave=None, sep=",", skipFooterOfGeometryFile=4,
                 specialGraphProperties=None, centralCellsDict=None,
                 useRatio=False, useDifferenceInFeatures=True, useAbsDifferenceInFeatures=False,
-                concatParentFeatures=True,
+                concatParentFeatures=False,
                 zNormaliseFeaturesPerTissue=False):
         self.dataFolder = dataFolder
         self.timePointsPerPlant = timePointsPerPlant

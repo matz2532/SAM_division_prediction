@@ -19,7 +19,7 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "estimateLabels":True,
                    "useManualCentres":True}
     wtTopoDataArgs = {"dataFolder":"Data/WT/",
-                   "folderToSave":"Data/WT/topoPredData/concatPlusDiff/",
+                   "folderToSave":"Data/WT/topoPredData/diff/",
                    "plantNames":["P1", "P2", "P5", "P6", "P8", "P9", "P10", "P11"],
                    "estimateFeatures":True,
                    "estimateLabels":True,
