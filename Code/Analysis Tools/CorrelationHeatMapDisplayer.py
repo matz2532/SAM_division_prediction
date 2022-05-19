@@ -41,7 +41,6 @@ class CorrelationHeatMapDisplayer (object):
             for j in range(nrOfFeatures):
                 correlationMatrix[j, i] = values[idx]
                 idx += 1
-        correlationMatrix = correlationMatrix[1:, :]
         if printHighestCor:
             print(self.columns[np.argmax(np.abs(values))], np.max(values))
         identicalRows = self.identifyIdenticalRows(correlationMatrix)
