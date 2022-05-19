@@ -181,6 +181,8 @@ class PredictonModelCreator (object):
             isValidationPlant = np.isin(plantNameOfTrainData, currentValidationPlant)
             validationIdx, trainIdx = np.where(isValidationPlant)[0], np.where(np.invert(isValidationPlant))[0]
             trainPerformance, validationPerformance = self.trainAndValidateModel(X_train, y_train, trainIdx, validationIdx)
+            print(f"{currentValidationPlant} trainPerformance, validationPerformance")
+            print(trainPerformance, validationPerformance)
             self.allTrainPerfromance.append(trainPerformance)
             self.allValidationPerfromance.append(validationPerformance)
             self.currentSplit += 1
