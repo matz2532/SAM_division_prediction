@@ -394,7 +394,7 @@ class BarPlotPlotter (object):
         setNames = self.selectedFeatureSetFolders
         nrOfConditions = len(performancesPerSet1)
         for i in range(nrOfConditions):
-            pValue, stat, statsMethod = pairwiseComparisonTest(performancesPerSet1[i], performancesPerSet2[i])
+            pValue, stat, statsMethod = self.pairwiseComparisonTest(performancesPerSet1[i], performancesPerSet2[i])
             allPValues.append(pValue)
             allTStats.append(stat)
             testCases.append(f"{firstScenarioName} vs {secondScenarioName} {setNames[i]}")
