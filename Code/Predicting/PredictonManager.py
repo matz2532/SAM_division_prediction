@@ -755,6 +755,7 @@ class PredictonManager (object):
             performanceArray.append(self.testModelCreator.TestModel(currentX, currentY))
         if not self.useOnlyTwo:
             performanceArray = self.mergeListsInPerformanceArray(performanceArray, addMeanOfList=True)
+        #print(performanceArray)
         perfromanceMean = np.mean(performanceArray, axis=0)
         perfromanceStd = np.std(performanceArray, axis=0)
         performanceArray.append(perfromanceMean)

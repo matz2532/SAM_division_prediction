@@ -118,7 +118,7 @@ class MyScorer (object):
             average = setAverage
         precision = metrics.precision_score(y_true, y_pred, average=average, sample_weight=self.sample_weight)
         try:
-            length = len(f1Score)
+            length = len(precision)
         except:
             length = self.nrOfClasses
         if length < self.nrOfClasses and average is None:

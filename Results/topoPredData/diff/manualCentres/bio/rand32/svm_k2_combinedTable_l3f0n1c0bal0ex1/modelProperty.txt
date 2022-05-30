@@ -1,4 +1,4 @@
 propertyName: svm_k2_combinedTable_l3f0n1c0bal0ex1,
 featureFilename: Data/WT/topoPredData/diff/manualCentres/bio/combinedFeatures_bio_notnormalised.csv,
 labelFilename: Data/WT/topoPredData/diff/manualCentres/bio/randomisedCombinedLabels32.csv,
-nrOfLabels: {0: 1163, 1: 894, 2: 958}nrOfFeatures: 10
+nrOfLabels: {0: 1122, 1: 934, 2: 924}nrOfFeatures: 10

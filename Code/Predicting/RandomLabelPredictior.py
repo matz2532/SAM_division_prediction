@@ -64,8 +64,8 @@ class RandomLabelPredictior (object):
             newLabels.to_csv(newFilename, index=False)
 
     def runModels(self, nrOfRandomRuns, basicResultsFolder):
-        for i in range(1, nrOfRandomRuns+1):
-            if i % 20 == 0:
+        for i in range(nrOfRandomRuns+1):
+            if i % 5 == 0:
                 print("currentRandomSample: {}/{}".format(i, nrOfRandomRuns))
             labelNameCurrentRand = self.basicLabelName.format(i)
             resultsFolder = basicResultsFolder + "rand{}/".format(i)

@@ -1,0 +1,4 @@
+propertyName: svm_k1_combinedTable_l3f0n1c0bal0ex1,
+featureFilename: Data/WT/topoPredData/diff/manualCentres/allTopos/combinedFeatures_allTopos_notnormalised.csv,
+labelFilename: Data/WT/topoPredData/diff/manualCentres/allTopos/randomisedCombinedLabels89.csv,
+nrOfLabels: {0: 1129, 1: 901, 2: 950}nrOfFeatures: 106
