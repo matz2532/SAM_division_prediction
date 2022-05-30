@@ -1,0 +1,3 @@
+trainingGroupLetters {'allTopos': 'a', 'bio': 'b', 'lowCor0.3': 'a', 'topoAndBio': 'c', 'topology': 'd'}
+valGroupLetters {'allTopos': 'a', 'bio': 'b', 'lowCor0.3': 'a', 'topoAndBio': 'c', 'topology': 'ab'}
+testGroupLetters {'allTopos': 'a', 'bio': 'a', 'lowCor0.3': 'a', 'topoAndBio': 'b', 'topology': 'a'}

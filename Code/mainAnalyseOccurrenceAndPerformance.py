@@ -111,11 +111,31 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
         Path(fig4ResultFolder).mkdir(parents=True, exist_ok=True)
         plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=fig4ResultFolder)
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 2"]):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 3 A", "Fig. 3 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
         mainSaveCorrelation(baseFeatureFolder="Data/WT/divEventData/manualCentres/", savePlotFolder=resultsFolder)
+    # Fig. 3 A - div prediction acc. results to further add text in power point
+    if figuresToDo == "all" or "Fig. 3 A" in figuresToDo:
+        fontSize = 24
+        fig2ResultFolder = resultsFolder + "Fig 3/"
+        Path(fig2ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainDivPredRandomization(performance="AUC", doMainFig=True,
+                                 baseResultsFolder="Results/divEventData/manualCentres/",
+                                 addOtherTestWithBaseFolder="Results/ktnDivEventData/manualCentres/",
+                                 savePlotFolder=fig2ResultFolder,
+                                 fontSize=fontSize)
+    # Fig. 3 B - div prediction acc. results to further add text in power point
+    if figuresToDo == "all" or "Fig. 3 B" in figuresToDo:
+        fontSize = 24
+        fig2ResultFolder = resultsFolder + "Fig 3/"
+        Path(fig2ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainTopoPredRandomization(performance="AUC", doMainFig=True,
+                                  baseResultsFolder="Results/topoPredData/diff/manualCentres/",
+                                  addOtherTestWithBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
+                                  savePlotFolder=fig2ResultFolder,
+                                  fontSize=fontSize)
     # Fig. 5 A - div prediction acc. randomisation results to further add text in power point
     if figuresToDo == "all" or "Fig. 5 A" in figuresToDo:
         fontSize = 24
