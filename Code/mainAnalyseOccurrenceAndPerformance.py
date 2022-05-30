@@ -5,7 +5,7 @@ sys.path.insert(0, "./Code/Propagation/")
 from BarPlotPlotter import mainDivPredRandomization, mainTopoPredRandomization
 from BarPlotPlotterExtended import mainDivPredTestComparisons, mainTopoPredTestComparisons
 from CorrelationHeatMapDisplayer import mainSaveCorrelation
-from DetailedCorrelationDataPlotter import DetailedCorrelationDataPlotter
+from DetailedCorrelationDataPlotter import compareModelPredictedVsRandomPropagationFeatureCorrelations, plotFeaturesCorrelationOfPredVsObsPropagation
 from FeatureDensityPlotting import mainSaveDensityPlotsOfFeaturesFromDiffScenarios
 from GeneralDataAnalyser import GeneralDataAnalyser
 from LocalTopologyPredictionComparer import plotPercentageCorrectTopologies
@@ -13,7 +13,7 @@ from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 4 C"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 B alternative"]):#["Fig. 2 A", "Fig. 2B alternative", "Fig. 3 A", "Fig. 3B alternative"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -100,7 +100,16 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                         plotName="Fig 4C - topology prediction density plot.png",
                                         fontSize=20)
     # Fig. 4 D - concordance between the observed and predicted topologies
-    # Fig. 4 E - comparison of obs. vs  pred. harmonic centrality applying div. and topo. prediction models
+    if figuresToDo == "all" or "Fig. 4 D" in figuresToDo:
+        fig4ResultFolder = resultsFolder + "Fig 4/"
+        Path(fig4ResultFolder).mkdir(parents=True, exist_ok=True)
+        compareModelPredictedVsRandomPropagationFeatureCorrelations(saveUnderFolder=fig4ResultFolder)
+    # Fig. 4 E - comparison of obs. vs pred. best correlating topological feature applying div. and topo. prediction models
+    # Sup. Fig. 8 - comparison of obs. vs pred. non-best correlating topological feature applying div. and topo. prediction models
+    if figuresToDo == "all" or "Fig. 4 E" in figuresToDo:
+        fig4ResultFolder = resultsFolder + "Fig 4/"
+        Path(fig4ResultFolder).mkdir(parents=True, exist_ok=True)
+        plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=fig4ResultFolder)
 
 def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 2"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
@@ -126,10 +135,7 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
                                  savePlotFolder=fig5BResultFolder,
                                  fontSize=fontSize)
     # Fig. 8 - comparison of obs. vs  pred. of all centrality applying div. and topo. prediction models
-    if figuresToDo == "all" or "Fig. 8" in figuresToDo:
-        fig9AResultFolder = resultsFolder + "Fig 8/"
-        Path(fig9AResultFolder).mkdir(parents=True, exist_ok=True)
-        mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=True, savePlotFolder=fig9AResultFolder)
+    # see Main Fig. 4 E
     # Fig. 9 - density distributions of features - A topological and B biological features
     if figuresToDo == "all" or "Fig. 9 A" in figuresToDo:
         fig9AResultFolder = resultsFolder + "Fig 9A/"
