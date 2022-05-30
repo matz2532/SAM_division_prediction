@@ -468,17 +468,18 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
             balanceTxt = "bal0"
     else:
         balanceTxt = ""
-    setNames = ", ".join(divEventPred)
     if savePlotFolder is None:
         savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
         furtherFolder = ""
         divEventPred = ["allTopos", "area", "topoAndBio"]
         randFilename = "combinedResultsWithTestingOf_100_randomizedRuns_ex0.csv"
+        setNames = ", ".join(divEventPred)
         filenameToSave = savePlotFolder + "div pred random results{} {} {}.png".format(addition, performance, setNames)
     else:
         furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
         randFilename = None
+        setNames = ", ".join(divEventPred)
         filenameToSave = savePlotFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
@@ -526,21 +527,23 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
             balanceTxt = "bal0"
     else:
         balanceTxt = ""
-    furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
     if len(divEventPred) == 3:
         addition = " main fig"
     else:
         addition = " sup low area"
-    setNames = ", ".join(divEventPred)
     if savePlotFolder is None:
         savePlotFolder = baseResultsFolder
     if plotOnlyRandom:
+        furtherFolder = ""
         divEventPred = ["allTopos", "bio", "topoAndBio"]
         randFilename = "combinedResultsWithTestingOf_100_randomizedRuns_{}.csv".format(excludingTxt)
-        filenameToSave = savePlotFolder + "topo random pred results {}{} {} {}.png".format(excludingTxt, addition, performance, setNames)
+        setNames = ", ".join(divEventPred)
+        filenameToSave = savePlotFolder + "topo pred random results{} {} {}.png".format(addition, performance, setNames)
     else:
+        furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
         randFilename = None
-        filenameToSave = savePlotFolder + "topo pred {} results {}{} {} {}.png".format(balanceTxt, excludingTxt, addition, performance, setNames)
+        setNames = ", ".join(divEventPred)
+        filenameToSave = savePlotFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
     if doSpecial:
