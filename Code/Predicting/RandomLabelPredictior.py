@@ -78,7 +78,7 @@ class RandomLabelPredictior (object):
         if self.divEventPred:
             modelType =  {"modelType":"svm","kernel":"linear"}
         else:
-            modelType =  {"modelType":"svm","kernel":"rbf"}
+            modelType =  {"modelType":"svm","kernel":"linear"}
         usePreviousTrainedModelsIfPossible = False
         onlyTestModelWithoutTrainingData = False
         useManualCentres = True
