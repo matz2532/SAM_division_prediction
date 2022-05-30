@@ -138,7 +138,7 @@ class RandomLabelPredictior (object):
             if self.divEventPred:
                 modelFolderName = "svm_k1_combinedTable_l3f0n1c0bal0ex0/"
             else:
-                modelFolderName = "svm_k2_combinedTable_l3f0n1c0bal0ex0/"
+                modelFolderName = "svm_k1_combinedTable_l3f0n1c0bal0ex0/"
         for i in range(1, nrOfRandomRuns+1):
             resultsFolder = basicResultsFolder + "rand{}/".format(i) + modelFolderName
             resultsTable = pd.read_csv(resultsFolder + "results{}.csv".format(testingTxt), index_col=0)
