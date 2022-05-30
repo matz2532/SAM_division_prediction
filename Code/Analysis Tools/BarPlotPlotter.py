@@ -129,11 +129,11 @@ class BarPlotPlotter (object):
             idx = self.doSpecial["idx"]
         else:
             if compareRandAndNorm:
-                mean, std = self.extractMeanAndStd(performanceIdx, nrOfReplicates=nrOfReplicates)
+                mean, std = self.extractMeanAndStd(performanceIdx)
                 coloryByHtml = ["#00aeff", "#ffb100", "#004f99", "#ff6900"]
                 idx = 4
             else:
-                mean, std = self.extractMeanAndStd(performanceIdx, nrOfReplicates=nrOfReplicates,
+                mean, std = self.extractMeanAndStd(performanceIdx,
                                             plotOnlyRandom=self.plotOnlyRandom)
                 idx = 2
                 colorPallette = seaborn.color_palette(colorPalletteName)
@@ -143,11 +143,13 @@ class BarPlotPlotter (object):
                         testResultTables = self.randTable
                     else:
                         testResultTables = self.testResultTables
-                    mean, std = self.addTestData(mean, std, idx, performanceIdx, testResultTables)
+                    mean, std = self.addTestData(mean, std, idx, performanceIdx, testResultTables,
+                                                 plotOnlyRandom=self.plotOnlyRandom)
                     idx += 1
                     coloryByHtml.append(colorPallette[3])
                 if self.furtherTestResults:
-                    mean, std = self.addTestData(mean, std, idx, performanceIdx, self.furtherTestResults)
+                    mean, std = self.addTestData(mean, std, idx, performanceIdx, self.furtherTestResults,
+                                                 plotOnlyRandom=self.plotOnlyRandom)
                     idx += 1
                     coloryByHtml.append(colorPallette[1])
                 coloryByHtml = [matplotlib.colors.to_hex(i) for i in coloryByHtml]
@@ -165,7 +167,8 @@ class BarPlotPlotter (object):
                 colors[[i%idx==3 for i in range(len(mean))]] = coloryByHtml[2+useTesting]
         return x_pos, mean, std, colors
 
-    def extractMeanAndStd(self, performanceIdx=1, nrOfReplicates=5, plotOnlyRandom=False):
+    def extractMeanAndStd(self, performanceIdx=1, plotOnlyRandom=False,
+                          meanIdxName="mean", stdIdxName="std"):
         mean = np.zeros(2*len(self.selectedFeatureSetFolders))
         std = np.zeros(2*len(self.selectedFeatureSetFolders))
         if plotOnlyRandom:
@@ -177,10 +180,13 @@ class BarPlotPlotter (object):
                 table = self.randTable[i]
             else:
                 table = self.resultsTable[i]
-            mean[i*2] = table.iloc[nrOfReplicates, performanceIdx]
-            mean[i*2+1] = table.iloc[nrOfReplicates, performanceIdx+startPerformanceValIdx]
-            std[i*2] = table.iloc[nrOfReplicates+1, performanceIdx]
-            std[i*2+1] = table.iloc[nrOfReplicates+1, performanceIdx+startPerformanceValIdx]
+            index = table.index.to_numpy()
+            meanIdx = np.where(index == meanIdxName)[0]
+            stdIdx = np.where(index == stdIdxName)[0]
+            mean[i*2] = table.iloc[meanIdx, performanceIdx]
+            mean[i*2+1] = table.iloc[meanIdx, performanceIdx+startPerformanceValIdx]
+            std[i*2] = table.iloc[stdIdx, performanceIdx]
+            std[i*2+1] = table.iloc[stdIdx, performanceIdx+startPerformanceValIdx]
         return mean, std
 
     def addTestData(self, mean, std, idx, performanceIdx, tableList,
