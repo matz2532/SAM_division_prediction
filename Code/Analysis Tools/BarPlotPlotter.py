@@ -469,7 +469,7 @@ def mainDivPredRandomization(performance="Acc", plotOnlyRandom=False, doMainFig=
         randFilename = "combinedResultsWithTestingOf_100_randomizedRuns_ex0.csv"
         filenameToSave = savePlotFolder + "div pred random results{} {} {}.png".format(addition, performance, setNames)
     else:
-        furtherFolder = "svm_k2h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
+        furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}ex0/".format(balanceTxt)
         randFilename = None
         filenameToSave = savePlotFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:

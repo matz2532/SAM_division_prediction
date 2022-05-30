@@ -1,6 +1,6 @@
 Label,Value,Area (micro m^2),Center_X,Center_Y,Center_Z
 40,0.1,30.0035,-31.4275,-1.5518,6.22695
-306,0.1,28.2791,-24.5048,4.10941,8.72036
+306,0.95,28.2791,-24.5048,4.10941,8.72036
 
 
 Area HeatMap results for mesh 1

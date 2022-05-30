@@ -1,16 +1,16 @@
 ,group1,group2,p-values,T-stat,statistical method
-WT SAM vs ktn1-2 SAM allTopos,WT SAM allTopos,ktn1-2 SAM allTopos,0.0488607420815141,2.832917977397572,independent t-test
-WT SAM vs WT floral meristem allTopos,WT SAM allTopos,WT floral meristem allTopos,0.16342203341677647,1.4709496006532774,independent t-test
-WT SAM vs ktn floral meristem allTopos,WT SAM allTopos,ktn floral meristem allTopos,0.09756326327838537,1.990806073032533,independent t-test
-WT SAM vs ktn1-2 SAM bio,WT SAM bio,ktn1-2 SAM bio,0.04091873298287982,2.9320801998964017,independent t-test
-WT SAM vs WT floral meristem bio,WT SAM bio,WT floral meristem bio,0.17771110727202313,-1.4192339245814896,independent t-test
-WT SAM vs ktn floral meristem bio,WT SAM bio,ktn floral meristem bio,0.17771110727202313,-1.5359006876903127,independent t-test
-WT SAM vs ktn1-2 SAM topoAndBio,WT SAM topoAndBio,ktn1-2 SAM topoAndBio,0.0012465198188284276,4.979897801754617,independent t-test
-WT SAM vs WT floral meristem topoAndBio,WT SAM topoAndBio,WT floral meristem topoAndBio,0.40947377644905003,0.8932275630921593,independent t-test
-WT SAM vs ktn floral meristem topoAndBio,WT SAM topoAndBio,ktn floral meristem topoAndBio,0.40947377644905003,0.848541923979095,independent t-test
-WT SAM vs ktn1-2 SAM lowCor0.3,WT SAM lowCor0.3,ktn1-2 SAM lowCor0.3,0.06611163164290769,2.6637859835830318,independent t-test
-WT SAM vs WT floral meristem lowCor0.3,WT SAM lowCor0.3,WT floral meristem lowCor0.3,0.09751691149345816,1.808336803898739,independent t-test
-WT SAM vs ktn floral meristem lowCor0.3,WT SAM lowCor0.3,ktn floral meristem lowCor0.3,0.09751691149345816,1.7672612503197058,independent t-test
-WT SAM vs ktn1-2 SAM topology,WT SAM topology,ktn1-2 SAM topology,0.04190150346093396,2.9188105670989146,independent t-test
-WT SAM vs WT floral meristem topology,WT SAM topology,WT floral meristem topology,0.07208599471322742,2.007859021438332,independent t-test
-WT SAM vs ktn floral meristem topology,WT SAM topology,ktn floral meristem topology,0.07208599471322742,1.934925950149129,independent t-test
+WT SAM vs ktn1-2 SAM allTopos,WT SAM allTopos,ktn1-2 SAM allTopos,0.05563763205379722,2.3709166190304667,independent t-test
+WT SAM vs WT floral meristem allTopos,WT SAM allTopos,WT floral meristem allTopos,0.10943520437995119,1.709420392045639,independent t-test
+WT SAM vs ktn floral meristem allTopos,WT SAM allTopos,ktn floral meristem allTopos,0.04799099993827634,2.714185464323364,independent t-test
+WT SAM vs ktn1-2 SAM bio,WT SAM bio,ktn1-2 SAM bio,0.06724845111217846,2.6542377164906568,independent t-test
+WT SAM vs WT floral meristem bio,WT SAM bio,WT floral meristem bio,0.20180955363554912,-1.4178094443453932,independent t-test
+WT SAM vs ktn floral meristem bio,WT SAM bio,ktn floral meristem bio,0.20180955363554912,-1.3349241525123434,independent t-test
+WT SAM vs ktn1-2 SAM topoAndBio,WT SAM topoAndBio,ktn1-2 SAM topoAndBio,6.047111698831829e-05,7.091307929162535,independent t-test
+WT SAM vs WT floral meristem topoAndBio,WT SAM topoAndBio,WT floral meristem topoAndBio,0.2743726767979119,1.2755836936688176,independent t-test
+WT SAM vs ktn floral meristem topoAndBio,WT SAM topoAndBio,ktn floral meristem topoAndBio,0.2743726767979119,1.1345431330452667,independent t-test
+WT SAM vs ktn1-2 SAM lowCor0.3,WT SAM lowCor0.3,ktn1-2 SAM lowCor0.3,0.04625295104677863,2.8635775809208455,independent t-test
+WT SAM vs WT floral meristem lowCor0.3,WT SAM lowCor0.3,WT floral meristem lowCor0.3,0.09173298688384426,1.8104653110428577,independent t-test
+WT SAM vs ktn floral meristem lowCor0.3,WT SAM lowCor0.3,ktn floral meristem lowCor0.3,0.05787385856746257,2.267303400650952,independent t-test
+WT SAM vs ktn1-2 SAM topology,WT SAM topology,ktn1-2 SAM topology,0.010334684200754549,3.7093760002413445,independent t-test
+WT SAM vs WT floral meristem topology,WT SAM topology,WT floral meristem topology,0.04899615615402519,2.370444867923085,independent t-test
+WT SAM vs ktn floral meristem topology,WT SAM topology,ktn floral meristem topology,0.09467405430493295,1.783927777206053,independent t-test
