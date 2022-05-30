@@ -14,12 +14,12 @@ class DetailedCorrelationDataPlotter (object):
     correlationInformation=""
 
     # compare correlations of to data sets (Fig. 4D)
-    def __init__(self, dataPoints1=None, dataPoints2=None, colNames=None, baseFolder="",
+    def __init__(self, dataPoints1=None, dataPoints2=None, colNames=None, saveUnderFolder="",
                  givenCorrelation=None, filenameToSaveCorrelationPlot="corBarPlot.png"):
         self.dataPoints1 = dataPoints1
         self.dataPoints2 = dataPoints2
         self.colNames = colNames
-        self.baseFolder = baseFolder
+        self.saveUnderFolder = saveUnderFolder
         self.givenCorrelation = givenCorrelation
         self.filenameToSaveCorrelationPlot = filenameToSaveCorrelationPlot
 
@@ -31,7 +31,7 @@ class DetailedCorrelationDataPlotter (object):
             self.plotDefaultDetailedCorrelations(duplicateColIdx)
             corInfoExtension = "vsRandom"
             if self.correlationInformation != "":
-                filename = self.baseFolder + f"correlation{corInfoExtension}Information.txt"
+                filename = self.saveUnderFolder + f"correlation{corInfoExtension}Information.txt"
                 with open(filename, "w") as fh:
                     fh.write(self.correlationInformation)
         else:
@@ -120,7 +120,7 @@ class DetailedCorrelationDataPlotter (object):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         if savefig:
-            plt.savefig(self.baseFolder + filenameToSave, bbox_inches="tight")
+            plt.savefig(self.saveUnderFolder + filenameToSave, bbox_inches="tight")
             plt.close()
         else:
             if showPlot:
@@ -153,7 +153,7 @@ class DetailedCorrelationDataPlotter (object):
             featureAbreviationNames += i+"\n"
         self.correlationInformation += featureAbreviationNames
         if savefig:
-            plt.savefig(self.baseFolder + filenameToSave, bbox_inches="tight")
+            plt.savefig(self.saveUnderFolder + filenameToSave, bbox_inches="tight")
             plt.close()
         else:
             if showPlot:
@@ -197,7 +197,7 @@ class DetailedCorrelationDataPlotter (object):
                 for r in range(2):
                     self.save4x4Subplots(c, r, sqrtOfCols, order, markers, colNames, j)
                     j += 1
-        # plt.savefig(self.baseFolder + "Figure 4 Sups.png", bbox_inches="tight")
+        # plt.savefig(self.saveUnderFolder + "Figure 4 Sups.png", bbox_inches="tight")
         # plt.close()
 
     def save4x4Subplots(self, c, r, sqrtOfCols, order, markers, colNames, j):
@@ -213,7 +213,7 @@ class DetailedCorrelationDataPlotter (object):
             self.doScatterPlot(self.dataPoints1[:, idx], self.dataPoints2[:, idx],
                     ax=ax_i, marker=markers[idx], labels=colNames[idx],
                     boxLoc="top-left", fontSize=14)
-        plt.savefig(self.baseFolder + "Figure Sups part{}.png".format(j), bbox_inches="tight")
+        plt.savefig(self.saveUnderFolder + "Figure Sups part{}.png".format(j), bbox_inches="tight")
         plt.close()
 
     def doZNormalise(self, twoDArray, useParameters=None, returnParameter=False):
@@ -239,7 +239,7 @@ class DetailedCorrelationDataPlotter (object):
         return np.all(column1 == column2)
 
     def comparativeBarPlot(self, firstValues, secondValues, secondValuesXerr, addAverage=False,
-                           filenameToSave=None, baseFolder="",
+                           filenameToSave=None, saveUnderFolder="",
                            colNames=None, trimColumnNames=True, printOutTrimmedColName=False,
                            showYLabels=True,
                            firstColor="blue", secondColor="grey", colorPaletteName="colorblind"):# deep,
@@ -283,7 +283,7 @@ class DetailedCorrelationDataPlotter (object):
                 ax.set_yticklabels(colNames)
             if printOutTrimmedColName:
                 print(txt)
-            filename = baseFolder + f"correlationPredVsObsInformation.txt"
+            filename = saveUnderFolder + f"correlationPredVsObsInformation.txt"
             with open(filename, "w") as fh:
                 fh.write(txt)
         ax.set_xlim((0, 1))
@@ -292,9 +292,9 @@ class DetailedCorrelationDataPlotter (object):
         ax.spines['right'].set_visible(False)
         ax.get_yaxis().set_ticks([])
         if not filenameToSave is None:
-            if baseFolder is None:
-                self.baseFolder = baseFolder
-            plt.savefig(baseFolder + filenameToSave, bbox_inches="tight")
+            if saveUnderFolder is None:
+                self.saveUnderFolder = saveUnderFolder
+            plt.savefig(saveUnderFolder + filenameToSave, bbox_inches="tight")
             plt.close()
         else:
             if showPlot:
@@ -310,7 +310,7 @@ def combinFeatures(baseFolder, plantNames):
     predFeatures = np.concatenate(predFeatures, axis=0)
     return actualFeatures, predFeatures
 
-def plotFeaturesCorrelationOfPredVsObsPropagation():
+def plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=None):
     sys.path.insert(0, "./Code/Propagation/")
     # so actually dont load correlations to do correlation plots?
     from RandomisedTissuePrediction import calcMeanAndStdCorrelation
@@ -319,6 +319,8 @@ def plotFeaturesCorrelationOfPredVsObsPropagation():
     colNames = pd.read_csv("./Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv").columns.to_numpy()[3:]
     # print(colNames)
     baseFolder = "Results/DivAndTopoApplication/"
+    if saveUnderFolder is None:
+        saveUnderFolder = baseFolder
     random = [None, "fullyRandom", "improvedRandom"][0]
     nrOfRepetitions = 100
     folderToLoadRandomCor = "Results/DivAndTopoApplication/Random/"
@@ -344,7 +346,7 @@ def plotFeaturesCorrelationOfPredVsObsPropagation():
         colNames = colNames[featuresToKeep]
         actualFeatures = actualFeatures[:, featuresToKeep]
         predFeatures = predFeatures[:, featuresToKeep]
-    myDetailedCorrelationDataPlotter = DetailedCorrelationDataPlotter(actualFeatures, predFeatures, colNames, baseFolder,
+    myDetailedCorrelationDataPlotter = DetailedCorrelationDataPlotter(actualFeatures, predFeatures, colNames, saveUnderFolder,
                                 givenCorrelation=givenCorrelation,
                                 filenameToSaveCorrelationPlot=filenameToSaveCorrelationPlot)
     myDetailedCorrelationDataPlotter.analyseDataPoints()
@@ -352,7 +354,7 @@ def plotFeaturesCorrelationOfPredVsObsPropagation():
 def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Results/DivAndTopoApplication/",
                 filenameToSave="propagationCorrelationsComparingWith{}.png",
                 featureFilename="Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv",
-                saveUnderFolder=None, startingFeatureIdx=4, ignoreFeaturesIdx=[0]):
+                saveUnderFolder=None, startingFeatureIdx=4, ignoreFeaturesIdx=None):
     if saveUnderFolder is None:
         saveUnderFolder = baseFolder
     r = np.load(baseFolder + "correlations.npy")
@@ -379,7 +381,7 @@ def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Resu
     DetailedCorrelationDataPlotter().comparativeBarPlot(np.asarray(r)[argSort], np.asarray(rComparison)[argSort],
                                                         secondValuesXerr=rComparisonXerr[argSort],
                                                         colNames=featureNames,
-                                                        baseFolder=baseFolder,
+                                                        saveUnderFolder=saveUnderFolder,
                                                         filenameToSave=filenameToSave)
 
 if __name__ == '__main__':
