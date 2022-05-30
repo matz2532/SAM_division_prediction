@@ -254,10 +254,8 @@ def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, gi
     topoLabelTable = pd.read_csv(baseFolder + "topoPredData/diff/manualCentres/allTopos/combinedLabels.csv")
     divLabelTable = removePlantEntries(divLabelTable, plantNames)
     topoLabelTable = removePlantEntries(topoLabelTable, plantNames)
-    if divisionProbability is None:
-        divisionProbability = calcProbabilityOfLabel(divLabelTable)
-    if topoPredProbability is None:
-        topoPredProbability = calcProbabilityOfLabel(topoLabelTable)
+    divisionProbability = calcProbabilityOfLabel(divLabelTable)
+    topoPredProbability = calcProbabilityOfLabel(topoLabelTable)
     for plant in plantNames:
         folderToSavePlantResults = folderToSave + plant + "/"
         Path(folderToSavePlantResults).mkdir(parents=True, exist_ok=True)
