@@ -5,7 +5,7 @@ WT SAM vs ktn floral meristem allTopos,WT SAM allTopos,ktn floral meristem allTo
 WT SAM vs ktn1-2 SAM area,WT SAM area,ktn1-2 SAM area,0.24181144472158791,1.5021585450671908,independent t-test
 WT SAM vs WT floral meristem area,WT SAM area,WT floral meristem area,0.5154615817508015,0.6672484570109523,independent t-test
 WT SAM vs ktn floral meristem area,WT SAM area,ktn floral meristem area,0.16242530024200796,2.0892168614046995,independent t-test
-WT SAM vs ktn1-2 SAM topoAndBio,WT SAM topoAndBio,ktn1-2 SAM topoAndBio,0.06612328124689242,2.780058786189747,Welch's-test
+WT SAM vs ktn1-2 SAM topoAndBio,WT SAM topoAndBio,ktn1-2 SAM topoAndBio,0.06612328124689242,2.780058786189747,independent t-test
 WT SAM vs WT floral meristem topoAndBio,WT SAM topoAndBio,WT floral meristem topoAndBio,0.9142230766322388,-0.10967583004422952,independent t-test
 WT SAM vs ktn floral meristem topoAndBio,WT SAM topoAndBio,ktn floral meristem topoAndBio,0.9142230766322388,0.13157161057673444,independent t-test
 WT SAM vs ktn1-2 SAM lowCor0.3,WT SAM lowCor0.3,ktn1-2 SAM lowCor0.3,0.4534863019295074,1.0821824852902822,independent t-test

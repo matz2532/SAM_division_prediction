@@ -1,0 +1,1 @@
+testGroupLetters {'allTopos': 'a', 'bio': 'ba', 'lowCor0.3': 'b', 'topoAndBio': 'c', 'topology': 'ba'}

@@ -86,7 +86,7 @@ class BarPlotPlotter (object):
         pValueTable = None
         statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
         if not np.all(np.asarray(std) == 0) and not self.resultsTable is None:
-            pValueTable = self.calcTrainAndValDifferences(performanceIdx, compareRandAndNorm,
+            pValueTable = self.calcTrainAndValDifferences(self.resultsTable, performanceIdx,
                                                nrOfReplicates=self.nrOfReplicates,
                                                correctPValues=True, printPValues=printPValues)
             pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_trainValPValues.csv")
@@ -263,16 +263,17 @@ class BarPlotPlotter (object):
             yLabel = ""
         return yLabel
 
-    def calcTrainAndValDifferences(self, performanceIdx, compareRandAndNorm, nrOfReplicates=5,
-                        correctPValues=True, printPValues=False, tukey=False):
+    def calcTrainAndValDifferences(self, resultsTable, performanceIdx, nrOfReplicates=5,
+                        correctPValues=True, printPValues=False, tukey=False,
+                        doTestInsteadOfTrainValDifference=False):
         trainValues = []
         valValues = []
-        startPerformanceValIdx = self.resultsTable[0].shape[1] // 2
-        for table in self.resultsTable:
+        startPerformanceValIdx = resultsTable[0].shape[1] // 2
+        for table in resultsTable:
             trainValues.append(table.iloc[:nrOfReplicates, performanceIdx].to_numpy())
             valValues.append(table.iloc[:nrOfReplicates, performanceIdx+startPerformanceValIdx].to_numpy())
         trainPValues, valPValues, trainTStat, valTStat = [], [], [], []
-        nrOfConditions = len(self.resultsTable)
+        nrOfConditions = len(resultsTable)
         testCases = []
         group1 = []
         group2 = []
@@ -312,6 +313,13 @@ class BarPlotPlotter (object):
         pValueTable = {"group1":group1, "group2":group2,
                         "training p-values":trainPValues, "training T-stat:":trainTStat,
                        "validation p-values":valPValues, "validation T-stat:":valTStat}
+        if doTestInsteadOfTrainValDifference:
+            pValueTable = {"group1":group1, "group2":group2,
+                           "test p-values":valPValues, "test T-stat:":valTStat}
+        else:
+            pValueTable = {"group1":group1, "group2":group2,
+                            "training p-values":trainPValues, "training T-stat:":trainTStat,
+                           "validation p-values":valPValues, "validation T-stat:":valTStat}
         pValueTable = pd.DataFrame(pValueTable, index=testCases)
         return pValueTable
 

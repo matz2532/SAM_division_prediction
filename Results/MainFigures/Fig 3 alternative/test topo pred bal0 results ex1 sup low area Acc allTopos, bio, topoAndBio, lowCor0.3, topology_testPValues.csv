@@ -1,0 +1,11 @@
+,group1,group2,test p-values,test T-stat:
+allTopos vs bio,allTopos,bio,0.18371332483596625,1.7957080702348938
+allTopos vs topoAndBio,allTopos,topoAndBio,0.029667033117267747,-4.553369693109288
+allTopos vs lowCor0.3,allTopos,lowCor0.3,0.03657933058887504,3.850828636948244
+allTopos vs topology,allTopos,topology,0.06936710385622094,2.958405754973229
+bio vs topoAndBio,bio,topoAndBio,0.029667033117267747,-4.380873354072928
+bio vs lowCor0.3,bio,lowCor0.3,0.5658872538439506,-0.7237178858087319
+bio vs topology,bio,topology,0.7602821744500399,0.32668974632072634
+topoAndBio vs lowCor0.3,topoAndBio,lowCor0.3,0.024379841244103344,6.8038907168588905
+topoAndBio vs topology,topoAndBio,topology,0.029667033117267747,4.8651398696876065
+lowCor0.3 vs topology,lowCor0.3,topology,0.09801615251391337,2.474544863742134

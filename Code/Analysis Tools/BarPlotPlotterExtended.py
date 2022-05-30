@@ -48,7 +48,6 @@ class BarPlotPlotterExtended (BarPlotPlotter):
                       printPValues=False):
         x_pos, mean, std, colors = self.setupData(performanceIdx)
         statisticsLetters = ""
-        pValueTable = None
         self.doStatistics(performanceIdx, baseScenarioIdx)
         self.plotFigure(x_pos, mean, std, colors, performanceIdx, minY, fontSize=self.fontSize)
 
@@ -91,6 +90,18 @@ class BarPlotPlotterExtended (BarPlotPlotter):
 
     def doStatistics(self, performanceIdx, baseScenarioIdx):
         setsPerofmancesOfBaseScenario = self.testResultTables[baseScenarioIdx]
+        # test for differences in base scenario
+        pValueTable = self.calcTrainAndValDifferences(setsPerofmancesOfBaseScenario, performanceIdx, doTestInsteadOfTrainValDifference=True)
+        pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_testPValues.csv")
+        print(pValueTableName)
+        print(pValueTable)
+        pValueTable.to_csv(pValueTableName)
+        testGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"test p-values":"p-value"})).GetGroupNameLetters()
+        statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
+        with open(statisticsLettersFilename, "w") as fh:
+            statisticsLetters = f"testGroupLetters {testGroupLetters}\n"
+            fh.write(statisticsLetters)
+        # test differences between base and all other scenarios
         differencesBetweenTestScenariosDf = []
         for featureSetIdx, featureSetName in enumerate(self.selectedFeatureSetFolders):
             scenarioResultTables = self.selectTestScenarioResultsOfFeature(featureSetIdx)
