@@ -1,0 +1,1 @@
+10 / 17 Pearson correlation coefficients being higher than 0.5.

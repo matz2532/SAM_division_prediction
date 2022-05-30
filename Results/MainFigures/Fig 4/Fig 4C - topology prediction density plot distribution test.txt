@@ -1,2 +1,2 @@
-Distribution KstestResult(statistic=0.5743898305084745, pvalue=5.777611836539656e-19) from Results/DivAndTopoApplication/
+Distribution KstestResult(statistic=0.5757457627118645, pvalue=4.628848515002242e-19) from Results/DivAndTopoApplication/
 with 59 local topologies

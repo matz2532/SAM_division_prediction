@@ -1,0 +1,17 @@
+information c
+page rank
+current flow betweenness c
+katz c
+communicability betweenness c
+betweenness c
+load c
+harmonic c
+clustering coefficient
+avg path length 2nd n
+weighted node degree
+algebraic connectivity 2nd n
+abs graph density 2nd n
+size 2nd n
+estrada index 2nd n
+eigenvector c
+rel graph density 2nd n
