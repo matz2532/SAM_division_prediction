@@ -171,8 +171,8 @@ def mainCallTopoPredRandomization(excludeDividingNeighboursPar=[True], # [True, 
                                   divEventPred=False, includeTesting=True)
 
 def main():
-    mainCallDivPredRandomization()
-    # mainCallTopoPredRandomization()
+    # mainCallDivPredRandomization()
+    mainCallTopoPredRandomization()
 
 if __name__ == '__main__':
     main()
