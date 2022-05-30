@@ -236,6 +236,7 @@ def calcMeanAndStdCorrelation(nrOfRepetitions, plantNames, folderToLoad="Results
 
 def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, givenSeedsToDo, nrOfRepetitions, verbose=1,
         runImprovedTopoPred=False, divideAllCells=False, saveNetworks=True,
+        baseFolder="./Data/WT/",
         folderToSave="Results/DivAndTopoApplication/Random/{}/",
         givenCellsNotToDivideFolder=None):
     if runImprovedTopoPred:
@@ -264,7 +265,7 @@ def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, gi
         if not givenCellsNotToDivideFolder is None:
             givenCellsNotToDivide = np.load(givenCellsNotToDivideFolder+plant+"/dividingCellsOfTimePoint.pkl", allow_pickle=True)
         repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=givenSeedsToDo, nrOfRepetitions=nrOfRepetitions,
-                                                testPlant=plant,
+                                                testPlant=plant, baseFolder=baseFolder,
                                                 runImprovedTopoPred=runImprovedTopoPred, folderToSave=folderToSavePlantResults,
                                                 verbose=verbose, givenCellsNotToDivide=givenCellsNotToDivide,
                                                 divideAllCells=divideAllCells, saveNetworks=saveNetworks,
