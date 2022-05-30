@@ -93,8 +93,6 @@ class BarPlotPlotterExtended (BarPlotPlotter):
         # test for differences in base scenario
         pValueTable = self.calcTrainAndValDifferences(setsPerofmancesOfBaseScenario, performanceIdx, doTestInsteadOfTrainValDifference=True)
         pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_testPValues.csv")
-        print(pValueTableName)
-        print(pValueTable)
         pValueTable.to_csv(pValueTableName)
         testGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"test p-values":"p-value"})).GetGroupNameLetters()
         statisticsLettersFilename = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_statisticsLetters.txt")
