@@ -189,6 +189,7 @@ class DetailedCorrelationDataPlotter (object):
                 self.doScatterPlot(self.dataPoints1[:, idx], self.dataPoints2[:, idx],
                         ax=ax_i, marker=markers[i], labels=colNames[idx],
                         boxLoc="top-left")
+            self.hideAxisWhenIBellow(ax, i+1, threshold=sqrtOfCols*sqrtOfCols, nrOfRows=sqrtOfCols, nrOfCols=sqrtOfCols)
             plt.tight_layout()
             plt.show()
         else:
@@ -205,6 +206,7 @@ class DetailedCorrelationDataPlotter (object):
         plt.subplots_adjust(hspace=0.25, wspace=0.3)
         seclectedIdx = np.asarray([0,1,4,5])
         seclectedIdx +=  2*r + c*2*sqrtOfCols
+        seclectedIdx = seclectedIdx[np.isin(seclectedIdx, np.arange(len(order)))]
         inidicesToPlot = order[seclectedIdx]
         for i, idx in enumerate(inidicesToPlot):
             x = i//2
@@ -213,8 +215,16 @@ class DetailedCorrelationDataPlotter (object):
             self.doScatterPlot(self.dataPoints1[:, idx], self.dataPoints2[:, idx],
                     ax=ax_i, marker=markers[idx], labels=colNames[idx],
                     boxLoc="top-left", fontSize=14)
+        self.hideAxisWhenIBellow(ax, i+1, 4)
         plt.savefig(self.saveUnderFolder + "Figure Sups part{}.png".format(j), bbox_inches="tight")
         plt.close()
+
+    def hideAxisWhenIBellow(self, ax, i, threshold=4, nrOfRows=2, nrOfCols=2):
+        while i < threshold:
+            x = i // nrOfRows
+            y = i % nrOfCols
+            ax[x, y].axis("off")
+            i += 1
 
     def doZNormalise(self, twoDArray, useParameters=None, returnParameter=False):
         if not useParameters is None:
@@ -315,7 +325,7 @@ def plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=None):
     # so actually dont load correlations to do correlation plots?
     from RandomisedTissuePrediction import calcMeanAndStdCorrelation
     plantNames = ["P2", "P9"]
-    ignoreFeaturesIdx = [0]
+    ignoreFeaturesIdx = None
     colNames = pd.read_csv("./Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv").columns.to_numpy()[3:]
     # print(colNames)
     baseFolder = "Results/DivAndTopoApplication/"
