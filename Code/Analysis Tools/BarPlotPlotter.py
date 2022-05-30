@@ -427,10 +427,11 @@ class BarPlotPlotter (object):
             _, sameVariancePValue = st.bartlett(x, y)
         isVarianceEqual = sameVariancePValue > varianceAlpha
         stat, pValue = st.ttest_ind(x, y, equal_var=isVarianceEqual)
-        if isVarianceEqual:
-            statsMethod = "independent t-test"
-        else:
-            statsMethod = "Welch's-test"
+        statsMethod = "independent t-test"
+        # if isVarianceEqual:
+        #     statsMethod = "independent t-test"
+        # else:
+        #     statsMethod = "Welch's-test"
         if np.isnan(pValue):
             pValue = 1
         return pValue, stat, statsMethod
