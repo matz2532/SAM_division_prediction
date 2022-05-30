@@ -140,9 +140,9 @@ class RandomisedTissuePrediction (DivAndTopoPredictor):
 def removePlantEntries(table, plantNameToRemove, plantNameColIdx=0, inverse=False):
     plantName = table.iloc[:, plantNameColIdx].to_numpy()
     if inverse:
-        isSelectedPlant = plantName == plantNameToRemove
+        isSelectedPlant = np.isin(plantName, plantNameToRemove)
     else:
-        isSelectedPlant = plantName != plantNameToRemove
+        isSelectedPlant = np.isin(plantName, plantNameToRemove, invert=True)
     table = table.iloc[isSelectedPlant, :]
     return table
 
@@ -177,14 +177,17 @@ def repeatedlyRunRandomisedTissuePrediction(givenSeedsToDo=None, nrOfRepetitions
                                             givenCellsNotToDivide=None,
                                             divideAllCells=False,
                                             saveNetworks=False,
-                                            mostCentralCells=[[392],  [553, 779, 527], [525], [1135]]):
+                                            mostCentralCells=[[392],  [553, 779, 527], [525], [1135]],
+                                            divisionProbability=None, topoPredProbability=None):
     assert not givenSeedsToDo is None or not nrOfRepetitions is None, "Either givenSeedsToDo or nrOfRepetitions needs to be different than None."
     divLabelTable = pd.read_csv(baseFolder + "divEventData/manualCentres/allTopos/combinedLabels.csv")
     topoLabelTable = pd.read_csv(baseFolder + "topoPredData/diff/manualCentres/allTopos/combinedLabels.csv")
     divLabelTable = removePlantEntries(divLabelTable, testPlant)
     topoLabelTable = removePlantEntries(topoLabelTable, testPlant)
-    divisionProbability = calcProbabilityOfLabel(divLabelTable)
-    topoPredProbability = calcProbabilityOfLabel(topoLabelTable)
+    if divisionProbability is None:
+        divisionProbability = calcProbabilityOfLabel(divLabelTable)
+    if topoPredProbability is None:
+        topoPredProbability = calcProbabilityOfLabel(topoLabelTable)
     divSampleData = pd.read_csv(baseFolder + "divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv")
     divLabelTable = pd.read_csv(baseFolder + "divEventData/manualCentres/allTopos/combinedLabels.csv")
     parentNetworks = getParentNetworksOf(plantName=testPlant, timeIdx=timePoints, dataFolder=baseFolder, centralCellsDict={testPlant:mostCentralCells})
@@ -246,6 +249,14 @@ def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, gi
             folderToSave += "reversedPrediction/"
     elif not runImprovedTopoPred:
         folderToSave += "normal/"
+    divLabelTable = pd.read_csv(baseFolder + "divEventData/manualCentres/allTopos/combinedLabels.csv")
+    topoLabelTable = pd.read_csv(baseFolder + "topoPredData/diff/manualCentres/allTopos/combinedLabels.csv")
+    divLabelTable = removePlantEntries(divLabelTable, plantNames)
+    topoLabelTable = removePlantEntries(topoLabelTable, plantNames)
+    if divisionProbability is None:
+        divisionProbability = calcProbabilityOfLabel(divLabelTable)
+    if topoPredProbability is None:
+        topoPredProbability = calcProbabilityOfLabel(topoLabelTable)
     for plant in plantNames:
         folderToSavePlantResults = folderToSave + plant + "/"
         Path(folderToSavePlantResults).mkdir(parents=True, exist_ok=True)
@@ -257,7 +268,9 @@ def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, gi
                                                 runImprovedTopoPred=runImprovedTopoPred, folderToSave=folderToSavePlantResults,
                                                 verbose=verbose, givenCellsNotToDivide=givenCellsNotToDivide,
                                                 divideAllCells=divideAllCells, saveNetworks=saveNetworks,
-                                                mostCentralCells=mostCentralCells)
+                                                mostCentralCells=mostCentralCells,
+                                                divisionProbability=divisionProbability,
+                                                topoPredProbability=topoPredProbability)
     meanCor, stdCor = calcMeanAndStdCorrelation(nrOfRepetitions, plantNames=plantNames, folderToLoad=folderToSave)
     np.save(folderToSave+"meanCorrelations.npy", meanCor)
     np.save(folderToSave+"stdCorrelations.npy", stdCor)
