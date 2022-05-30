@@ -520,36 +520,6 @@ def findCentralNonPeripheralCells(baseFolder, plantName, timePoint, mostCentralC
     centralCells = centralCells[np.isin(centralCells, peripheralCellsToRemove, invert=True)]
     return centralCells
 
-def main():
-    divPredFeatureSet = "allTopos"
-    useBioFeaturesForDivPrediction = divPredFeatureSet=="area" or divPredFeatureSet=="topoAndBio"
-    topoPredFeatureSet = "topoAndBio"
-    baseFolder = "./Data/WT/"
-
-    normalisationParameterForTopo = np.load(f"Results/topoPredData/diff/manualCentres/{topoPredFeatureSet}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/normalisationParameterMeanAndStd.npy")
-    plant = "P2"
-    timePoints = [0,1,2,3]
-    mostCentralCells = [[392],  [553, 779, 527], [525], [1135]]
-    centralCellsList = []
-    for i, t in enumerate(timePoints):
-        centralCells = findCentralNonPeripheralCells("{}{}/".format(baseFolder, plant), plant, t, mostCentralCells[i])
-        centralCellsList.append(centralCells)
-    savePredictionsToFolder = f"Results/DivAndTopoApplication/{plant}/"
-    loadPredictionsFromFolder = None#savePredictionsToFolder#
-    divPredModel, topoPredModel, divSampleData, divSampleLabel = loadTestModelsAndData(baseFolder, divPredFeatureSet, topoPredFeatureSet)
-    myDivAndTopoPredictor = DivAndTopoPredictor(divPredModel, topoPredModel,
-                                                divSampleData, baseFolder,
-                                                plant, timePoints,
-                                                divSampleLabel=divSampleLabel,
-                                                useBioFeaturesForDivPrediction=useBioFeaturesForDivPrediction,
-                                                correlateTissues=True,
-                                                simulateCellDivisions=True,
-                                                centralCellsList=centralCellsList,
-                                                loadPredictionsFromFolder=loadPredictionsFromFolder,
-                                                savePredictionsToFolder=savePredictionsToFolder,
-                                                topoPredFeatureSet=topoPredFeatureSet,
-                                                normalisationParameterForTopo=normalisationParameterForTopo)
-
 def calculateCombinedCorrelations(baseResultsFolder="Results/DivAndTopoApplication/", plantNames=["P2", "P9"]):
     allExpectedFeatures = []
     allPredictedFeatures = []
@@ -568,7 +538,7 @@ def calculateCombinedCorrelations(baseResultsFolder="Results/DivAndTopoApplicati
 def propagateAndCorrelateTissues():
     justLoadPredictions = False
     baseResultsFolder = "Results/DivAndTopoApplication/"
-    divPredFeatureSet = "allTopos"
+    divPredFeatureSet = "topoAndBio"
     useBioFeaturesForDivPrediction = divPredFeatureSet=="area" or divPredFeatureSet=="topoAndBio"
     topoPredFeatureSet = "topoAndBio"
     baseFolder = "./Data/WT/"
