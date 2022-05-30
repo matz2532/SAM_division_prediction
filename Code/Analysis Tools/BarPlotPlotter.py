@@ -190,14 +190,16 @@ class BarPlotPlotter (object):
         return mean, std
 
     def addTestData(self, mean, std, idx, performanceIdx, tableList,
+                    plotOnlyRandom=False,
                     testMeanIdxName="test mean", testStdIdxName="test std"):
+        startPerformanceValIdx = self.randTable[0].shape[1] // 2
         mean, std = list(mean), list(std)
         for i, table in enumerate(tableList):
             indices = np.asarray(table.index)
             isTestMean = indices == testMeanIdxName
             isTestStd = indices == testStdIdxName
-            meanTestP = table.iloc[isTestMean, performanceIdx].to_numpy()
-            stdTestP = table.iloc[isTestStd, performanceIdx].to_numpy()
+            meanTestP = table.iloc[isTestMean, performanceIdx+startPerformanceValIdx].to_numpy()
+            stdTestP = table.iloc[isTestStd, performanceIdx+startPerformanceValIdx].to_numpy()
             mean.insert((idx+1)*i+idx, meanTestP)
             std.insert((idx+1)*i+idx, stdTestP)
         mean, std = np.asarray(mean), np.asarray(std)
