@@ -268,7 +268,7 @@ def wrapRandomTissuePredictionAndComparison(plantNames, mostCentralCellsDict, gi
     # print(list(meanCor[argsort]))
     # print("diff", diff[argsort])
 
-def main():
+def mainRandomiseWithMultiplePlants():
     plantNames = ["P2", "P9"]
     mostCentralCellsDict = {"P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
                         "P9":[[1047, 721, 1048], [7303, 7533], [6735, 7129], [2160, 2228], [7366, 7236]]}
@@ -299,4 +299,4 @@ def main():
     #                                     baseFolder=baseFolder, plant=testPlant)
 
 if __name__ == '__main__':
-    main()
+    mainRandomiseWithMultiplePlants()
