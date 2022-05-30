@@ -114,7 +114,7 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
         Path(fig4ResultFolder).mkdir(parents=True, exist_ok=True)
         plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=fig4ResultFolder)
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 3 A", "Fig. 3 B"]):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 5 A", "Fig. 5 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
@@ -171,5 +171,5 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
 
 
 if __name__== "__main__":
-    plotAndPrepareMainFigures()
-    # plotAndPrepareSuppFigures()
+    # plotAndPrepareMainFigures()
+    plotAndPrepareSuppFigures()
