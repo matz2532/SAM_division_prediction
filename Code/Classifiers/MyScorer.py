@@ -513,6 +513,22 @@ def plotPrecisionRecallCurve(y_true, y_scores, n_classes=3, plotShow=True, split
     if plotShow:
         plt.show()
 
+def makePerformanceHumanReadable(performanceValues, allFeatureSetNames):
+    nrOfSets = len(allFeatureSetNames)
+    nrOfClasses = len(performanceValues)//nrOfSets
+    assert nrOfSets*nrOfClasses == len(performanceValues), f"The performanceValues seem not to have the correct number of entries, {len(performanceValues)} != {nrOfSets*nrOfClasses}={nrOfSets}*{nrOfClasses}"
+    performanceDict = {}
+    i = 0
+    for featureName in allFeatureSetNames:
+        classPerformanceDict = {}
+        classPerformanceDict["avg"] = performanceValues[i]
+        i += 1
+        for classNr in np.arange(nrOfClasses-1):
+            classPerformanceDict[classNr] = performanceValues[i]
+            i += 1
+        performanceDict[featureName] = classPerformanceDict
+    return performanceDict
+
 def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/manualCentres/",
                                  modelBaseFolder="Results/topoPredData/diff/manualCentres/",
                                  excludeDivNeighbours=True, saveFig=True, useValidationData=True,
@@ -570,8 +586,10 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
             plt.tight_layout()
             plt.savefig(filenameToSave)
         plt.close()
-    print("allMeans", allMeans)
-    print("allStds", allStds)
+    aucMeanDict = makePerformanceHumanReadable(allMeans, featureSets)
+    aucStdDict = makePerformanceHumanReadable(allStds, featureSets)
+    print("allMeans", aucMeanDict)
+    print("allStds", aucStdDict)
     return allMeans, allStds
 
 def mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="",
