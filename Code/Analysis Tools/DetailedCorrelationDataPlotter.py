@@ -8,6 +8,8 @@ import seaborn
 
 sys.path.insert(0, "./Code/Classifiers/")
 from DuplicateDoubleRemover import DuplicateDoubleRemover
+from pathlib import Path
+from statsmodels.stats.multitest import multipletests
 
 class DetailedCorrelationDataPlotter (object):
 
@@ -310,6 +312,46 @@ class DetailedCorrelationDataPlotter (object):
             if showPlot:
                 plt.show()
 
+    def SaveDifferenceOfComparativeBarPlot(self, acutalCorr, argSort, dataFolder,
+                                           filenameToSave=None,
+                                           plantNames=None, nrOfSeeds=100, featureNames=None,
+                                           correlationBaseFilename="correlations_seed{}.npy",
+                                           ignoreFeaturesIdx=None, correctPValues=True,
+                                           printPValues=True):
+        allRandomisedCorr = []
+        if plantNames is None:
+            raise NotImplementedError("Setting plantNames to None, e.g. automatically searching for 'correlations_seed<XXX>.npy' files in dataFolder is not yet implemented")
+        else:
+            for plant in plantNames:
+                plantDataFolder = dataFolder + plant + "/"
+                for i in range(nrOfSeeds):
+                    filename = plantDataFolder + correlationBaseFilename.format(i)
+                    currentSeedsCorr = np.load(filename)
+                    allRandomisedCorr.append(currentSeedsCorr)
+        allRandomisedCorr = np.asarray(allRandomisedCorr)
+        if not ignoreFeaturesIdx is None:
+            allRandomisedCorr = np.delete(allRandomisedCorr, ignoreFeaturesIdx, axis=1)
+        sortedActualCorr = np.asarray(acutalCorr)[argSort]
+        sortedRandomisedCorr = allRandomisedCorr[:, argSort]
+        allTStats, allPValues = [], []
+        for i, actuallCorr in enumerate(sortedActualCorr):
+            correspondingRandomCorr = sortedRandomisedCorr[:, i]
+            stat, pValue = scipy.stats.ttest_1samp(correspondingRandomCorr, popmean=actuallCorr)
+            allTStats.append(stat)
+            allPValues.append(pValue)
+        if not featureNames is None:
+            pValueTable = {"featureNames" : featureNames,
+                       "p-value" : allPValues,
+                       "T-stat" : allTStats}
+        if correctPValues:
+            correctedPValues = list(multipletests(allPValues, method='fdr_bh')[1])
+            pValueTable["corrected p-value"] = correctedPValues
+        pValueTable = pd.DataFrame(pValueTable)
+        if printPValues:
+            print(pValueTable.to_string())
+        if not filenameToSave is None:
+            pValueTable.to_csv(filenameToSave, index=False)
+
 def combinFeatures(baseDataFolder, plantNames):
     actualFeatures = []
     predFeatures = []
@@ -364,7 +406,7 @@ def plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=None):
 def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseDataFolder="Results/DivAndTopoApplication/",
                 filenameToSave="propagationCorrelationsComparingWith{}.png",
                 featureFilename="Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv",
-                saveUnderFolder=None, startingFeatureIdx=4, ignoreFeaturesIdx=None):
+                plantNames=["P2", "P9"], saveUnderFolder=None, startingFeatureIdx=4, ignoreFeaturesIdx=None):
     if saveUnderFolder is None:
         saveUnderFolder = baseDataFolder
     r = np.load(baseDataFolder + "correlations.npy")
@@ -374,8 +416,10 @@ def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseDataFolder="
         featureNames = None
     # compare againts randomisation of divide all predicted non-dividing cells
     tag = "_DividingAllPredictedNonDividing"
-    rComparison = np.load(baseDataFolder + "Random/FullyRandom/fullyReversedPrediction/meanCorrelations.npy")
-    rComparisonXerr = np.load(baseDataFolder + "Random/FullyRandom/fullyReversedPrediction/stdCorrelations.npy")
+    randomisationExtensionFolder = "Random/FullyRandom/fullyReversedPrediction/"
+    dataFolder = baseDataFolder + randomisationExtensionFolder
+    rComparison = np.load(dataFolder + "meanCorrelations.npy")
+    rComparisonXerr = np.load(dataFolder + "stdCorrelations.npy")
     if ignoreFeaturesIdx:
         featuresToKeep = np.arange(len(r))
         featuresToKeep = featuresToKeep[np.isin(featuresToKeep, ignoreFeaturesIdx, invert=True)]
@@ -393,6 +437,9 @@ def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseDataFolder="
                                                         colNames=featureNames,
                                                         saveUnderFolder=saveUnderFolder,
                                                         filenameToSave=filenameToSave)
+    filenameToSave = Path(saveUnderFolder).joinpath(Path(filenameToSave).stem + "_statistic.csv")
+    DetailedCorrelationDataPlotter().SaveDifferenceOfComparativeBarPlot(r, argSort, dataFolder, filenameToSave,
+                plantNames=plantNames, featureNames=featureNames, ignoreFeaturesIdx=ignoreFeaturesIdx)
 
 if __name__ == '__main__':
     compareModelPredictedVsRandomPropagationFeatureCorrelations()
