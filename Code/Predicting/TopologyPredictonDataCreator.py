@@ -260,14 +260,16 @@ class TopologyPredictonDataCreator (BaseDataCreator):
         self.myStandardTableFormater = StandardTableFormater(self.plantNames)
         columnNames = ["plant", "time point", "parent neighbor"]
         featuresAndSources = []
-        plantNames = self.labelTable.iloc[:, 0].unique()
+        uniquePlantNames = self.labelTable.iloc[:, 0].unique()
         timePoints = self.labelTable.iloc[:, 1].unique()
-        groupedTables = self.labelTable.groupby(["plant", "time point"])
-        for groupId, groupTable in groupedTables:
-            plantName, timePoint = groupId
-            tissueLabelTable = self.getTissueLabels(plantName, timePoint)
-            featuresOfTissue = self.determineFeaturesOf(tissueLabelTable, plantName, timePoint)
-            featuresAndSources.append(featuresOfTissue)
+        for plantName in uniquePlantNames:
+            isPlant = self.labelTable.iloc[:, 0] == plantName
+            idxOfPlant = np.where(isPlant)[0]
+            timePointsOfPlant = self.labelTable.iloc[idxOfPlant, 1].unique()
+            for timePoint in timePointsOfPlant:
+                tissueLabelTable = self.getTissueLabels(plantName, timePoint)
+                featuresOfTissue = self.determineFeaturesOf(tissueLabelTable, plantName, timePoint)
+                featuresAndSources.append(featuresOfTissue)
         self.featureTable = pd.concat(featuresAndSources, axis=0, ignore_index=True)
 
     def getTissueLabels(self, plantName, timePoint, plantColIdx=0, timeColIdx=1):
