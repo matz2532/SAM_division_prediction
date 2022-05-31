@@ -13,7 +13,7 @@ from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 2 B alternative", "Fig. 3 B alternative"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 C ktn"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -89,6 +89,7 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
         Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
         mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
                                             modelBaseFolder="Results/topoPredData/diff/manualCentres/",
+                                            featureSets=["topoAndBio", "lowCor0.3", "topology"],
                                             saveUnderFolder=fig3ResultFolder)
     # Fig. 4 B - example of predicted and observed topo prediction
     if figuresToDo == "all" or "Fig. 4 B" in figuresToDo:
