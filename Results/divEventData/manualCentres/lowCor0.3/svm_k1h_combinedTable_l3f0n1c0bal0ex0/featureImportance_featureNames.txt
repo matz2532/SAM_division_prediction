@@ -1,0 +1,10 @@
+information c topologyWall
+information c
+clustering coefficient
+weighted node degree topologyArea
+page rank topologyArea
+abs graph density 2nd n
+information c topologyDist
+katz c
+katz c topologyArea
+harmonic c

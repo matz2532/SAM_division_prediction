@@ -1,0 +1,10 @@
+harmonic centrality
+katz centrality topologyArea
+katz centrality
+information centrality topologyDist
+abs graph density on 2 neighborhood
+page rank topologyArea
+weighted node degree topologyArea
+clustering coefficient
+information centrality
+information centrality topologyWall
