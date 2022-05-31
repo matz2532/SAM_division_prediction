@@ -91,7 +91,7 @@ class BarPlotPlotterExtended (BarPlotPlotter):
     def doStatistics(self, performanceIdx, baseScenarioIdx):
         setsPerofmancesOfBaseScenario = self.testResultTables[baseScenarioIdx]
         # test for differences in base scenario
-        pValueTable = self.calcTrainAndValDifferences(setsPerofmancesOfBaseScenario, performanceIdx, doTestInsteadOfTrainValDifference=True)
+        pValueTable = self.calcDifferenceBetweenTestPerformances(setsPerofmancesOfBaseScenario, performanceIdx)
         pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_testPValues.csv")
         pValueTable.to_csv(pValueTableName)
         testGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"test p-values":"p-value"})).GetGroupNameLetters()

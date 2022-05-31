@@ -1,1 +1,1 @@
-testGroupLetters {'allTopos': 'a', 'area': 'a', 'lowCor0.3': 'a', 'topoAndBio': 'a', 'topology': 'b'}
+testGroupLetters {'allTopos': 'a', 'area': 'a', 'lowCor0.3': 'a', 'topoAndBio': 'a', 'topology': 'a'}

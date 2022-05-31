@@ -96,7 +96,7 @@ class BarPlotPlotter (object):
             statisticsLetters += f"trainingGroupLetters {trainingGroupLetters}\n"
             statisticsLetters += f"valGroupLetters {valGroupLetters}\n"
         if not self.testResultTables is None and not self.plotOnlyRandom:
-            pValueTable = self.calcDifferenceBetweenTestPerformances(performanceIdx, existingPValueTable=pValueTable,
+            pValueTable = self.calcDifferenceBetweenTestPerformances(self.testResultTables, performanceIdx, existingPValueTable=pValueTable,
                         correctPValues=True)
             pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_trainValTestPValues.csv")
             pValueTable.to_csv(pValueTableName)
@@ -272,8 +272,7 @@ class BarPlotPlotter (object):
         return yLabel
 
     def calcTrainAndValDifferences(self, resultsTable, performanceIdx, nrOfReplicates=5,
-                        correctPValues=True, printPValues=False, tukey=False,
-                        doTestInsteadOfTrainValDifference=False):
+                        correctPValues=True, printPValues=False, tukey=False):
         trainValues = []
         valValues = []
         startPerformanceValIdx = resultsTable[0].shape[1] // 2
@@ -321,13 +320,6 @@ class BarPlotPlotter (object):
         pValueTable = {"group1":group1, "group2":group2,
                         "training p-values":trainPValues, "training T-stat:":trainTStat,
                        "validation p-values":valPValues, "validation T-stat:":valTStat}
-        if doTestInsteadOfTrainValDifference:
-            pValueTable = {"group1":group1, "group2":group2,
-                           "test p-values":valPValues, "test T-stat:":valTStat}
-        else:
-            pValueTable = {"group1":group1, "group2":group2,
-                            "training p-values":trainPValues, "training T-stat:":trainTStat,
-                           "validation p-values":valPValues, "validation T-stat:":valTStat}
         pValueTable = pd.DataFrame(pValueTable, index=testCases)
         return pValueTable
 
@@ -352,10 +344,10 @@ class BarPlotPlotter (object):
         textResult = name+"\n"+f"Results of ANOVA test:\n The F-statistic is: {fvalue}\n The p-value is: {pvalue}\n"+str(m_comp)
         return textResult.split("\n")
 
-    def calcDifferenceBetweenTestPerformances(self, performanceIdx, existingPValueTable=None,
+    def calcDifferenceBetweenTestPerformances(self, testResultTables, performanceIdx, existingPValueTable=None,
                     indexName="test tissue", pValueColumnName="test p-values",
                     tStatsColumnName="test T-stat", correctPValues=True):
-        testPerformancesPerSet = self.selectPerformancesFromTableList(self.testResultTables, performanceIdx, indexName)
+        testPerformancesPerSet = self.selectPerformancesFromTableList(testResultTables, performanceIdx, indexName)
         numberOfTissuesPerSet = np.asarray([len(i) for i in testPerformancesPerSet])
         assert np.all(numberOfTissuesPerSet[0] == numberOfTissuesPerSet), f"The number of selected test tissues should be the same for all sets, number of tissues per set {numberOfTissuesPerSet} of sets {self.selectedFeatureSetFolders}"
         pValueTable = self.createPValueTable(testPerformancesPerSet, setNames=self.selectedFeatureSetFolders,
@@ -551,7 +543,7 @@ def mainTopoPredRandomization(performance="Acc", doSpecial=False,
         furtherFolder = "svm_k1h_combinedTable_l3f0n1c0{}{}/".format(balanceTxt, excludingTxt)
         randFilename = None
         setNames = ", ".join(divEventPred)
-        filenameToSave = savePlotFolder + "div pred {} results{} {} {}.png".format(balanceTxt, addition, performance, setNames)
+        filenameToSave = savePlotFolder + "test topo pred {} results {}{} {} {}.png".format(balanceTxt, excludingTxt, addition, performance, setNames)
     if addOtherTestWithBaseFolder:
         filenameToSave = filenameToSave.replace(".png", "_WithKtnTest.png")
     if doSpecial:
