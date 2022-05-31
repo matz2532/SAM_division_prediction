@@ -3,6 +3,13 @@ import pandas as pd
 import re, sys
 from pathlib import Path
 
+def relDifference(a, b, round=1):
+    relDif = 100*(a-b)/b
+    if round is None:
+        return relDif
+    else:
+        return np.round(relDif, round)
+
 def doZNormalise(array, useParameters=None, returnParameter=False):
     # z-score normalise the array along each column
     if not useParameters is None:
@@ -230,5 +237,13 @@ def main():
 if __name__ == '__main__':
     # reduce full parent labeling (including all parent labels with their next time points cell) to "normal" parent labeling files
     # by excluding non-dividing parent cells
-    convertFullToNormalParentLabelingForFolder(baseDataFolder="Data/floral meristems/WT/", plantNames=["p4 FM1", "p4 FM2"])
+    # convertFullToNormalParentLabelingForFolder(baseDataFolder="Data/floral meristems/WT/", plantNames=["p4 FM1", "p4 FM2"])
+    # convertFullToNormalParentLabelingForFolder(baseDataFolder="Data/floral meristems/ktn/", plantNames=["p3 FM6 flower 1", "p3 FM6 flower 2", "p3 FM6 flower 3"])
     # main()
+    print("topo prediction")
+    print(f"bio to topoAndBio reduction of {relDifference(52, 71.55)}/{relDifference(50.46, 65.88)} train/val accuracy")
+    print(f"bio to topoAndBio reduction of {relDifference(63.48, 71.55)}/{relDifference(57.48, 65.88)} train/val accuracy")
+    print(f"topoAndBio to bio increase of {relDifference(0.7559117319261655, 0.6691664572155746)}/{relDifference(0.7966010663512246, 0.6129970156417025)} class 0/1 accuracy")
+    print(f"topoAndBio to allTopos increase of {relDifference(0.8182447428829326, 0.6325617376031192)} class 2 accuracy")
+    print(f"topoAndBio to allTopos/bio increase of {relDifference(0.8313877793949692, 0.7374946366075243)}/{relDifference(0.8313877793949692, 0.7123793378082395)} class avg accuracy")
+    print(f"r<0.3 to allTopos reduction of {relDifference(56.02, 56.566670)} test accuracy")
