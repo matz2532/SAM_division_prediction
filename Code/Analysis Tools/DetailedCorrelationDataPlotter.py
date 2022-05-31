@@ -310,12 +310,12 @@ class DetailedCorrelationDataPlotter (object):
             if showPlot:
                 plt.show()
 
-def combinFeatures(baseFolder, plantNames):
+def combinFeatures(baseDataFolder, plantNames):
     actualFeatures = []
     predFeatures = []
     for plant in plantNames:
-        actualFeatures.append(np.load("./{}{}/actualFeatures.npy".format(baseFolder, plant)))
-        predFeatures.append(np.load("./{}{}/predFeatures.npy".format(baseFolder, plant)))
+        actualFeatures.append(np.load("./{}{}/actualFeatures.npy".format(baseDataFolder, plant)))
+        predFeatures.append(np.load("./{}{}/predFeatures.npy".format(baseDataFolder, plant)))
     actualFeatures = np.concatenate(actualFeatures, axis=0)
     predFeatures = np.concatenate(predFeatures, axis=0)
     return actualFeatures, predFeatures
@@ -328,9 +328,9 @@ def plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=None):
     ignoreFeaturesIdx = None
     colNames = pd.read_csv("./Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv").columns.to_numpy()[3:]
     # print(colNames)
-    baseFolder = "Results/DivAndTopoApplication/"
+    baseDataFolder = "Results/DivAndTopoApplication/"
     if saveUnderFolder is None:
-        saveUnderFolder = baseFolder
+        saveUnderFolder = baseDataFolder
     random = [None, "fullyRandom", "improvedRandom"][0]
     nrOfRepetitions = 100
     folderToLoadRandomCor = "Results/DivAndTopoApplication/Random/"
@@ -349,7 +349,7 @@ def plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=None):
                                                folderToLoad=folderToLoadRandomCor,
                                                printOut=False)
         givenCorrelation = np.asarray(givenCorrelation)
-    actualFeatures, predFeatures = combinFeatures(baseFolder, plantNames)
+    actualFeatures, predFeatures = combinFeatures(baseDataFolder, plantNames)
     if ignoreFeaturesIdx:
         featuresToKeep = np.arange(len(colNames))
         featuresToKeep = featuresToKeep[np.isin(featuresToKeep, ignoreFeaturesIdx, invert=True)]
@@ -361,21 +361,21 @@ def plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=None):
                                 filenameToSaveCorrelationPlot=filenameToSaveCorrelationPlot)
     myDetailedCorrelationDataPlotter.analyseDataPoints()
 
-def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseFolder="Results/DivAndTopoApplication/",
+def compareModelPredictedVsRandomPropagationFeatureCorrelations(baseDataFolder="Results/DivAndTopoApplication/",
                 filenameToSave="propagationCorrelationsComparingWith{}.png",
                 featureFilename="Data/WT/divEventData/manualCentres/topology/combinedFeatures_topology_notnormalised.csv",
                 saveUnderFolder=None, startingFeatureIdx=4, ignoreFeaturesIdx=None):
     if saveUnderFolder is None:
-        saveUnderFolder = baseFolder
-    r = np.load(baseFolder + "correlations.npy")
+        saveUnderFolder = baseDataFolder
+    r = np.load(baseDataFolder + "correlations.npy")
     if not featureFilename is None:
         featureNames = np.asarray(list(pd.read_csv(featureFilename).columns))[3:]
     else:
         featureNames = None
     # compare againts randomisation of divide all predicted non-dividing cells
     tag = "_DividingAllPredictedNonDividing"
-    rComparison = np.load(baseFolder + "Random/FullyRandom/fullyReversedPrediction/meanCorrelations.npy")
-    rComparisonXerr = np.load(baseFolder + "Random/FullyRandom/fullyReversedPrediction/stdCorrelations.npy")
+    rComparison = np.load(baseDataFolder + "Random/FullyRandom/fullyReversedPrediction/meanCorrelations.npy")
+    rComparisonXerr = np.load(baseDataFolder + "Random/FullyRandom/fullyReversedPrediction/stdCorrelations.npy")
     if ignoreFeaturesIdx:
         featuresToKeep = np.arange(len(r))
         featuresToKeep = featuresToKeep[np.isin(featuresToKeep, ignoreFeaturesIdx, invert=True)]
