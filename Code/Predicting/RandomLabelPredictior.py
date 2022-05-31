@@ -161,7 +161,7 @@ def mainCallDivPredRandomization():
                               excludeDividingNeighbours=False)
 
 def mainCallTopoPredRandomization(excludeDividingNeighboursPar=[True], # [True, False]
-                                  givenSets= ["bio", "allTopos", "topoAndBio"]):
+                                  givenSets=["bio", "allTopos", "topoAndBio"]):
     for excludeDividingNeighbours in excludeDividingNeighboursPar:
         for featureSet in givenSets:
             print("featureSet", featureSet, "excludeDividingNeighbours", excludeDividingNeighbours)
@@ -172,7 +172,7 @@ def mainCallTopoPredRandomization(excludeDividingNeighboursPar=[True], # [True, 
 
 def main():
     # mainCallDivPredRandomization()
-    mainCallTopoPredRandomization()
+    mainCallTopoPredRandomization(givenSets=["allTopos"])
 
 if __name__ == '__main__':
     main()
