@@ -172,7 +172,7 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
         Path(fig9BResultFolder).mkdir(parents=True, exist_ok=True)
         mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=False, savePlotFolder=fig9BResultFolder)
 
-def prepareSuppTablesresultsFolder="Results/SuppTables/", tablesToDo=["Tab. 3"]):
+def prepareSuppTables(resultsFolder="Results/SuppTables/", tablesToDo=["Tab. 3", "Tab. 4"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Tab. 3 - .csv-files with each feature sets div pred performances of all scenarios and means shown with +- std
     # scenarios: WT SAM training, WT SAM test, ktn SAM, and WT and ktn floral meristem
@@ -182,10 +182,10 @@ def prepareSuppTablesresultsFolder="Results/SuppTables/", tablesToDo=["Tab. 3"])
         mainCombineDivPredResults(tab3ResultFolder)
     # Tab. 4 - .csv-files with each feature sets topo pred performances of all scenarios and means shown with +- std
     # scenarios: WT SAM training, WT SAM test, ktn SAM, and WT and ktn floral meristem
-    if tablesToDo == "all" or "Tab. 3" in tablesToDo:
-        tab3ResultFolder = resultsFolder + "Tab 3/"
-        Path(tab3ResultFolder).mkdir(parents=True, exist_ok=True)
-        mainCombineTopoPredResults(tab3ResultFolder)
+    if tablesToDo == "all" or "Tab. 4" in tablesToDo:
+        tab4ResultFolder = resultsFolder + "Tab 4/"
+        Path(tab4ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainCombineTopoPredResults(tab4ResultFolder)
 
 if __name__== "__main__":
     # plotAndPrepareMainFigures()
