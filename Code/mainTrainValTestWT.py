@@ -34,7 +34,7 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
     featureProperty = "combinedTable"
     if runDivEventPred:
         if givenSets is None:
-            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3"]
         if baseResultsFolder is None:
             baseResultsFolder = "Results/divEventData/"
         for set in givenSets:
@@ -75,9 +75,9 @@ def mainTrainValTestWT(runDivEventPred=True, givenSets=None, baseResultsFolder=N
                                    labelName=labelName,
                                    excludeDividingNeighbours=False,
                                    printBalancedLabelCount=printBalancedLabelCount)
-    else:    
+    else:
         if givenSets is None:
-            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3"]
         if baseResultsFolder is None:
             baseResultsFolder = "Results/topoPredData/"
         dataSetType = "diff"

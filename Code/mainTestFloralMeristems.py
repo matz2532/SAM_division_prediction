@@ -39,11 +39,11 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
     if runDivEventPred:
         predictionTypeExtension = "divEventData/"
         if givenSets is None:
-            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3"]
     else:
         predictionTypeExtension = "topoPredData/"
         if givenSets is None:
-            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3"]
     dataFolder = dataBaseFolder + dataExtension
     featureAndLabelFolder = dataFolder + predictionTypeExtension
     plantNames = list(centralCellsDict.keys())

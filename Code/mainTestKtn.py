@@ -34,7 +34,7 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
     parName = None
     if runDivEventPred:
         if givenSets is None:
-            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+            givenSets = ["allTopos", "area", "topoAndBio", "topology", "lowCor0.3"]
         for set in givenSets:
             print("testing division prediction with set ", set)
             labelName = "combinedLabels.csv"
@@ -79,7 +79,7 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
                                    printBalancedLabelCount=printBalancedLabelCount)
     else:
         if givenSets is None:
-            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3", "lowCor0.7"]
+            givenSets = ["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3"]
         for set in givenSets:
             print("testing topo prediction with set ", set)
             labelName = "combinedLabels.csv"
