@@ -6,11 +6,15 @@ class ResultsTableCombiner (object):
     baseResultsTable=None
     extendedResultsTable=None
 
-    def __init__(self, resultsTableName="resultsWithTesting.csv"):
+    def __init__(self, baseResultsFolder=None, classifierFolderExtension="", resultsTableName="resultsWithTesting.csv"):
         self.resultsTableName = resultsTableName
+        self.baseResultsFolder = baseResultsFolder
+        self.classifierFolderExtension = classifierFolderExtension
 
-    def CreateBaseResultsTable(self, baseResultsTable=None, baseResultsTableFolder=None,
+    def CreateBaseResultsTable(self, featureSetName, baseResultsTable=None, baseResultsTableFolder=None,
                                renameTrainMeanIdxTo="train mean", renameTestMeanIdxTo="test WT SAM"):
+        if baseResultsTableFolder is None and not self.baseResultsFolder is None:
+            baseResultsTableFolder = self.baseResultsFolder + featureSetName + "/" + self.classifierFolderExtension
         assert not baseResultsTable is None or not baseResultsTableFolder is None, "Either give a baseResultsTable or the baseResultsTableFolder to create the base result table."
         # load table
         if baseResultsTable is None:
@@ -93,11 +97,12 @@ def mainCombineDivPredResults(saveUnderFolder="", baseResultsFolder="Results/div
                               classifierFolderExtension="svm_k1h_combinedTable_l3f0n1c0bal0ex0/",
                               resultsTableName="resultsWithTesting.csv",
                               tableName="div pred combined results of {}.csv"):
-    myCombiner = ResultsTableCombiner(resultsTableName=resultsTableName)
+    myCombiner = ResultsTableCombiner(baseResultsFolder=baseResultsFolder,
+                                      classifierFolderExtension=classifierFolderExtension,
+                                      resultsTableName=resultsTableName)
     for featureSetName in featureSets:
-        baseResultsTableFolder = baseResultsFolder + featureSetName + "/" + classifierFolderExtension
         finalCombinedTableFilename = saveUnderFolder + tableName.format(featureSetName)
-        myCombiner.CreateBaseResultsTable(baseResultsTableFolder=baseResultsTableFolder)
+        myCombiner.CreateBaseResultsTable(featureSetName)
 
 def mainCombineTopoPredResults(saveUnderFolder="", baseResultsFolder="Results/topoPredData/diff/manualCentres/",
                                featureSets=["allTopos", "area", "topoAndBio", "topology", "lowCor0.3"],
