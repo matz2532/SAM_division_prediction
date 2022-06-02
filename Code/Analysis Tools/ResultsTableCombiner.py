@@ -5,6 +5,7 @@ class ResultsTableCombiner (object):
 
     baseResultsTable=None
     extendedResultsTable=None
+    verbosity=0
 
     def __init__(self, baseResultsFolder=None, classifierFolderExtension="", resultsTableName="resultsWithTesting.csv"):
         self.resultsTableName = resultsTableName
@@ -70,7 +71,8 @@ class ResultsTableCombiner (object):
                 idxOfColumnToRound = np.where(isSpecialColumn)[0]
                 roundedTable.iloc[:, idxOfColumnToRound] = table.iloc[:, idxOfColumnToRound].round(valueToRoundException)
             else:
-                print(f"Warning: The row {columnToExcept} was not present and could therfore not be rounded to {valueToRoundException}, select any of these: {columns}")
+                if self.verbosity >1:
+                    print(f"Warning: The row {columnToExcept} was not present and could therfore not be rounded to {valueToRoundException}, select any of these: {columns}")
         return roundedTable
 
     def mergeRowEntriesWithNextRow(self, table, rowIdxToUse, symbolToCombineRows="±"):
