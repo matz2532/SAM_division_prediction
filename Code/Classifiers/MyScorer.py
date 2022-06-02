@@ -593,12 +593,13 @@ def plotGivenFeatureSetRocCurves(resultsBaseFolder="Results/topoPredData/diff/ma
     return allMeans, allStds
 
 def mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="",
-                modelBaseFolder=None, useValidationData=False,
+                modelBaseFolder=None, featureSets=["allTopos", "bio", "topoAndBio"], useValidationData=False,
                 saveUnderFolder=None):
     if modelBaseFolder is None:
         modelBaseFolder = resultsBaseFolder
     means, stds = plotGivenFeatureSetRocCurves(saveFig=True, resultsBaseFolder=resultsBaseFolder,
                                                modelBaseFolder=modelBaseFolder,
+                                               featureSets=featureSets,
                                                useValidationData=useValidationData,
                                                saveUnderFolder=saveUnderFolder)
     import sys
