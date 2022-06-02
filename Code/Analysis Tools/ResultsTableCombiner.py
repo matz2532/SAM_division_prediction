@@ -29,17 +29,26 @@ class ResultsTableCombiner (object):
         self.baseResultsTable = self.mergeRowEntriesWithNextRow(roundedBaseTable, rowIdxToUse=renameTrainMeanIdxTo, symbolToCombineRows="±")
         self.baseResultsTable = self.mergeRowEntriesWithNextRow(self.baseResultsTable, rowIdxToUse=renameTestMeanIdxTo, symbolToCombineRows="±")
 
-    def ExtendBaseResultsTable(self):
-        # load table
-        # rename test mean
-        # round values accordingly e.g., accuracy to 2 and auc 4 digits after comma
-        # combine mean and std rows with +-
-        # include test values at correct positions
-        pass
+    def ExtendBaseResultsTable(self, featureSetName, additionalTestFolderWithKeys):
+        self.extendedResultsTable = self.baseResultsTable.copy()
+        for newTestRowName, resultsBaseFolder in additionalTestFolderWithKeys.items():
+            # load table
+            resultsBaseFolder += featureSetName + "/" + self.classifierFolderExtension
+            extendingTable = pd.read_csv(resultsBaseFolder + self.resultsTableName, index_col=0)
+            # round values accordingly e.g., accuracy to 2 and auc 4 digits after comma
+            extendingTable = self.roundValues(extendingTable)
+            # combine mean and std rows with +-
+            extendingTable = self.mergeRowEntriesWithNextRow(extendingTable, rowIdxToUse="test mean", symbolToCombineRows="±")
+            # include test values
+            nrOfBaseResultTablecolumns = self.extendedResultsTable.shape[1]
+            valuesToExtend = list(extendingTable.loc["test mean"])
+            while len(valuesToExtend) < nrOfBaseResultTablecolumns:
+                valuesToExtend.insert(0, "")
+            self.extendedResultsTable.loc[newTestRowName] = valuesToExtend
 
     def SaveResultsTable(self, tableFilenameToSave="combined scenarios results.csv", useExtendedTable=None):
         if useExtendedTable is None:
-            if extendedResultsTable is None:
+            if self.extendedResultsTable is None:
                 useExtendedTable = False
             else:
                 useExtendedTable = True
@@ -62,7 +71,7 @@ class ResultsTableCombiner (object):
             print(f"The index '{fromIdx}' was not changed to '{toIdx}' as the index was not present in {indices}")
         return baseResultsTable
 
-    def roundValues(self, table, baseRoundValue=2, exceptForColumnsDict={"train Auc":4, "val Auc":4}):
+    def roundValues(self, table, baseRoundValue=2, exceptForColumnsDict={"train Auc":4, "val Auc":4, "Auc":4}):
         columns = np.asarray(table.columns)
         roundedTable = table.round(baseRoundValue).copy()
         for columnToExcept, valueToRoundException in exceptForColumnsDict.items():
@@ -105,19 +114,28 @@ def mainCombineDivPredResults(saveUnderFolder="", baseResultsFolder="Results/div
     for featureSetName in featureSets:
         finalCombinedTableFilename = saveUnderFolder + tableName.format(featureSetName)
         myCombiner.CreateBaseResultsTable(featureSetName)
+        myCombiner.ExtendBaseResultsTable(featureSetName, additionalTestFolderWithKeys)
+        myCombiner.SaveResultsTable(finalCombinedTableFilename)
 
 def mainCombineTopoPredResults(saveUnderFolder="", baseResultsFolder="Results/topoPredData/diff/manualCentres/",
-                               featureSets=["allTopos", "area", "topoAndBio", "topology", "lowCor0.3"],
+                               featureSets=["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3"],
                                additionalTestFolderWithKeys={
                                         "test ktn SAM" : "Results/ktnTopoPredData/diff/manualCentres/",
                                         "test WT floral meristem" : "Results/floral meristems/WT/topoPredData/diff/manualCentres/",
-                                        "test ktn floral meristem" : "Results/floral meristems/ktn/divEventData/diff/manualCentres/"
+                                        "test ktn floral meristem" : "Results/floral meristems/ktn/topoPredData/diff/manualCentres/"
                                                             },
                                classifierFolderExtension="svm_k1h_combinedTable_l3f0n1c0bal0ex1/",
-                               tableName="div pred combined results of {}.csv"):
+                               resultsTableName="resultsWithTesting.csv",
+                               tableName="topo pred combined results of {}.csv"):
+    myCombiner = ResultsTableCombiner(baseResultsFolder=baseResultsFolder,
+                                      classifierFolderExtension=classifierFolderExtension,
+                                      resultsTableName=resultsTableName)
     for featureSetName in featureSets:
-        tableResultsName = saveUnderFolder + tableName.format(featureSetName)
-        ResultsTableCombiner()
+        finalCombinedTableFilename = saveUnderFolder + tableName.format(featureSetName)
+        myCombiner.CreateBaseResultsTable(featureSetName)
+        myCombiner.ExtendBaseResultsTable(featureSetName, additionalTestFolderWithKeys)
+        myCombiner.SaveResultsTable(finalCombinedTableFilename)
 
 if __name__ == '__main__':
     mainCombineDivPredResults()
+    mainCombineTopoPredResults()
