@@ -33,16 +33,18 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                  baseResultsFolder="Results/divEventData/manualCentres/",
                                  addOtherTestWithBaseFolder="Results/ktnDivEventData/manualCentres/",
                                  savePlotFolder=fig2ResultFolder)
-    # Fig. 2 B alternative - div prediction acc. results to further add text in power point
+    # Fig. 2 B and C alternative - div prediction acc. results to further add text in power point
     if figuresToDo == "all" or "Fig. 2 B alternative" in figuresToDo:
         fontSize = 24
         fig2ResultFolder = resultsFolder + "Fig 2 alternative/"
         Path(fig2ResultFolder).mkdir(parents=True, exist_ok=True)
+        # Fig. 2 B
         mainDivPredRandomization(performance="Acc", doMainFig=True,
                                  baseResultsFolder="Results/divEventData/manualCentres/",
                                  resultsTestFilename=None,
                                  savePlotFolder=fig2ResultFolder,
                                  fontSize=fontSize)
+        # Fig. 2 C
         mainDivPredTestComparisons(savePlotFolder=fig2ResultFolder, fontSize=fontSize)
     # Fig. 3 A - .csv-file of correct and wrong topo predictions on example cell
     if figuresToDo == "all" or "Fig. 3 A" in figuresToDo:
@@ -69,33 +71,26 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
                                  baseResultsFolder="Results/topoPredData/diff/manualCentres/",
                                  addOtherTestWithBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
                                  savePlotFolder=fig3ResultFolder)
-    # Fig. 3 B - topo prediction acc. results to further add text in power point
+    # Fig. 3 B and C - topo prediction acc. results to further add text in power point
     if figuresToDo == "all" or "Fig. 3 B alternative" in figuresToDo:
         fontSize = 24
         fig3ResultFolder = resultsFolder + "Fig 3 alternative/"
         Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
+        # Fig. 3 B
         mainTopoPredRandomization(performance="Acc", doMainFig=True,
                                  excludeDivNeighbours=True,
                                  baseResultsFolder="Results/topoPredData/diff/manualCentres/",
                                  resultsTestFilename=None,
                                  savePlotFolder=fig3ResultFolder,
                                  fontSize=fontSize)
+        # Fig. 3 C
         mainTopoPredTestComparisons(savePlotFolder=fig3ResultFolder, fontSize=fontSize)
-    # Fig. 3 C - topo prediction AUC results of different classes for WT test
-    # Sup. Fig. 6 A-C - topo prediction ROC curves results of different classes for WT test
-    if figuresToDo == "all" or "Fig. 3 C WT" in figuresToDo:
+    # Fig. D - topo prediction ROC curves results of different classes for WT test
+    # and Sup. Fig. 6 A-C - topo prediction ROC curves results of different classes for ktn test
+    if figuresToDo == "all" or "Fig. 3 D" in figuresToDo:
         fig3ResultFolder = resultsFolder + "Fig 3/AUC details WT/"
         Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
         mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/topoPredData/diff/manualCentres/",
-                                            saveUnderFolder=fig3ResultFolder)
-    # Fig. 3 C - topo prediction AUC results of different classes for ktn test
-    # Sup. Fig. 6 E-G - topo prediction ROC curves results of different classes for ktn test
-    if figuresToDo == "all" or "Fig. 3 C ktn" in figuresToDo:
-        fig3ResultFolder = resultsFolder + "Fig 3/AUC details ktn/"
-        Path(fig3ResultFolder).mkdir(parents=True, exist_ok=True)
-        mainPlotRocCurvesAndAUCLabelDetails(resultsBaseFolder="Results/ktnTopoPredData/diff/manualCentres/",
-                                            modelBaseFolder="Results/topoPredData/diff/manualCentres/",
-                                            featureSets=["topoAndBio", "lowCor0.3", "topology"],
                                             saveUnderFolder=fig3ResultFolder)
     # Fig. 4 B - example of predicted and observed topo prediction
     if figuresToDo == "all" or "Fig. 4 B" in figuresToDo:
