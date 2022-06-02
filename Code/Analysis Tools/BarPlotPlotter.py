@@ -42,12 +42,17 @@ class BarPlotPlotter (object):
         self.createFigures(self.performanceIdx, self.compareRandAndNorm,
                            minY=self.minY)
 
-    def loadFiles(self):
+    def loadFiles(self, printoUTResultsTable=False):
         self.randTable = []
         self.testResultTables = None
         self.furtherTestResults = None
         if not self.doSpecial and not self.plotOnlyRandom:
             self.resultsTable = self.loadTables(self.baseResultsFolder) # add check for number of replicates
+            if printoUTResultsTable:
+                print("TRAIN VAL")
+                for i, name in enumerate(self.selectedFeatureSetFolders):
+                    print(name)
+                    print(self.resultsTable[i].to_string())
         else:
             self.resultsTable = None
         if (self.plotOnlyRandom or self.compareRandAndNorm) and not self.doSpecial:

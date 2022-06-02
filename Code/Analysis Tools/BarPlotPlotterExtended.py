@@ -88,8 +88,13 @@ class BarPlotPlotterExtended (BarPlotPlotter):
         stdTestP = table.iloc[isTestStd, performanceIdx].to_numpy()
         return meanTestP[0], stdTestP[0]
 
-    def doStatistics(self, performanceIdx, baseScenarioIdx):
+    def doStatistics(self, performanceIdx, baseScenarioIdx, printOutBaseScenariosPerformances=False):
         setsPerofmancesOfBaseScenario = self.testResultTables[baseScenarioIdx]
+        if printOutBaseScenariosPerformances:
+            print("TEST")
+            for i, name in enumerate(self.selectedFeatureSetFolders):
+                print(name)
+                print(setsPerofmancesOfBaseScenario[i].to_string())
         # test for differences in base scenario
         pValueTable = self.calcDifferenceBetweenTestPerformances(setsPerofmancesOfBaseScenario, performanceIdx)
         pValueTableName = Path(self.filenameToSave).with_name(Path(self.filenameToSave).stem + "_testPValues.csv")
