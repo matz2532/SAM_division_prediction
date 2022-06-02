@@ -13,7 +13,7 @@ from MyScorer import mainPlotRocCurvesAndAUCLabelDetails
 from pathlib import Path
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 4 D"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 A"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -53,6 +53,12 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
                     featureSetName="bio", saveUnderFolder=fig3AResultFolder)
         mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False,
+                    featureSetName="topoAndBio", saveUnderFolder=fig3AResultFolder)
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False, timePoint=1,
+                    featureSetName="allTopos", saveUnderFolder=fig3AResultFolder)
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False, timePoint=1,
+                    featureSetName="bio", saveUnderFolder=fig3AResultFolder)
+        mainCreateTissuePredictionColoringOf(doDivPredVisualisation=False, timePoint=1,
                     featureSetName="topoAndBio", saveUnderFolder=fig3AResultFolder)
     # Fig. 3 B - topo prediction acc. results to further add text in power point
     if figuresToDo == "all" or "Fig. 3 B" in figuresToDo:
