@@ -172,8 +172,7 @@ class PredictonModelCreator (object):
 
     def trainPerPlantSplit(self, X_train, y_train, plantNameColIdx=0):
         plantNameOfTrainData = self.GetPlantNameOfTrainingData(plantNameColIdx)
-        _, uniqueIdx = np.unique(plantNameOfTrainData, return_index=True)
-        uniquePlantNames = plantNameOfTrainData[uniqueIdx]
+        uniquePlantNames = pd.unique(plantNameOfTrainData)
         numberOfPlants = len(uniquePlantNames)
         for currentValidationPlant in uniquePlantNames:
             if self.printCurrentSplit:
