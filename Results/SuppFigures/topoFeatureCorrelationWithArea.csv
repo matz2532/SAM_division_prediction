@@ -1,49 +1,49 @@
-Feature name;Pearson correlation coefficient;p-value
-weighted node degree weighted by distance;0,7533775022;0
-betweenness centrality weighted by area;0,7075124416;1.0591074960896e-311
-avg path length on 2 neighborhood weighted by distance;0,6823526794;1.596195111956464e-281
-weighted node degree;0,6200702248;2.0669662274793384e-218
-current flow betweenness centrality weighted by distance;0,6117072869;4.812371330617275e-211
-size on 2 neighborhood;0,594935365;5.057021194729162e-197
-estrada index on 2 neighborhood;0,5835280034;5.997153229184418e-188
-betweenness centrality;0,5705615995;6.373117152528312e-178
-avg path length on 2 neighborhood;0,5685049912;2.158701190828338e-176
-current flow betweenness centrality;0,5673995887;1.3876677872553513e-175
-load centrality;0,5659216425;1.6842614226438536e-174
-communicability betweenness centrality;0,5600532195;3.0531146350824394e-170
-betweenness centrality weighted by shared wall;0,5559831354;2.550625705762799e-167
-eigenvector centrality weighted by distance;0,4478737423;4.982402890283743e-102
-rel graph density on 2 neighborhood;0,4417960059;4.698909119359268e-99
-current flow betweenness centrality weighted by shared wall;0,4144829562;3.222728406558215e-86
-page rank weighted by distance;0,359448329;1.0059855816964388e-63
-harmonic centrality weighted by area;0,3430090499;8.090933479758919e-58
-current flow betweenness centrality weighted by area;0,341238842;3.2637221377844e-57
-load centrality weighted by distance;0,3399330209;9.025353613645715e-57
-betweenness centrality weighted by distance;0,3390624106;1.7603904997155677e-56
-eigenvector centrality;0,3009084782;2.868592129312282e-44
-katz centrality;0,296715935;4.5579982830626784e-43
-page rank;0,2476287496;4.402906698088474e-30
-page rank weighted by shared wall;0,1700298468;9.015304252249096e-15
-harmonic centrality weighted by shared wall;0,1627145485;1.2198443119058207e-13
-information centrality weighted by distance;0,1623531535;1.3608683154738197e-13
-weighted node degree weighted by shared wall;0,1165619282;1.2480863722759725e-07
-information centrality;0,1139649767;2.343018162399504e-07
-information centrality weighted by shared wall;0,1024196875;3.4450652871124502e-06
-harmonic centrality;0,0893303321;5.2274644865479356e-05
-avg path length on 2 neighborhood weighted by shared wall;0,083054574;0,0001663213
-eigenvector centrality weighted by shared wall;0,0415176443;0,0611734274
-page rank weighted by area;0,0259783946;0,2417828932
-information centrality weighted by area;0,0136318589;0,5360375421
-harmonic centrality weighted by distance;-0,0848703067;0,0001207403
-avg path length on 2 neighborhood weighted by area;-0,1934548404;9.263418666768455e-19
-eigenvector centrality weighted by area;-0,2035601589;1.2127606944311155e-20
-clustering coefficient weighted by shared wall;-0,2137709724;1.1938866842318605e-22
-weighted node degree weighted by area;-0,2466633588;7.321332944857492e-30
-clustering coefficient weighted by distance;-0,2966283082;4.740404794719815e-43
-algebraic connectivity on 2 neighborhood weighted by distance;-0,3180500725;1.5544236913878538e-49
-algebraic connectivity on 2 neighborhood;-0,4930936496;1.548788912148179e-126
-algebraic connectivity on 2 neighborhood weighted by shared wall;-0,5157401144;2.926751058309722e-140
-abs graph density on 2 neighborhood;-0,5423395543;9.133962253603848e-158
-clustering coefficient weighted by area;-0,5871919749;9.36141860761249e-191
-clustering coefficient;-0,6001080339;3.745027929686952e-201
-algebraic connectivity on 2 neighborhood weighted by area;-0,630452121;7.023167512283762e-228
+Feature name,Pearson correlation coefficient,p-value
+weighted node degree weighted by distance,0.7533775022,0
+betweenness centrality weighted by area,0.7075124416,1.0591074960896e-311
+avg path length on 2 neighborhood weighted by distance,0.6823526794,1.596195111956464e-281
+weighted node degree,0.6200702248,2.0669662274793384e-218
+current flow betweenness centrality weighted by distance,0.6117072869,4.812371330617275e-211
+size on 2 neighborhood,0.594935365,5.057021194729162e-197
+estrada index on 2 neighborhood,0.5835280034,5.997153229184418e-188
+betweenness centrality,0.5705615995,6.373117152528312e-178
+avg path length on 2 neighborhood,0.5685049912,2.158701190828338e-176
+current flow betweenness centrality,0.5673995887,1.3876677872553513e-175
+load centrality,0.5659216425,1.6842614226438536e-174
+communicability betweenness centrality,0.5600532195,3.0531146350824394e-170
+betweenness centrality weighted by shared wall,0.5559831354,2.550625705762799e-167
+eigenvector centrality weighted by distance,0.4478737423,4.982402890283743e-102
+rel graph density on 2 neighborhood,0.4417960059,4.698909119359268e-99
+current flow betweenness centrality weighted by shared wall,0.4144829562,3.222728406558215e-86
+page rank weighted by distance,0.359448329,1.0059855816964388e-63
+harmonic centrality weighted by area,0.3430090499,8.090933479758919e-58
+current flow betweenness centrality weighted by area,0.341238842,3.2637221377844e-57
+load centrality weighted by distance,0.3399330209,9.025353613645715e-57
+betweenness centrality weighted by distance,0.3390624106,1.7603904997155677e-56
+eigenvector centrality,0.3009084782,2.868592129312282e-44
+katz centrality,0.296715935,4.5579982830626784e-43
+page rank,0.2476287496,4.402906698088474e-30
+page rank weighted by shared wall,0.1700298468,9.015304252249096e-15
+harmonic centrality weighted by shared wall,0.1627145485,1.2198443119058207e-13
+information centrality weighted by distance,0.1623531535,1.3608683154738197e-13
+weighted node degree weighted by shared wall,0.1165619282,1.2480863722759725e-07
+information centrality,0.1139649767,2.343018162399504e-07
+information centrality weighted by shared wall,0.1024196875,3.4450652871124502e-06
+harmonic centrality,0.0893303321,5.2274644865479356e-05
+avg path length on 2 neighborhood weighted by shared wall,0.083054574,0.0001663213
+eigenvector centrality weighted by shared wall,0.0415176443,0.0611734274
+page rank weighted by area,0.0259783946,0.2417828932
+information centrality weighted by area,0.0136318589,0.5360375421
+harmonic centrality weighted by distance,-0.0848703067,0.0001207403
+avg path length on 2 neighborhood weighted by area,-0.1934548404,9.263418666768455e-19
+eigenvector centrality weighted by area,-0.2035601589,1.2127606944311155e-20
+clustering coefficient weighted by shared wall,-0.2137709724,1.1938866842318605e-22
+weighted node degree weighted by area,-0.2466633588,7.321332944857492e-30
+clustering coefficient weighted by distance,-0.2966283082,4.740404794719815e-43
+algebraic connectivity on 2 neighborhood weighted by distance,-0.3180500725,1.5544236913878538e-49
+algebraic connectivity on 2 neighborhood,-0.4930936496,1.548788912148179e-126
+algebraic connectivity on 2 neighborhood weighted by shared wall,-0.5157401144,2.926751058309722e-140
+abs graph density on 2 neighborhood,-0.5423395543,9.133962253603848e-158
+clustering coefficient weighted by area,-0.5871919749,9.36141860761249e-191
+clustering coefficient,-0.6001080339,3.745027929686952e-201
+algebraic connectivity on 2 neighborhood weighted by area,-0.630452121,7.023167512283762e-228
