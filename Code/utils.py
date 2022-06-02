@@ -247,3 +247,6 @@ if __name__ == '__main__':
     print(f"topoAndBio to allTopos increase of {relDifference(0.8182447428829326, 0.6325617376031192)} class 2 accuracy")
     print(f"topoAndBio to allTopos/bio increase of {relDifference(0.8313877793949692, 0.7374946366075243)}/{relDifference(0.8313877793949692, 0.7123793378082395)} class avg accuracy")
     print(f"r<0.3 to allTopos reduction of {relDifference(56.02, 56.566670)} test accuracy")
+    print(f"ktn SAM to WT SAM reduction of {relDifference(41.6550351855714, 64.789668)}/{relDifference(44.8867968625101, 56.023372)}/{relDifference(41.5063696175105, 56.566670)} topoAndBio/lowCor0.3/unweighted")
+    print(f"ktn floral meristem to WT SAM reduction of {relDifference(44.1503148301763, 53.2932987366018)} allTopos")
+    print(f"WT floral meristem to WT SAM reduction of {relDifference(46.745701424249, 56.5666696357877)} unweighted")
