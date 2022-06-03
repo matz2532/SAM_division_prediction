@@ -24,7 +24,7 @@ class ResultsTableCombiner (object):
         baseResultsTable = self.renameIdxOfTableFromTo(baseResultsTable, fromIdx="mean", toIdx=renameTrainMeanIdxTo)
         baseResultsTable = self.renameIdxOfTableFromTo(baseResultsTable, fromIdx="test mean", toIdx=renameTestMeanIdxTo)
         # round values accordingly e.g., accuracy to 2 and auc 4 digits after comma
-        roundedBaseTable = self.roundValues(baseResultsTable)
+        roundedBaseTable = self.roundValues(baseResultsTable, exceptForColumnsDict={})
         # combine mean and std rows with +-
         self.baseResultsTable = self.mergeRowEntriesWithNextRow(roundedBaseTable, rowIdxToUse=renameTrainMeanIdxTo, symbolToCombineRows="±")
         self.baseResultsTable = self.mergeRowEntriesWithNextRow(self.baseResultsTable, rowIdxToUse=renameTestMeanIdxTo, symbolToCombineRows="±")
@@ -36,7 +36,7 @@ class ResultsTableCombiner (object):
             resultsBaseFolder += featureSetName + "/" + self.classifierFolderExtension
             extendingTable = pd.read_csv(resultsBaseFolder + self.resultsTableName, index_col=0)
             # round values accordingly e.g., accuracy to 2 and auc 4 digits after comma
-            extendingTable = self.roundValues(extendingTable)
+            extendingTable = self.roundValues(extendingTable, exceptForColumnsDict={})
             # combine mean and std rows with +-
             extendingTable = self.mergeRowEntriesWithNextRow(extendingTable, rowIdxToUse="test mean", symbolToCombineRows="±")
             # include test values
@@ -102,8 +102,8 @@ def mainCombineDivPredResults(saveUnderFolder="", baseResultsFolder="Results/div
                               featureSets=["allTopos", "area", "topoAndBio", "topology", "lowCor0.3"],
                               additionalTestFolderWithKeys={
                                         "test ktn SAM" : "Results/ktnDivEventData/manualCentres/",
-                                        "test WT floral meristem" : "Results/floral meristems/WT/divEventData/manualCentres/",
-                                        "test ktn floral meristem" : "Results/floral meristems/ktn/divEventData/manualCentres/"
+                                        "test WT floral" : "Results/floral meristems/WT/divEventData/manualCentres/",
+                                        "test ktn floral" : "Results/floral meristems/ktn/divEventData/manualCentres/"
                                                             },
                               classifierFolderExtension="svm_k1h_combinedTable_l3f0n1c0bal0ex0/",
                               resultsTableName="resultsWithTesting.csv",
@@ -121,8 +121,8 @@ def mainCombineTopoPredResults(saveUnderFolder="", baseResultsFolder="Results/to
                                featureSets=["allTopos", "bio", "topoAndBio", "topology", "lowCor0.3"],
                                additionalTestFolderWithKeys={
                                         "test ktn SAM" : "Results/ktnTopoPredData/diff/manualCentres/",
-                                        "test WT floral meristem" : "Results/floral meristems/WT/topoPredData/diff/manualCentres/",
-                                        "test ktn floral meristem" : "Results/floral meristems/ktn/topoPredData/diff/manualCentres/"
+                                        "test WT floral" : "Results/floral meristems/WT/topoPredData/diff/manualCentres/",
+                                        "test ktn floral" : "Results/floral meristems/ktn/topoPredData/diff/manualCentres/"
                                                             },
                                classifierFolderExtension="svm_k1h_combinedTable_l3f0n1c0bal0ex1/",
                                resultsTableName="resultsWithTesting.csv",
