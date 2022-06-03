@@ -89,9 +89,9 @@ class ResultsTableCombiner (object):
         isIdxFromIdx = indices == rowIdxToUse
         if np.any(isIdxFromIdx):
             rowIdxToUse = np.where(isIdxFromIdx)[0]
-            selectedRowValues = table.iloc[rowIdxToUse, :].to_numpy().ravel()
-            nextRowValues = table.iloc[rowIdxToUse + 1, :].to_numpy().ravel()
-            combinedRowValues = [str(i) + symbolToCombineRows + str(j) for i, j in zip(selectedRowValues, nextRowValues)]
+            selectedRowValues = table.iloc[rowIdxToUse, :].values[0]
+            nextRowValues = table.iloc[rowIdxToUse + 1, :].values[0]
+            combinedRowValues = [f"{i:.2f}" + symbolToCombineRows + f"{j:.2f}" for i, j in zip(selectedRowValues, nextRowValues)]
             table.iloc[rowIdxToUse, :] = combinedRowValues
             table.drop(index=indices[rowIdxToUse + 1], inplace=True)
         else:
