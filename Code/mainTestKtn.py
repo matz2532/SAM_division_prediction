@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, "./Code/Predicting/")
 from PredictonManager import PredictonManager
 
-def mainTestKtn(runDivEventPred=True, givenSets=None):
+def mainTestKtn(runDivEventPred=True, givenSets=None, excludeDividingNeighbours=True):
     dataFolder = "Data/ktn/"
     featureAndLabelFolder = "Data/ktn/topoPredData/"
     folderToSaveVal = None
@@ -85,7 +85,11 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}topoPredData/diff/manualCentres/{}/".format(dataFolder, set)
             resultsFolder = "Results/ktnTopoPredData/diff/manualCentres/{}/".format(set)
-            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/".format(set)
+            if excludeDividingNeighbours:
+                excludeText = "ex1"
+            else:
+                excludeText = "ex0"
+            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0/".format(set, excludeText)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             if useTemporaryResultsFolder:
@@ -99,7 +103,7 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
                                        featureProperty=featureProperty,
                                        dataFolder=dataFolder,
                                        timePointsPerPlant=timePointsPerPlant,
-                                       excludeDividingNeighbours=True, # in case you change excludeDividingNeighbours to False change ex1 to ex0 in the useSpecificTestModelFilename
+                                       excludeDividingNeighbours=excludeDividingNeighbours, # in case you change excludeDividingNeighbours to False change ex1 to ex0 in the useSpecificTestModelFilename
                                        featureAndLabelFolder=featureAndLabelFolder,
                                        givenFeatureName=givenFeatureName,
                                        resultsFolder=newResultsFolder,
@@ -126,5 +130,8 @@ def mainTestKtn(runDivEventPred=True, givenSets=None):
                                        printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    mainTestKtn(runDivEventPred=True, givenSets=None)
-    mainTestKtn(runDivEventPred=False, givenSets=None)
+    # mainTestKtn(runDivEventPred=True, givenSets=None)
+    from mainTestFloralMeristems import mainTestFloralMeristems
+    mainTestKtn(runDivEventPred=False, givenSets=None, excludeDividingNeighbours=False)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=True, excludeDividingNeighbours=False)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=False, excludeDividingNeighbours=False)

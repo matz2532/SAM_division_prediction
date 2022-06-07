@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, "./Code/Predicting/")
 from PredictonManager import PredictonManager
 
-def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
+def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None, excludeDividingNeighbours=True):
     folderToSaveVal = None
     modelType =  {"modelType":"svm", "kernel":"linear"}
     useTemporaryResultsFolder = False
@@ -97,7 +97,11 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
             labelName = "combinedLabels.csv"
             setFeatureAndLabelFolder = "{}diff/manualCentres/{}/".format(featureAndLabelFolder, set)
             resultsFolder = "Results/{}diff/manualCentres/{}/".format(dataExtension + predictionTypeExtension, set)
-            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0ex1/".format(set)
+            if excludeDividingNeighbours:
+                excludeText = "ex1"
+            else:
+                excludeText = "ex0"
+            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0{}/".format(set, excludeText)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             if useTemporaryResultsFolder:
@@ -110,7 +114,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None):
                                        featureProperty=featureProperty,
                                        dataFolder=dataFolder,
                                        timePointsPerPlant=timePointsPerPlant,
-                                       excludeDividingNeighbours=True, # in case you change excludeDividingNeighbours to False change ex1 to ex0 in the useSpecificTestModelFilename
+                                       excludeDividingNeighbours=excludeDividingNeighbours,
                                        featureAndLabelFolder=featureAndLabelFolder,
                                        givenFeatureName=givenFeatureName,
                                        resultsFolder=newResultsFolder,
