@@ -89,7 +89,7 @@ def mainTestKtn(runDivEventPred=True, givenSets=None, excludeDividingNeighbours=
                 excludeText = "ex1"
             else:
                 excludeText = "ex0"
-            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0/".format(set, excludeText)
+            previousModelFolder = "Results/topoPredData/diff/manualCentres/{}/svm_k1h_combinedTable_l3f0n1c0bal0{}/".format(set, excludeText)
             useSpecificTestModelFilename = previousModelFolder + "testModel.pkl"
             useGivenFeatureColumns = list(pd.read_csv(previousModelFolder + "normalizedFeatures_train.csv").columns)
             if useTemporaryResultsFolder:
