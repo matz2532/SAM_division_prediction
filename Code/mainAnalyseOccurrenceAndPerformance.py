@@ -172,7 +172,7 @@ def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=
         Path(fig9BResultFolder).mkdir(parents=True, exist_ok=True)
         mainSaveDensityPlotsOfFeaturesFromDiffScenarios(plotTopoFeatures=False, savePlotFolder=fig9BResultFolder)
 
-def prepareSuppTables(resultsFolder="Results/SuppTables/", tablesToDo=["Tab. 3", "Tab. 4"]):
+def prepareSuppTables(resultsFolder="Results/SuppTables/", tablesToDo=["Tab. 4 A", "Tab. 4 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Tab. 3 - .csv-files with each feature sets div pred performances of all scenarios and means shown with +- std
     # scenarios: WT SAM training, WT SAM test, ktn SAM, and WT and ktn floral meristem
@@ -182,10 +182,14 @@ def prepareSuppTables(resultsFolder="Results/SuppTables/", tablesToDo=["Tab. 3",
         mainCombineDivPredResults(tab3ResultFolder)
     # Tab. 4 - .csv-files with each feature sets topo pred performances of all scenarios and means shown with +- std
     # scenarios: WT SAM training, WT SAM test, ktn SAM, and WT and ktn floral meristem
-    if tablesToDo == "all" or "Tab. 4" in tablesToDo:
-        tab4ResultFolder = resultsFolder + "Tab 4/"
+    if tablesToDo == "all" or "Tab. 4 A" in tablesToDo:
+        tab4ResultFolder = resultsFolder + "Tab 4/without div neighbor as pair/"
         Path(tab4ResultFolder).mkdir(parents=True, exist_ok=True)
-        mainCombineTopoPredResults(tab4ResultFolder)
+        mainCombineTopoPredResults(tab4ResultFolder, classifierFolderExtension="svm_k1h_combinedTable_l3f0n1c0bal0ex1/")
+    if tablesToDo == "all" or "Tab. 4 B" in tablesToDo:
+        tab4ResultFolder = resultsFolder + "Tab 4/with div neighbor as pair/"
+        Path(tab4ResultFolder).mkdir(parents=True, exist_ok=True)
+        mainCombineTopoPredResults(tab4ResultFolder, classifierFolderExtension="svm_k1h_combinedTable_l3f0n1c0bal0ex0/")
 
 if __name__== "__main__":
     # plotAndPrepareMainFigures()
