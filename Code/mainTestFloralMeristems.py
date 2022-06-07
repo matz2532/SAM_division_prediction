@@ -143,5 +143,7 @@ def mainTestFloralMeristems(runDivEventPred=True, useWT=True, givenSets=None, ex
 if __name__== "__main__":
     mainTestFloralMeristems(runDivEventPred=True, useWT=True)
     mainTestFloralMeristems(runDivEventPred=True, useWT=False)
-    mainTestFloralMeristems(runDivEventPred=False, useWT=True)
-    mainTestFloralMeristems(runDivEventPred=False, useWT=False)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=True, excludeDividingNeighbours=True)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=False, excludeDividingNeighbours=True)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=True, excludeDividingNeighbours=False)
+    mainTestFloralMeristems(runDivEventPred=False, useWT=False, excludeDividingNeighbours=False)

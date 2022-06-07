@@ -130,8 +130,6 @@ def mainTestKtn(runDivEventPred=True, givenSets=None, excludeDividingNeighbours=
                                        printBalancedLabelCount=printBalancedLabelCount)
 
 if __name__ == '__main__':
-    # mainTestKtn(runDivEventPred=True, givenSets=None)
-    from mainTestFloralMeristems import mainTestFloralMeristems
+    mainTestKtn(runDivEventPred=True, givenSets=None)
+    mainTestKtn(runDivEventPred=False, givenSets=None, excludeDividingNeighbours=True)
     mainTestKtn(runDivEventPred=False, givenSets=None, excludeDividingNeighbours=False)
-    mainTestFloralMeristems(runDivEventPred=False, useWT=True, excludeDividingNeighbours=False)
-    mainTestFloralMeristems(runDivEventPred=False, useWT=False, excludeDividingNeighbours=False)
