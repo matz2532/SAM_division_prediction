@@ -80,6 +80,18 @@ class GetDividingAndNonDividingLabels (object):
         percentage = np.round(100*nrOfDividingCells/totalCellNumber, 1)
         print("In layer: {}, {} / {} divided ({}%)".format(selectedLayer, nrOfDividingCells, totalCellNumber, percentage))
 
+    def printDividingCellsOverAllLayers(self, dividingCellsPerLayer, nrOfCellsPerLayer):
+        nrOfDividingCells = len(np.concatenate([dividingCellsPerLayer[selectedLayer] for selectedLayer in dividingCellsPerLayer.keys()]))
+        totalCellNumber =  len(np.concatenate([nrOfCellsPerLayer[selectedLayer] for selectedLayer in nrOfCellsPerLayer.keys()]))
+        percentage = np.round(100*nrOfDividingCells/totalCellNumber, 1)
+        print("In layer: {}, {} / {} divided ({}%)".format(list(dividingCellsPerLayer.keys()), nrOfDividingCells, totalCellNumber, percentage))
+
+    def GetDividingCellsPerLayer(self):
+        return self.dividingCellsPerLayer
+
+    def GetNrOfCellsPerLayer(self):
+        return self.nrOfCellsPerLayer
+
 def main():
     # print number of dividing cells of all cells in Jackson et al., 2019
     # I found out that the label dividing is propagated
@@ -90,14 +102,25 @@ def main():
     # and copy this script into the base folder (WT Arabidopsis) containing the 'labels.csv' and 'README.txt' file
     # and execute the script
     import sys
+    baseFolderOfData = "Jackson Data WT Arabidopsis"
     filenameToSave = "labels.csv"
+    nrOfCellsPerLayer, dividingCellsPerLayer = {}, {}
     for i in range(1,5):
         print("Replicate {}".format(i))
-        replicateFolder = "WT Arabidopsis/Rep {}/*/".format(i)
+        replicateFolder = "{}/Rep {}/*/".format(baseFolderOfData, i)
         topologyPatterns = replicateFolder + "*topology.csv"
         parentPatterns = replicateFolder + "*parents.csv"
         myGetDividingAndNonDividingLabels = GetDividingAndNonDividingLabels(topologyPatterns, parentPatterns)
         myGetDividingAndNonDividingLabels.ExtractDividingCells()
+        currentDividingCellsPerLayer = myGetDividingAndNonDividingLabels.GetDividingCellsPerLayer()
+        currentNrOfCellsPerLayer = myGetDividingAndNonDividingLabels.GetNrOfCellsPerLayer()
+        dividingCellsPerLayer = myGetDividingAndNonDividingLabels.combineDicts(dividingCellsPerLayer, currentDividingCellsPerLayer)
+        nrOfCellsPerLayer = myGetDividingAndNonDividingLabels.combineDicts(nrOfCellsPerLayer, currentNrOfCellsPerLayer)
+    print("all replicates summariesed:")
+    for selectedLayer in dividingCellsPerLayer.keys():
+        myGetDividingAndNonDividingLabels.printDivdidingCellsPerLayer(selectedLayer, dividingCellsPerLayer, nrOfCellsPerLayer)
+    myGetDividingAndNonDividingLabels.printDividingCellsOverAllLayers(dividingCellsPerLayer, nrOfCellsPerLayer)
+
 
 if __name__ == '__main__':
     main()
