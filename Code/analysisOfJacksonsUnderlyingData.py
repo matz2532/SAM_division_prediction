@@ -145,5 +145,18 @@ In layer: 3, 38 / 183 divided (20.8%)
 In layer: [1, 2, 3], 122 / 614 divided (19.9%)
 """
 
+"""
+The actually stated number of dividing cells from the summary tables '<replicate name>_<time point>_topology.csv'
+    of the first time step (11 hours) are:
+Rep | L1 | L2 | L3 | Sum
+ 1  |  2 |  1 |  2 |  5
+ 2  |  2 |  7 |  5 | 14
+ 3  |  1 |  3 |  1 |  5
+ 4  |  2 |  4 |  2 |  8
+Sum |  7 | 15 | 10 |  32
+All other dividing cells of the next time step T1-T2 are daughter cells of divided cells and falsely identified as dividing cells,
+which is the reason that they state there are 64 dividing cells in the second time step.
+"""
+
 if __name__ == '__main__':
     main()
