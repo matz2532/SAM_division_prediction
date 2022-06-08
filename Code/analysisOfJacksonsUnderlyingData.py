@@ -121,6 +121,29 @@ def main():
         myGetDividingAndNonDividingLabels.printDivdidingCellsPerLayer(selectedLayer, dividingCellsPerLayer, nrOfCellsPerLayer)
     myGetDividingAndNonDividingLabels.printDividingCellsOverAllLayers(dividingCellsPerLayer, nrOfCellsPerLayer)
 
+"""
+Replicate 1
+In layer: 1, 7 / 43 divided (16.3%)
+In layer: 2, 7 / 45 divided (15.6%)
+In layer: 3, 7 / 45 divided (15.6%)
+Replicate 2
+In layer: 1, 7 / 76 divided (9.2%)
+In layer: 2, 11 / 52 divided (21.2%)
+In layer: 3, 10 / 48 divided (20.8%)
+Replicate 3
+In layer: 1, 15 / 60 divided (25.0%)
+In layer: 2, 14 / 57 divided (24.6%)
+In layer: 3, 10 / 49 divided (20.4%)
+Replicate 4
+In layer: 1, 7 / 57 divided (12.3%)
+In layer: 2, 16 / 41 divided (39.0%)
+In layer: 3, 11 / 41 divided (26.8%)
+all replicates summariesed:
+In layer: 1, 36 / 236 divided (15.3%)
+In layer: 2, 48 / 195 divided (24.6%)
+In layer: 3, 38 / 183 divided (20.8%)
+In layer: [1, 2, 3], 122 / 614 divided (19.9%)
+"""
 
 if __name__ == '__main__':
     main()
