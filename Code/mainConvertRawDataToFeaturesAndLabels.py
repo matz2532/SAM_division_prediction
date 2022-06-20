@@ -19,7 +19,7 @@ CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict,
 used argument descriptions:
 centralCellsDict - provides the most central cells for each plant and time point, whose geometric mean defines the central position
 dataArgs         - provides the neccessary arguments to execute the creation of the different feature sets (allTopos, area/bio, topoAndBio, lowCor0.3, topology (unweighted)) e.g.,
-                   "dataFolder"                         - where to get the data from (The files of each plant should be stored individually. For more information see 'Expected Data Structure')
+                   "dataFolder"                         - where to get the data from (The files of each plant should be stored individually. For more information see 'Needed table information' in the README.md file)
                    "folderToSave"                       - where to save the feature sets
                    "plantNames"                         - give all plant names (used to search though subfolders of the dataFolder and used as key words in provided data files)
                    "estimateFeatures"                   - whether or not to calculate features (True or False)
