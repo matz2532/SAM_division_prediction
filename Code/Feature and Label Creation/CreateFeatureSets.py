@@ -140,7 +140,7 @@ class CreateFeatureSets (object):
                 self.combineFeatures(folderToSave, featureProperty, includeBioFeatures=True)
             return None
         elif set == 7:
-            for rThreshold in [0.3, 0.5, 0.7]:
+            for rThreshold in [0.3]:
                 featurePropertyToLoad = "allTopos"
                 featureProperty = "lowCor{}".format(rThreshold)
                 print(featureProperty)

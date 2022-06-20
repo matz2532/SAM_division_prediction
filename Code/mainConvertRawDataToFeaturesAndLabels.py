@@ -3,6 +3,35 @@ import sys
 sys.path.insert(0, "./Code/Feature and Label Creation/")
 from CreateFeatureSets import CreateFeatureSets
 
+"""
+----- Explanation of this script mainConvertRawDataToFeaturesAndLabels.py and used parameters -----
+With this script you can create the features and labels
+used for training and validation and testing using mainConvertRawDataToFeaturesAndLabels().
+In case you dont know the labels e.g., which cells divide or the future cells conectivity properties
+you can change the parameter 'estimateLabels' to False in dataArgs or the call of CreateFeatureSets() e.g.,
+dataArgs = {...
+            "estimateLabels":False,
+            ...}
+CreateFeatureSets(skipEmptyCentrals=True, centralCellsDict=centralCellsDict,
+                  estimateLabels=False,
+                  **dataArgs)
+
+used argument descriptions:
+centralCellsDict - provides the most central cells for each plant and time point, whose geometric mean defines the central position
+dataArgs         - provides the neccessary arguments to execute the creation of the different feature sets (allTopos, area/bio, topoAndBio, lowCor0.3, topology (unweighted)) e.g.,
+                   "dataFolder"                         - where to get the data from (The files of each plant should be stored individually. For more information see 'Expected Data Structure')
+                   "folderToSave"                       - where to save the feature sets
+                   "plantNames"                         - give all plant names (used to search though subfolders of the dataFolder and used as key words in provided data files)
+                   "estimateFeatures"                   - whether or not to calculate features (True or False)
+                   "estimateLabels"                     - whether or not to calculate labels (True or False)
+                   "useManualCentres"                   - whether to use manual central position estiation based on geometric mean of selected central cells
+                   "timePointsPerPlant"                 - provide the number of time points per plant used to know the number of time steps (timePointsPerPlant - 1)
+                   "useTopoCreator":                    - whether to calculate features for division or topology prediction
+                   "takeCorrelationFromDifferentFolder" - provide the base folder used to reduce the features in the lowCor* feature set
+                   "keepFromFolder"                     - provide the base folder used to reduce the features in the lowCor* feature set
+tasks            - allows to differentiate between the usage of WT or ktn and whether to create features for division or topology prediction
+"""
+
 def mainConvertRawDataToFeaturesAndLabels():
     WtCentralCellsDict = {"P1":[[618, 467, 570], [5048, 5305], [5849, 5601], [6178, 6155, 6164], [6288, 6240]],
                         "P2":[[392], [553, 779, 527], [525], [1135], [1664, 1657]],
@@ -48,7 +77,6 @@ def mainConvertRawDataToFeaturesAndLabels():
                    "takeCorrelationFromDifferentFolder":"Data/WT/topoPredData/diff/manualCentres/",
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
-    tasks = [[True, False]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
@@ -108,7 +136,6 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
                    "useTopoCreator": True,
                    "keepFromFolder":"Data/WT/topoPredData/diff/manualCentres/"}
     tasks = [[True, False], [True, True], [False, False], [False, True]]
-    tasks = [[True, False], [False, False]]
     for usingWT, createDivData in tasks:
         if usingWT:
             centralCellsDict = WtCentralCellsDict
@@ -127,4 +154,4 @@ def mainConvertFloralMeristemRawDataToFeaturesAndLabels():
 
 if __name__== "__main__":
     mainConvertRawDataToFeaturesAndLabels()
-    # mainConvertFloralMeristemRawDataToFeaturesAndLabels()
+    mainConvertFloralMeristemRawDataToFeaturesAndLabels()
