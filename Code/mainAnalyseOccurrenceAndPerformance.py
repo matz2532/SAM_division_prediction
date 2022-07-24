@@ -14,7 +14,7 @@ from pathlib import Path
 from ResultsTableCombiner import mainCombineDivPredResults, mainCombineTopoPredResults
 from VisualisePredictionsOnTissue import mainCreateTissuePredictionColoringOf
 
-def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 3 A"]):
+def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=["Fig. 2 B alternative", "Fig 3 B alternative"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 A - .csv-file to use in MGX showing TP&TN in blue and FN&FP
     if figuresToDo == "all" or "Fig. 2 A" in figuresToDo:
@@ -117,7 +117,7 @@ def plotAndPrepareMainFigures(resultsFolder="Results/MainFigures/", figuresToDo=
         Path(fig4ResultFolder).mkdir(parents=True, exist_ok=True)
         plotFeaturesCorrelationOfPredVsObsPropagation(saveUnderFolder=fig4ResultFolder)
 
-def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 5 A", "Fig. 5 B"]):
+def plotAndPrepareSuppFigures(resultsFolder="Results/SuppFigures/", figuresToDo=["Fig. 3 A", "Fig. 3 B"]):
     Path(resultsFolder).mkdir(parents=True, exist_ok=True)
     # Fig. 2 - Pearson corr coeff of topological features vs area
     if figuresToDo == "all" or "Fig. 2" in figuresToDo:
@@ -192,6 +192,6 @@ def prepareSuppTables(resultsFolder="Results/SuppTables/", tablesToDo=["Tab. 4 A
         mainCombineTopoPredResults(tab4ResultFolder, classifierFolderExtension="svm_k1h_combinedTable_l3f0n1c0bal0ex0/")
 
 if __name__== "__main__":
-    # plotAndPrepareMainFigures()
-    # plotAndPrepareSuppFigures()
-    prepareSuppTables()
+    plotAndPrepareMainFigures()
+    plotAndPrepareSuppFigures()
+    # prepareSuppTables()

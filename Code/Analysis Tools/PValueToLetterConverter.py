@@ -6,6 +6,9 @@ import pandas as pd
 import scipy.stats as st
 import sys
 
+sys.path.insert(0, "./Code/cldToSignificanceLetter/")
+
+from cld import calcGroupLetters
 from networkx.algorithms.clique import find_cliques
 from pathlib import Path
 from string import ascii_lowercase, ascii_uppercase
@@ -19,7 +22,8 @@ class PValueToLetterConverter (object):
         if not pValueTable is None:
             self.SetPValueTable(pValueTable)
             self.groupNames = np.unique(np.concatenate([self.pValueTable["group1"],self.pValueTable["group2"]]))
-            self.groupNamesLetters = self.calcLettersForGroup(self.pValueTable)
+            self.groupNamesLetters = calcGroupLetters(self.pValueTable, col1="group1", col2="group2",
+                                                         rejectCol="reject", orderGroupsAlong=self.groupNames)
 
     def GetGroupNameLetters(self):
         return self.groupNamesLetters
@@ -84,7 +88,12 @@ class PValueToLetterConverter (object):
         return cliquesIds
 
 def main():
-    myPValueToLetterConverter = PValueToLetterConverter()
+    pValueTableName = "Results\MainFigures\Fig 2 alternative\div pred bal0 results main fig Acc allTopos, area, topoAndBio, lowCor0.3, topology_trainValPValues.csv"
+    pValueTable = pd.read_csv(pValueTableName, index_col=0)
+    print(pValueTable)
+    trainingGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"training p-values":"p-value"})).GetGroupNameLetters()
+    print(trainingGroupLetters)
+    # valGroupLetters = PValueToLetterConverter(pValueTable.rename(columns={"validation p-values":"p-value"})).GetGroupNameLetters()
 
 if __name__ == '__main__':
     main()
