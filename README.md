@@ -9,6 +9,8 @@ Timon W. Matz<sup>1,2</sup>, Yang Wang<sup>3</sup>, Ritika Kulshreshtha<sup>3</s
 # Abstract
 Cell division and the resulting changes to the cell organization affect the shape and functionality of all tissues. Thus, understanding the determinants of the tissue-wide changes imposed by cell division is a key question in developmental biology. Here, we use a network representation of live cell imaging data from shoot apical meristems (SAMs) in Arabidopsis thaliana to predict cell division events and their consequences at a tissue level. We show that a support vector machine classifier based on the SAM network properties is predictive of cell division events, with test accuracy of 76%, matching that based on cell size alone. Further, we demonstrate that the combination of topological and biological properties, including: cell size, perimeter, distance, and shared cell wall between cells, can further boost the prediction accuracy of resulting changes in topology triggered by cell division. Using our classifiers, we demonstrate the importance of microtubule mediated cell-to-cell growth coordination in influencing tissue-level topology. Together, the results from our network-based analysis demonstrate a feedback mechanism between tissue topology and cell division in A. thaliana’s SAMs.
 
+[Link to paper](https://journals.biologists.com/dev/article/149/16/dev201024/276347/Topological-properties-accurately-predict-cell 'Link to paper')
+
 # How to use the code
 System requirements:
 
